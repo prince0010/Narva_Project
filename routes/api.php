@@ -39,6 +39,6 @@ use App\Http\Controllers\Api\ApiController;
          ], 
     function(){
         Route::get("/profile", [ApiController::class, "profile"]);
-        Route::post("/logout", [ApiController::class, "logout"]);
+        Route::get("/logout", [ApiController::class, "logout"]);
     }
     );
