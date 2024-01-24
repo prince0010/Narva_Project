@@ -41,4 +41,4 @@ use App\Http\Controllers\Api\ApiController;
         Route::get("profile", [ApiController::class, "profile"]);
         Route::get("logout", [ApiController::class, "logout"]);
     }
-    ) ;
+    );
