@@ -24,8 +24,8 @@ use App\Http\Controllers\Api\ApiController;
     // we dont need login or token before accessing
     // The Route::post("register" -> is you can call it for the URL in the Prefix and Use it for the POSTMAN like http://127.0.0.1:8000/api/register
     // [ApiController::class, "register"] - The "register" is the Method in this class
-    Route::post("register", [ApiController::class, "register"]);
-    Route::post("login", [ApiController::class, "login"]);
+    Route::post("/register", [ApiController::class, "register"]);
+    Route::post("/login", [ApiController::class, "login"]);
 
 // Protected Routes with auth:api miiddleware
     Route::group(
@@ -38,7 +38,7 @@ use App\Http\Controllers\Api\ApiController;
              // call back function
          ], 
     function(){
-        Route::get("profile", [ApiController::class, "profile"]);
-        Route::get("logout", [ApiController::class, "logout"]);
+        Route::get("/profile", [ApiController::class, "profile"]);
+        Route::post("/logout", [ApiController::class, "logout"]);
     }
     );

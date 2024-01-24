@@ -45,11 +45,10 @@ class ApiController extends Controller
 
         
         // Login API (POST)
-        public function  login(Request $request){
+        public function login(Request $request){
             
             // Data Validation
             $request->validate([
-                // "name" => "required|string|max:255",
                 "email" => "required|email",
                 "password" => "required"
             ]);
@@ -61,7 +60,6 @@ class ApiController extends Controller
             // Checking User Login
             // Once user access with these details it is going to return a true response | else False will return
             if(Auth::attempt([
-                // "name" => $request->name,
                 "email" => $request->email,
                 "password"=> $request->password
              
@@ -70,6 +68,7 @@ class ApiController extends Controller
                 // User Data Exist
                 // Auth Facade is scope Resolution Operator and the Method is User() and it will return a User() offset and inside of the User() offset it have all the user values
                 $user = Auth::user();  
+                // Authentication function alternative for Auth::user() -> auth()->user(); 
 
                 // Authorized Token Value || That can use inside for the next apis like profile and logout
                 // Inside of the method will have to pass the token name
@@ -100,12 +99,25 @@ class ApiController extends Controller
         // Protected Profile and Logout whit this middleware auth:api
         //Profile API (GET)
         public function profile(){
-
+           $user = Auth::user();
+            
+           return response()->json([
+                "status" => 401,
+                "message" => "Profile Information",
+                // Get the data from the user since the Auth::user() -> the user() method contains All the info of the User Data
+                "data" => $user
+           ]);
         }
 
         // Logout API
-        public function logout(){
+        public function logout(Request $request){
 
+           $token = $request->user()->token();
+           $token->revoke();
+            return response()->json([
+                "status" => 200,
+                "message" => "User is Logged Out"
+            ]);
         }
 
         // public function loginhg() 
