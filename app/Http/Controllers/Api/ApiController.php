@@ -47,6 +47,7 @@ class ApiController extends Controller
             
             // Data Validation
             $request->validate([
+                // "name" => "required|string|max:255",
                 "email" => "required|email",
                 "password" => "required"
             ]);
@@ -58,8 +59,10 @@ class ApiController extends Controller
             // Checking User Login
             // Once user access with these details it is going to return a true response | else False will return
             if(Auth::attempt([
+                // "name" => $request->name,
                 "email" => $request->email,
                 "password"=> $request->password
+             
             ]))
             {
                 // User Data Exist
@@ -74,6 +77,7 @@ class ApiController extends Controller
 
                 return response()->json([
                     "status" => 200,
+                    // "name" => $request->name ,
                     "message" => "User Logged In Sucessfully",
                     "token" => $token
                 ]);
