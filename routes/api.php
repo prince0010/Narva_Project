@@ -33,9 +33,11 @@ use App\Http\Controllers\Api\ApiController;
         [
         // Keycall middleware 
             "middleware" => ["auth:api"]
-        // 2nd Parameter
-        // call back function
-    ], function(){
+      
+            // 2nd Parameter
+             // call back function
+         ], 
+    function(){
         Route::get("profile", [ApiController::class, "profile"]);
         Route::get("logout", [ApiController::class, "logout"]);
     }
