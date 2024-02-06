@@ -29,6 +29,11 @@ class SupplierController extends Controller
         return view('supplier.create');
     }
 
+    public function edit(Supplier $supplier): View
+    {
+        return view('supplier.edit');
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -73,11 +78,7 @@ class SupplierController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Supplier $supplier)
-    {
-        //
-    }
-
+  
     /**
      * Update the specified resource in storage.
      */

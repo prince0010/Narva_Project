@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\SupplierController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,7 +38,12 @@ use App\Http\Controllers\ProductsController;
     
 
     // CRUD IN SUPPPLIER
-    
+    Route::post("/store" , [SupplierController::class, "store"]);
+    Route::get("/show/supplier/id={supplier}" , [SupplierController::class, "show"]);
+    Route::get("/showAll/supplier" , [SupplierController::class, "showAll"]);
+    Route::put("/update/supplier/id={supplier}" , [SupplierController::class, "update"]);
+    Route::delete("/destroy/supplier/id={supplier}" , [SupplierController::class, "destroy"]);
+
 // Protected Routes with auth:api miiddleware
     Route::group(
         // 1st parameter
