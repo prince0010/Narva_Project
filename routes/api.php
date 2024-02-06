@@ -27,7 +27,17 @@ use App\Http\Controllers\ProductsController;
     // [ApiController::class, "register"] - The "register" is the Method in this class
     Route::post("/register", [ApiController::class, "register"]);
     Route::post("/login", [ApiController::class, "login"]);
+
+    // CRUD IN PRODUCT
     Route::post("/store" , [ProductsController::class, "store"]);
+    Route::get("/show/products/id={products}" , [ProductsController::class, "show"]);
+    Route::get("/showAll/products" , [ProductsController::class, "showAll"]);
+    Route::put("/update/products/id={products}" , [ProductsController::class, "update"]);
+    Route::delete("/destroy/products/id={products}" , [ProductsController::class, "destroy"]);
+    
+
+    // CRUD IN SUPPPLIER
+    
 // Protected Routes with auth:api miiddleware
     Route::group(
         // 1st parameter
@@ -41,9 +51,6 @@ use App\Http\Controllers\ProductsController;
     function(){
         Route::get("/profile", [ApiController::class, "profile"]);
         Route::get("/logout", [ApiController::class, "logout"]);
-
-       
-
     }
 
     );

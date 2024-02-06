@@ -14,7 +14,7 @@ class ProductsController extends Controller
      */
 
     //  View from Illuminate\View\View must have a return view() function para dili mag error og para dili ma void ang View 
-    public function index() : View
+    public function index(): View
     {
         // Display a listing of the Data
 
@@ -22,94 +22,125 @@ class ProductsController extends Controller
 
 
         return view('products.index', compact('products'))
-        ->with('i', (request()-> input('page', 1) - 1) * 10);
-            // llike forloop
+            ->with('i', (request()->input('page', 1) - 1) * 10);
+        // llike forloop
     }
 
-    /**
-     * Show and redirect to the form for creating a new resource.
-     */
-    public function create() : View
-    {
-        //
-          
-        return view('products.create');
-
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-
-    //  RedirectResponse from Illuminate\Http\RedirectResponse must have a return redirect() function para dili mag error og para dili ma void ang RedirectResponse 
-    public function store(Request $request) : RedirectResponse
-    {
-        //
-        $request->validate([
-            'product_name' => 'required|string|max:15',
-            'product_details' => 'required|string|max:255',
-            'quantity' => 'required|string|max:255'
-        ]);
-
-        if(Products::create($request-> all()))
-{
-    return redirect()->route('products.index')
-    ->with(response()->json([
-        'status' => 200,
-        "message" => "Added the Product Successfully",
-    ]));
-}       
-
-       
-    }
-
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Products $products) : View
-    {
-        //  
-        return view('products.show', compact('products'));
-    }
-
+    // REDIRECT 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Products $products) : View
+    public function edit(Products $products): View
     {
         //
         return view('products.edit', compact('products'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Show and redirect to the form for creating a new resource.
      */
-    public function update(Request $request, Products $products) : RedirectResponse
+    public function create(): View
+    {
+        //
+
+        return view('products.create');
+    }
+    // REDIRECT 
+    /**
+     * Store a newly created resource in storage.
+     */
+
+    //  RedirectResponse from Illuminate\Http\RedirectResponse must have a return redirect() function para dili mag error og para dili ma void ang RedirectResponse 
+    // public function store(Request $request): RedirectResponse
+    public function store(Request $request, Products $product)
     {
         //
         $request->validate([
-            'product_name' => 'required',
-            'product_details' => 'required',
+            'product_name' => 'required|string|max:255',
+            'product_details' => 'required|string|max:255',
+            'quantity' => 'required'
+        ]);
+        $product = Products::create($request->all());
+        if ($product) {
+            return response()->json([
+                $product,
+                    "status" => 200,
+                    "message" => "Added the Product Successfully",
+                ]);
+            // return redirect()->route('products.index')
+            //     ->with(response()->json([
+            //         'status' => 200,
+            //         "message" => "Added the Product Successfully",
+            //     ]));
+
+            //    return response()->json([
+            //         'status' => 200,
+            //         "message" => "Added the Product Successfully",
+            //     ]);
+        } else {
+            return response()->json([
+               
+                "status" => 401,
+                "message" => "Failed to Add a Product",
+            ]);
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    // public function show(Products $products) : View
+    public function show(Products $products)
+    {
+        // return view('products.show', compact('products'));
+        return response()->json($products);
+    }
+
+    public function showAll(Products $products)
+    {
+        // return view('products.show', compact('products'));
+        $products = Products::all()->toArray();
+        return response()->json(
+            [
+            "Products" => $products
+        ]
+    );
+    }
+
+
+
+    /**
+     * Update the specified resource in storage.
+     */
+    // UPDATE = PUT
+    // If you try to update in POSTMAN use the Body -> x-www-form-urlencoded to edit the user with its specific ID and you must put the table data's example here: product_name, ppproduct_details, quantity 
+    // public function update(Request $request, Products $products) : RedirectResponse
+    public function update(Request $request, Products $products)
+    {
+
+        $request->validate([
+            'product_name' => 'required|string|max:255',
+            'product_details' => 'required|string|max:255',
             'quantity' => 'required'
         ]);
 
-            if(Products::create($request-> all())){
-                return redirect()->route('products.index')
-                ->with(response()->json([
-                    'status' => 200,
-                    "message" => "You Updated the Product Successfully",
-                ]));
-            }
-            else{
-                return response()->json([
-                    "status" => 401,
-                    "message" => "Failed to Update the Product",
-                ]);
-            }
-       
-
-       
+        if ($products->update($request->all())) {
+            // return redirect()->route('products.index')
+            // ->with(response()->json([
+            //     'status' => 200,
+            //     "message" => "You Updated the Product Successfully",
+            // ]));
+            return response()->json([
+                $products,
+                'status' => 200,
+                "message" => "You Updated the Product Successfully",
+            ]);
+        } else {
+            return response()->json([
+                "status" => 401,
+                "message" => "Failed to Update the Product",
+            ]);
+        }
     }
 
     /**
@@ -117,26 +148,25 @@ class ProductsController extends Controller
      */
     // Variable Name sa Products kay $products
     // Delete
-    public function destroy(Products $products) : RedirectResponse
+    // public function destroy(Products $products) : RedirectResponse
+    public function destroy(Products $products)
     {
         //
-        if($products->delete()){
-            return redirect()->route('products.index')
-            ->with(response()->json([
+        if ($products->delete()) {
+            // return redirect()->route('products.index')
+            // ->with(response()->json([
+            //     "status" => 200,
+            //     "message" => "Product Deleted Sucessfully",
+            // ]));
+            return response()->json([
                 "status" => 200,
-                "message" => "Product Deleted Sucessfully",
-            ]));
-          
-        }
-        else{
+                "message" => "You Deleted the Product Successfully",
+            ]);
+        } else {
             return response()->json([
                 "status" => 401,
                 "message" => "Failed to Delete the Product",
             ]);
         }
-       
-
-      
     }
-
 }
