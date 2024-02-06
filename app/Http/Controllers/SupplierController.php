@@ -109,11 +109,7 @@ class SupplierController extends Controller
     public function destroy(Supplier $supplier)
     {
         if ($supplier->delete()) {
-            // return redirect()->route('products.index')
-            // ->with(response()->json([
-            //     "status" => 200,
-            //     "message" => "Product Deleted Sucessfully",
-            // ]));
+       
             return response()->json([
                 "status" => 200,
                 "message" => "You Deleted the Supplier Name Successfully",
