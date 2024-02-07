@@ -67,15 +67,48 @@ class SupplierController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Supplier $supplier)
+    public function showSupplier(Supplier $supplier)
     {
-        return response()->json($supplier);
+        if($supplier){
+            return response()->json(
+              [ 
+                  "message" => "Found the Specific User",
+                  "status" => "200",
+                  "data" => $supplier
+              ]
+            );
+        }
+        elseif($supplier == NULL){
+            return response()->json([
+                "status" => "500",
+                "message" => "No Data Is Existed",
+                "Data" => $supplier
+            ]);
+
+        }
+      
     }
 
-    public function showAll()
+    public function showAllSupplier()
     {
         $supplier = Supplier::all()->toArray();
-        return response()->json($supplier);
+        if($supplier){
+            return response()->json(
+              [ 
+                "data" => $supplier,
+                "status" => "200"
+              ]
+            );
+        }
+        elseif($supplier == NULL){
+            return response()->json([
+                "status" => "500",
+                "message" => "No Data Is Existed",
+                "Data" => $supplier
+            ]);
+
+        }
+      
     }
     /**
      * Show the form for editing the specified resource.
@@ -84,7 +117,7 @@ class SupplierController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Supplier $supplier)
+    public function updateSupplier(Request $request, Supplier $supplier)
     {
         $request->validate([
             'supplier_name' =>'required|string|max:255'
@@ -108,11 +141,12 @@ class SupplierController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function delete(Supplier $supplier)
+    public function deleteSupplier(Supplier $supplier)
     {
         if ($supplier->delete()) {
        
             return response()->json([
+                "Data" =>  $supplier,
                 "status" => 200,
                 "message" => "You Deleted the Supplier Name Successfully",
             ]);

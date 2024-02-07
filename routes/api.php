@@ -27,31 +27,39 @@ use App\Http\Controllers\SuppliesController;
     // we dont need login or token before accessing
     // The Route::post("register" -> is you can call it for the URL in the Prefix and Use it for the POSTMAN like http://127.0.0.1:8000/api/register
     // [ApiController::class, "register"] - The "register" is the Method in this class
+
     Route::post("/register", [ApiController::class, "register"]);
     Route::post("/login", [ApiController::class, "login"]);
 
     // CRUD IN PRODUCT
-    Route::post("/store" , [ProductsController::class, "store"]);
-    Route::get("/show/products/id={products}" , [ProductsController::class, "show"]);
-    Route::get("/showAll/products" , [ProductsController::class, "showAll"]);
-    Route::put("/update/products/id={products}" , [ProductsController::class, "update"]);
-    Route::delete("/destroy/products/id={products}" , [ProductsController::class, "destroy"]);
+    Route::controller(ProductsController::class)->group(function(){
+        Route::post("/storeProduct" ,"storeProduct");
+        Route::get("/showProduct/products/id={products}" ,"showProduct");
+        Route::get("/showAllProduct/products" ,"showAllProduct");
+        Route::put("/updateProduct/products/id={products}" ,"updateProduct");
+        Route::delete("/destroyProduct/products/id={products}" ,"destroyProduct");
+    });
+   
     
 
     // CRUD IN SUPPPLIER
-    Route::post("/addSupplier/user" , [SupplierController::class, "addSupplier"]);
-    Route::get("/show/supplier/id={supplier}" , [SupplierController::class, "show"]);
-    Route::get("/showAll/supplier" , [SupplierController::class, "showAll"]);
-    Route::put("/update/supplier/id={supplier}" , [SupplierController::class, "update"]);
-    Route::delete("/delete/supplier/id={supplier}" , [SupplierController::class, "delete"]);
+    Route::controller(SupplierController::class)->group(function () {
+        Route::post("/addSupplier/user" ,  "addSupplier");
+        Route::get("/showSupplier/supplier/id={supplier}" , "showSupplier");
+        Route::get("/showAllSupplier/supplier" , "showAllSupplier");
+        Route::put("/updateSupplier/supplier/id={supplier}" , "updateSupplier");
+        Route::delete("/deleteSupplier/supplier/id={supplier}" ,"deleteSupplier");
+});
 
     // CRUD IN SUPPLY
-    Route::post("/addSupply/supply" , [SuppliesController::class, "addSupply"]);
-    Route::put("/updateSupply/supply/id={supplies}" , [SuppliesController::class, "updateSupply"]);
-    Route::get("/showSupplies/supply/id={supplies}" , [SuppliesController::class, "showSupplies"]);
-    Route::get("/showSuppliesAll/supply" , [SuppliesController::class, "showSuppliesAll"]);
-    Route::delete("/deleteSupply/supply/id={supplies}" , [SuppliesController::class, "deleteSupply"]);
-
+    Route::controller(SuppliesController::class)->group(function () {
+            Route::post("/addSupply/supply" , "addSupply");
+            Route::put("/updateSupply/supply/id={supplies}" , "updateSupply");
+            Route::get("/showSupplies/supply/id={supplies}" , "showSupplies");
+            Route::get("/showSuppliesAll/supply" , "showSuppliesAll");
+            Route::delete("/deleteSupply/supply/id={supplies}" , "deleteSupply");
+        });
+   
 // Protected Routes with auth:api miiddleware
     Route::group(
         // 1st parameter

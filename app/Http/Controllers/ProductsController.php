@@ -52,7 +52,7 @@ class ProductsController extends Controller
 
     //  RedirectResponse from Illuminate\Http\RedirectResponse must have a return redirect() function para dili mag error og para dili ma void ang RedirectResponse 
     // public function store(Request $request): RedirectResponse
-    public function store(Request $request, Products $product)
+    public function storeProduct(Request $request, Products $product)
     {
         //
         $request->validate([
@@ -89,21 +89,48 @@ class ProductsController extends Controller
      * Display the specified resource.
      */
     // public function show(Products $products) : View
-    public function show(Products $products)
+    public function showProduct(Products $products)
     {
         // return view('products.show', compact('products'));
-        return response()->json($products);
+        if($products){
+            return response()->json([
+                "status" => "200",
+                "message" => "There are Product Found",
+                "data" => $products
+            ]);
+        }
+        else{
+            return response()->json([
+                "status" => "401",
+                "message" => "The Product is not Existed"
+            ]);
+        }
+       
     }
 
-    public function showAll(Products $products)
+    public function showAllProduct(Products $products)
     {
         // return view('products.show', compact('products'));
         $products = Products::all()->toArray();
-        return response()->json(
-            [
-            "Products" => $products
-        ]
-    );
+        if($products){
+            return response()->json(
+                [
+                    "status" => "200",
+                    "message" => "There are Products Found",
+                 "Products" => $products
+                 ]
+        );
+        }
+        else{
+            return response()->json(
+                [
+                    "status" => "401",
+                    "message" => "The Products is Not Existed",
+                 "Products" => $products
+                 ]
+        );
+        }
+        
     }
 
 
@@ -114,7 +141,7 @@ class ProductsController extends Controller
     // UPDATE = PUT
     // If you try to update in POSTMAN use the Body -> x-www-form-urlencoded to edit the user with its specific ID and you must put the table data's example here: product_name, ppproduct_details, quantity 
     // public function update(Request $request, Products $products) : RedirectResponse
-    public function update(Request $request, Products $products)
+    public function updateProduct(Request $request, Products $products)
     {
 
         $request->validate([
@@ -147,7 +174,7 @@ class ProductsController extends Controller
     // Variable Name sa Products kay $products
     // Delete
     // public function destroy(Products $products) : RedirectResponse
-    public function destroy(Products $products)
+    public function destroyProduct(Products $products)
     {
         //
         if ($products->delete()) {
