@@ -47,6 +47,10 @@ use App\Http\Controllers\SuppliesController;
 
     // CRUD IN SUPPLY
     Route::post("/addSupply/supply" , [SuppliesController::class, "addSupply"]);
+    Route::put("/updateSupply/supply/id={supplies}" , [SuppliesController::class, "updateSupply"]);
+    Route::get("/showSupplies/supply/id={supplies}" , [SuppliesController::class, "showSupplies"]);
+    Route::get("/showSuppliesAll/supply" , [SuppliesController::class, "showSuppliesAll"]);
+    Route::delete("/deleteSupply/supply/id={supplies}" , [SuppliesController::class, "deleteSupply"]);
 
 // Protected Routes with auth:api miiddleware
     Route::group(

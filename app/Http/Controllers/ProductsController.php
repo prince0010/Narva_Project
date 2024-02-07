@@ -32,7 +32,7 @@ class ProductsController extends Controller
      */
     public function edit(Products $products): View
     {
-        //
+        // products.edit the products here is a resource route for the web.php
         return view('products.edit', compact('products'));
     }
 
@@ -41,7 +41,7 @@ class ProductsController extends Controller
      */
     public function create(): View
     {
-        //
+        // // products.create the products here is a resource route for the web.php
 
         return view('products.create');
     }
@@ -62,9 +62,9 @@ class ProductsController extends Controller
         $product = Products::create($request->all());
         if ($product) {
             return response()->json([
-                $product,
                     "status" => 200,
                     "message" => "Added the Product Successfully",
+                    "data" => $product,
                 ]);
             // return redirect()->route('products.index')
             //     ->with(response()->json([
@@ -129,9 +129,9 @@ class ProductsController extends Controller
             //     "message" => "You Updated the Product Successfully",
             // ]));
             return response()->json([
-                $products,
                 'status' => 200,
                 "message" => "You Updated the Product Successfully",
+                "data" => $products,
             ]);
         } else {
             return response()->json([
@@ -159,6 +159,7 @@ class ProductsController extends Controller
             return response()->json([
                 "status" => 200,
                 "message" => "You Deleted the Product Successfully",
+                "data" => $products,
             ]);
         } else {
             return response()->json([

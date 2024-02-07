@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\SupplierController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +18,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+// Resource Route for Crud   
+Route::resource('products', ProductsController::class);
+Route::resource('supplier', SupplierController::class);
+Route::resource('supplies', SupplierController::class);

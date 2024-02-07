@@ -26,11 +26,13 @@ class SupplierController extends Controller
      */
     public function create() : View
     {
+        //  supplier.create the supplier here is a resource route for the web.php
         return view('supplier.create');
     }
 
     public function edit(Supplier $supplier): View
     {
+        // supplier.edit the supplier here is a resource route for the web.php
         return view('supplier.edit');
     }
 
@@ -48,9 +50,9 @@ class SupplierController extends Controller
         if($supplier)
         {
             return response()->json([
-                $supplier,
                 "status" => '200',
-                "message" => "Supplier Name Added Successfully"
+                "message" => "Supplier Name Added Successfully",
+                "data" => $supplier,
             ]);
         }
         else
@@ -91,9 +93,9 @@ class SupplierController extends Controller
         if ($supplier->update($request->all())) {
           
             return response()->json([
-                $supplier,
                 'status' => 200,
                 "message" => "You Updated the Supplier Name Successfully",
+                "data" => $supplier,
             ]);
         } else {
             return response()->json([
