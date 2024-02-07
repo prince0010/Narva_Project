@@ -37,7 +37,7 @@ class SupplierController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function addSupplier(Request $request)
     {
         $request -> validate([
             'supplier_name' =>'required|string|max:255'
@@ -106,7 +106,7 @@ class SupplierController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Supplier $supplier)
+    public function delete(Supplier $supplier)
     {
         if ($supplier->delete()) {
        

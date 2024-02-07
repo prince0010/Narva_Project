@@ -58,7 +58,6 @@ class ProductsController extends Controller
         $request->validate([
             'product_name' => 'required|string|max:255',
             'product_details' => 'required|string|max:255',
-            'quantity' => 'required'
         ]);
         $product = Products::create($request->all());
         if ($product) {
@@ -121,7 +120,6 @@ class ProductsController extends Controller
         $request->validate([
             'product_name' => 'required|string|max:255',
             'product_details' => 'required|string|max:255',
-            'quantity' => 'required'
         ]);
 
         if ($products->update($request->all())) {
