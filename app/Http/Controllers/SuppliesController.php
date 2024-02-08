@@ -9,27 +9,7 @@ use Illuminate\View\View;
 
 class SuppliesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        $product = Supplies::latest()->paginate(5);
-
-
-        return view('supplies.index', compact('supplies'))
-            ->with('i', (request()->input('page', 1) - 1) * 10);
-        // llike forloop
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create() : View
-    {
-        return view('supplies.create');
-    }
-
+  
     /**
      * Store a newly created resource in storage.
      */
@@ -49,8 +29,11 @@ class SuppliesController extends Controller
         ]);
 
         $supply = Supplies::create($request->all());
-
+       
         if($supply){
+
+            // $supply->save();
+
             return response()->json([
                 'status' => '200',
                 'message' => 'You Successfully Add a Supply',
@@ -76,17 +59,19 @@ class SuppliesController extends Controller
     public function showSuppliesAll()
     {
         //
+      
         $supplies = Supplies::all()->toArray();
         return response()->json($supplies);
+
     }
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Supplies $supplies): View
-    {
-        // supplies.edit the supplies here is a resource route for the web.php
-        return view('supplies.edit');
-    }
+    // public function editSupplies(Supplies $supplies): View
+    // {
+       // supplies.edit the supplies here is a resource route for the web.php
+    //     return view('supplies.editSupplies');
+    // }
 
     /**
      * Update the specified resource in storage.
@@ -136,4 +121,28 @@ class SuppliesController extends Controller
             ]);
         }
     }
+
+    
+      /**
+     * Display a listing of the resource.
+     */
+    // public function Suppliesindex()
+    // {
+    //     $product = Supplies::latest()->paginate(5);
+
+
+    //     return view('supplies.Suppliesindex', compact('supplies'))
+    //         ->with('i', (request()->input('page', 1) - 1) * 10);
+    //     // llike forloop
+    // }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    // public function createSupplies() : View
+    // {
+    //     return view('supplies.createSupplies');
+    // }
+
 }
+

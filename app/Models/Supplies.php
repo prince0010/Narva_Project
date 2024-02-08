@@ -9,7 +9,6 @@ class Supplies extends Model
 {
     use HasFactory;
 
-
     protected $fillable = [
         'supplier_num',
         'part_num',

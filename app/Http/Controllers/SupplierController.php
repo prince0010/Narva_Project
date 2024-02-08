@@ -8,33 +8,8 @@ use Illuminate\View\View;
 
 class SupplierController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        $product = Supplier::latest()->paginate(5);
 
-
-        return view('supplier.index', compact('supplier'))
-            ->with('i', (request()->input('page', 1) - 1) * 10);
-        // llike forloop
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create() : View
-    {
-        //  supplier.create the supplier here is a resource route for the web.php
-        return view('supplier.create');
-    }
-
-    public function edit(Supplier $supplier): View
-    {
-        // supplier.edit the supplier here is a resource route for the web.php
-        return view('supplier.edit');
-    }
+  
 
     /**
      * Store a newly created resource in storage.
@@ -157,4 +132,33 @@ class SupplierController extends Controller
             ]);
         }
     }
+
+    
+      /**
+     * Display a listing of the resource.
+     */
+    // public function index()
+    // {
+    //     $product = Supplier::latest()->paginate(5);
+
+
+    //     return view('supplier.index', compact('supplier'))
+    //         ->with('i', (request()->input('page', 1) - 1) * 10);
+    //     // llike forloop
+    // }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    // public function createSupplier() : View
+    // {
+    //     //  supplier.create the supplier here is a resource route for the web.php
+    //     return view('supplier.createSupplier');
+    // }
+
+    // public function editSupplier(Supplier $supplier): View
+    // {
+    //     // supplier.edit the supplier here is a resource route for the web.php
+    //     return view('supplier.editSupplier');
+    // }
 }

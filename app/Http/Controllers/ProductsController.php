@@ -9,49 +9,7 @@ use Illuminate\View\View;
 
 class ProductsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-
-    //  View from Illuminate\View\View must have a return view() function para dili mag error og para dili ma void ang View 
-    public function index(): View
-    {
-        // Display a listing of the Data
-
-        $product = Products::latest()->paginate(5);
-
-
-        return view('products.index', compact('products'))
-            ->with('i', (request()->input('page', 1) - 1) * 10);
-        // llike forloop
-    }
-
-    // REDIRECT 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Products $products): View
-    {
-        // products.edit the products here is a resource route for the web.php
-        return view('products.edit', compact('products'));
-    }
-
-    /**
-     * Show and redirect to the form for creating a new resource.
-     */
-    public function create(): View
-    {
-        // // products.create the products here is a resource route for the web.php
-
-        return view('products.create');
-    }
-    // REDIRECT 
-    /**
-     * Store a newly created resource in storage.
-     */
-
-    //  RedirectResponse from Illuminate\Http\RedirectResponse must have a return redirect() function para dili mag error og para dili ma void ang RedirectResponse 
-    // public function store(Request $request): RedirectResponse
+    
     public function storeProduct(Request $request, Products $product)
     {
         //
@@ -195,4 +153,49 @@ class ProductsController extends Controller
             ]);
         }
     }
+
+    
+    /**
+     * Display a listing of the resource.
+     */
+
+    //  View from Illuminate\View\View must have a return view() function para dili mag error og para dili ma void ang View 
+    // public function Productindex(): View
+    // {
+    //     // Display a listing of the Data
+
+    //     $product = Products::latest()->paginate(5);
+
+
+    //     return view('products.Productindex', compact('products'))
+    //         ->with('i', (request()->input('page', 1) - 1) * 10);
+    //     // llike forloop
+    // }
+
+    // // REDIRECT 
+    // /**
+    //  * Show the form for editing the specified resource.
+    //  */
+    // public function editProduct(Products $products): View
+    // {
+    //     // products.edit the products here is a resource route for the web.php
+    //     return view('products.editProduct', compact('products'));
+    // }
+
+    // /**
+    //  * Show and redirect to the form for creating a new resource.
+    //  */
+    // public function createProduct(): View
+    // {
+    //     // // products.create the products here is a resource route for the web.php
+
+    //     return view('products.createProduct');
+    // }
+    // REDIRECT 
+    /**
+     * Store a newly created resource in storage.
+     */
+
+    //  RedirectResponse from Illuminate\Http\RedirectResponse must have a return redirect() function para dili mag error og para dili ma void ang RedirectResponse 
+    // public function store(Request $request): RedirectResponse
 }
