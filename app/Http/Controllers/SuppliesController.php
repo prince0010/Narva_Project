@@ -21,10 +21,7 @@ class SuppliesController extends Controller
             // For String length (Exact): 'supplier_num' => 'required|integer|size:10',
             // For String Range : 'input' => 'required|string|min:5|max:10'
             // For digits Range : 'input' => 'required|digits_between:5,10'
-            'part_num' => 'required|string|max:255',
-            'brand' => 'required|string|max:255',
-            'model' => 'required|string|max:255',
-            'code' => 'required|string|max:255', // In Specific Code there is a price on it so example in RRNB the price of it is Pesos 3150.00
+            'product_ID' => 'required|integer|digits_between:1,10',
             'quantity' => 'required|integer|digits_between:1,8',
         ]);
 
@@ -80,14 +77,11 @@ class SuppliesController extends Controller
     {
         $request->validate([
             // For digits length (Exact):
-             'supplier_num' => 'required|integer|digits_between:1,10',
+            'supplier_num' => 'required|integer|digits_between:1,10',
             // For String length (Exact): 'supplier_num' => 'required|integer|size:10',
             // For String Range : 'input' => 'required|string|min:5|max:10'
             // For digits Range : 'input' => 'required|digits_between:5,10'
-            'part_num' => 'required|string|max:255',
-            'brand' => 'required|string|max:255',
-            'model' => 'required|string|max:255',
-            'code' => 'required|string|max:255', // In Specific Code there is a price on it so example in RRNB the price of it is Pesos 3150.00
+            'product_ID' => 'required|integer|digits_between:1,10',
             'quantity' => 'required|integer|digits_between:1,8',
         ]);
         
@@ -122,7 +116,7 @@ class SuppliesController extends Controller
         }
     }
 
-    
+
       /**
      * Display a listing of the resource.
      */

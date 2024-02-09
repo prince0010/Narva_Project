@@ -18,25 +18,19 @@ return new class extends Migration
                 // $table->foreign('supplier_num')->references('id')->on('suppliers')->onDelete('cascade');
                 $table->foreign('supplier_num')->references('id')->on('suppliers')->onUpdate('cascade')->onDelete('cascade');  // Supplier Number(id)Foreignkey from supplierController suppler_name(id)PrimaryKey
                 // $table->foreign('supplier_num')->references('id')->on('suppliers')->onUpdate('cascade')->onDelete('set null'); // if you dont want to delete as well the inventory record of the supplier data
-                $table->string('part_num');
-                $table->string('brand');
-                $table->string('model');
-                $table->string('code');
+                $table->integer('product_ID')->unsigned();
+                $table->foreign('product_ID')->references('product_ID')->on('products')->onUpdate('cascade')->onDelete('cascade'); 
                 $table->integer('quantity');
                 $table->timestamps();
             });
-        }
-        
     }
-
-   
+}
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        
         Schema::dropIfExists('supplies');
     }
 };

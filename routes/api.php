@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\ProductTypeController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SuppliesController;
 
@@ -24,6 +25,14 @@ use App\Http\Controllers\SuppliesController;
         Route::delete("/destroyProduct/products/id={products}" ,"destroyProduct");
     });
 
+    //CRUD IN PRODUCT TYPE
+    Route::controller(ProductTypeController::class)->group(function(){
+        Route::post("/storeProductType", "storeProductType");
+        Route::get("/showProductType", "showProductType");
+        Route::get("/showAllProductType", "showAllProductType");
+        Route::put("/updateProductType", "updateProductType");
+        Route::delete("/destroyProductType", "destroyProductType");
+    });
 
     //    Route::group( ['middleware' => ['auth', 'role:administrator']], function(){
     //     Route::post("/storeProduct" ,"storeProduct");
@@ -36,7 +45,7 @@ use App\Http\Controllers\SuppliesController;
 
     // CRUD IN SUPPPLIER
     Route::controller(SupplierController::class)->group(function () {
-        Route::post("/addSupplier/user" ,  "addSupplier");
+        Route::post("/addSupplier/user" , "addSupplier");
         Route::get("/showSupplier/supplier/id={supplier}" , "showSupplier");
         Route::get("/showAllSupplier/supplier" , "showAllSupplier");
         Route::put("/updateSupplier/supplier/id={supplier}" , "updateSupplier");

@@ -16,8 +16,12 @@ class Products extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'product_name',
-        'product_details',
+        'product_type_ID',
+        'product_type_ID',
+        'part_name',
+        'brand',
+        'model',
+        'price_code',
     ];
 
     // Foreign and Primary Example

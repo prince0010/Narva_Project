@@ -14,8 +14,13 @@ class ProductsController extends Controller
     {
         //
         $request->validate([
-            'product_name' => 'required|string|max:255',
-            'product_details' => 'required|string|max:255',
+            'product_type_ID' => 'required|integer|digits_between:1, 10',
+            'part_num' => 'required|string|max:255',
+            'part_name'=> 'required|string|max:255',
+            'brand' => 'required|string|max:255',
+            'model' => 'required|string|max:255',
+            'price_code' => 'required|string|max:255', // In Specific Code there is a price on it so example in RRNB the price of it is Pesos 3150.00
+
         ]);
         $product = Products::create($request->all());
         if ($product) {
@@ -84,7 +89,6 @@ class ProductsController extends Controller
                 [
                     "status" => "401",
                     "message" => "The Products is Not Existed",
-                 "Products" => $products
                  ]
         );
         }
@@ -103,8 +107,12 @@ class ProductsController extends Controller
     {
 
         $request->validate([
-            'product_name' => 'required|string|max:255',
-            'product_details' => 'required|string|max:255',
+            'product_type_ID' => 'required|integer|digits_between:1, 10',
+            'part_num' => 'required|string|max:255',
+            'part_name'=> 'required|string|max:255',
+            'brand' => 'required|string|max:255',
+            'model' => 'required|string|max:255',
+            'price_code' => 'required|string|max:255', // In Specific Code there is a price on it so example in RRNB the price of it is Pesos 3150.00
         ]);
 
         if ($products->update($request->all())) {
@@ -154,7 +162,7 @@ class ProductsController extends Controller
         }
     }
 
-    
+
     /**
      * Display a listing of the resource.
      */

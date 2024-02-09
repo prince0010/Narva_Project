@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product_Type;
 use App\Models\Products;
 use App\Models\Supplier;
 use App\Models\Supplies;
@@ -47,6 +48,34 @@ class PagesController extends Controller
 
         return view('pages.createProduct');
     }
+
+
+    // Product Type
+    public function Producttypeindex(): View
+    {
+        // Display a listing of the Data
+
+        $product = Product_Type::latest()->paginate(5);
+
+        return view('pages.Producttypeindex', compact('product_type'))
+            ->with('i', (request()->input('page', 1) - 1) * 10);
+        // llike forloop
+    }
+
+    public function editProducttype(Product_Type $products): View
+    {
+        // products.edit the products here is a resource route for the web.php
+        return view('pages.editProducttype', compact('product_type'));
+    }
+
+    public function createProducttype(): View
+    {
+        // // products.create the products here is a resource route for the web.php
+
+        return view('pages.createProducttype');
+    }
+
+
 
 
     // Supplier

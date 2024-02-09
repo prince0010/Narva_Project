@@ -33,14 +33,19 @@ Route::get('/profileUser', 'PagesController@profileUser');
 
 
 // Product
-Route::get('Productindex', 'PagesController@Productindex');
-Route::get('Productindex', 'PagesController@Productindex');
-Route::get('Productindex', 'PagesController@Productindex');
+Route::get('/Productindex', 'PagesController@Productindex');
+Route::get('/editProduct', 'PagesController@editProduct');
+Route::get('/createProduct', 'PagesController@createProduct');
+
+// ProductType
+Route::get('/Producttypeindex', 'PagesController@Producttypeindex');
+Route::get('/editProducttype', 'PagesController@editProducttype');
+Route::get('/createProduct', 'PagesController@createProduct');
 
 // Supplier
 Route::get('/Supplierindex', 'PagesController@Supplierindex');
 Route::get('/createSupplier', 'PagesController@createSupplier');
-Route::get('/editSupplier', 'PagesController@editSupplier');
+Route::get('/createProducttype', 'PagesController@createProducttype');
 
 // Supplies / Inventory
 Route::get('/Suppliesindex', 'PagesController@Suppliesindex'); 
