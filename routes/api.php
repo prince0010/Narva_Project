@@ -3,8 +3,10 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Controllers\ProdTController;
+use App\Http\Controllers\ProdTypesController;
 use App\Http\Controllers\ProductsController;
-use App\Http\Controllers\ProductTypeController;
+use App\Http\Controllers\ProductTypesController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SuppliesController;
 
@@ -26,14 +28,13 @@ use App\Http\Controllers\SuppliesController;
     });
 
     //CRUD IN PRODUCT TYPE
-    Route::controller(ProductTypeController::class)->group(function(){
+    Route::controller(ProdTypesController::class)->group(function(){
         Route::post("/storeProductType", "storeProductType");
-        Route::get("/showProductType", "showProductType");
+        Route::get("/showProductType/ProductType/id={product_Type}", "showProductType");
         Route::get("/showAllProductType", "showAllProductType");
-        Route::put("/updateProductType", "updateProductType");
-        Route::delete("/destroyProductType", "destroyProductType");
+        Route::put("/updateProductType/ProductType/id={product_Type}", "updateProductType");
+        Route::delete("/destroyProductType/ProductType/id={product_Type}", "destroyProductType");
     });
-
     //    Route::group( ['middleware' => ['auth', 'role:administrator']], function(){
     //     Route::post("/storeProduct" ,"storeProduct");
     //     Route::get("/showProduct/products/id={products}" ,"showProduct");

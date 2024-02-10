@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product_Type;
+use App\Models\Prod_Types;
 use Illuminate\Http\Request;
 
-class ProductTypeController extends Controller
+class ProdTypesController extends Controller
 {
     /**
-     * Store a newly created resource in storage.
+     * Display a listing of the resource.
      */
     public function storeProductType(Request $request)
     {
         $request-> validate([
-            'product_name' => 'required|string|max:255',
+            'product_name' => 'required|string|max:255'
         ]);
 
-        $product_type = Product_Type::create($request->all());
+        $product_type = Prod_Types::create($request->all());
 
         if($product_type){
             return response()->json([
@@ -37,7 +37,7 @@ class ProductTypeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function showProductType(Product_Type $product_Type)
+    public function showProductType(Prod_Types $product_Type)
     {
         // return view('products.show', compact('products'));
         if($product_Type){
@@ -54,10 +54,10 @@ class ProductTypeController extends Controller
             ]);
         }
     }
-    public function showAllProductType(Product_Type $product_Type)
+    public function showAllProductType(Prod_Types $product_Type)
     {
         // return view('products.show', compact('products'));
-        $product_Type = Product_Type::all()->toArray();
+        $product_Type = Prod_Types::all()->toArray();
         if($product_Type){
             return response()->json(
                 [
@@ -77,12 +77,10 @@ class ProductTypeController extends Controller
         }
         
     }
-
-
     /**
      * Update the specified resource in storage.
      */
-    public function updateProductType(Request $request, Product_Type $product_Type)
+    public function updateProductType(Request $request, Prod_Types $product_Type)
     {
 
         $request->validate([
@@ -111,7 +109,7 @@ class ProductTypeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroyProductType(Product_Type $product_Type)
+    public function destroyProductType(Prod_Types $product_Type)
     {
         //
         if ($product_Type->delete()) {

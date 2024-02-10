@@ -14,7 +14,7 @@ class ProductsController extends Controller
     {
         //
         $request->validate([
-            'product_type_ID' => 'required|integer|digits_between:1, 10',
+            'prod_type_ID' => 'required|integer|digits_between:1, 10',
             'part_num' => 'required|string|max:255',
             'part_name'=> 'required|string|max:255',
             'brand' => 'required|string|max:255',
@@ -80,7 +80,7 @@ class ProductsController extends Controller
                 [
                     "status" => "200",
                     "message" => "There are Products Found",
-                 "Products" => $products
+                    "Products" => $products
                  ]
         );
         }
@@ -107,7 +107,7 @@ class ProductsController extends Controller
     {
 
         $request->validate([
-            'product_type_ID' => 'required|integer|digits_between:1, 10',
+            'prod_type_ID' => 'required|integer|digits_between:1, 10',
             'part_num' => 'required|string|max:255',
             'part_name'=> 'required|string|max:255',
             'brand' => 'required|string|max:255',

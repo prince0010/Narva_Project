@@ -9,7 +9,6 @@ use Illuminate\View\View;
 
 class SuppliesController extends Controller
 {
-  
     /**
      * Store a newly created resource in storage.
      */
@@ -21,7 +20,7 @@ class SuppliesController extends Controller
             // For String length (Exact): 'supplier_num' => 'required|integer|size:10',
             // For String Range : 'input' => 'required|string|min:5|max:10'
             // For digits Range : 'input' => 'required|digits_between:5,10'
-            'product_ID' => 'required|integer|digits_between:1,10',
+            'products_ID' => 'required|integer|digits_between:1,10',
             'quantity' => 'required|integer|digits_between:1,8',
         ]);
 
@@ -81,7 +80,7 @@ class SuppliesController extends Controller
             // For String length (Exact): 'supplier_num' => 'required|integer|size:10',
             // For String Range : 'input' => 'required|string|min:5|max:10'
             // For digits Range : 'input' => 'required|digits_between:5,10'
-            'product_ID' => 'required|integer|digits_between:1,10',
+            'products_ID' => 'required|integer|digits_between:1,10',
             'quantity' => 'required|integer|digits_between:1,8',
         ]);
         

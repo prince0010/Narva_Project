@@ -4,13 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Supplier;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 
 class SupplierController extends Controller
 {
-
-  
-
     /**
      * Store a newly created resource in storage.
      */
