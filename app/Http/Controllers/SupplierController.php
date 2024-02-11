@@ -22,9 +22,13 @@ class SupplierController extends Controller
         {
             return response()->json([
                 "status" => '200',
-                "message" => "Supplier Name Added Successfully",
-                "data" => $supplier,
-            ]);
+                "Supppliers" =>[
+                    "id" => $supplier->id,
+                    "supplier_name" => $supplier->supplier_name,
+                    "created_at" => $supplier->created_at
+                ],
+                    "message" => "Supplier Name Added Successfully",
+                ]);
         }
         else
         {

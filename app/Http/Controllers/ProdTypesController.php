@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Prod_Types;
 use Illuminate\Http\Request;
 
+
 class ProdTypesController extends Controller
 {
     /**
@@ -16,13 +17,19 @@ class ProdTypesController extends Controller
             'product_name' => 'required|string|max:255'
         ]);
 
+        
+
         $product_type = Prod_Types::create($request->all());
 
         if($product_type){
-            return response()->json([
+            return response()->json([                                                                        
                 "status" => 200,
+                "Product Type" => [
+                    "id" => $product_type->id,
+                    "product_name" => $product_type->product_name,
+                    "created_at" => $product_type->created_at,
+                ],
                 "message" => "Added the Product Name Successfully",
-                "data" => $product_type,
             ]);
         }
         else{

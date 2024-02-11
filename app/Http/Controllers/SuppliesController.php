@@ -33,8 +33,14 @@ class SuppliesController extends Controller
 
             return response()->json([
                 'status' => '200',
+                "Supplies" => [
+                    "id"=>$supply->id,
+                    "supplier_num"=>$supply->supplier_num,
+                    "products_ID"=>$supply->products_ID,
+                    "quantity"=>$supply->quantity,
+                    "set"=>$supply->set,
+                ],
                 'message' => 'You Successfully Add a Supply',
-                "data" => $supply,
             ]);
         }
         else{

@@ -27,7 +27,7 @@ class ApiController extends Controller
             ]);
 
             // Create User and call it in the use App\Models\User;
-            User::create([
+           $reg = User::create([
                 // Column name in the Database Table (users)
                 // Name value is you will get in the $request inside of the parameters of register(Request $request)
                 "name" => $request->name,
@@ -38,6 +38,13 @@ class ApiController extends Controller
 
             return response()->json([
                 "status" => 201,
+                "user" => [
+                    'id' => $reg->id,
+                    'name' => $reg->name,
+                    'email' => $reg->email,
+                    'updated_at' => $reg->updated_at,
+                    'created_at' => $reg->created_at,
+                ],
                 "message" => "User Created Successfully"
             ]);
         }
@@ -83,6 +90,15 @@ class ApiController extends Controller
 
                 return response()->json([
                     "status" => 200,
+                    "user" => [
+                        "user" => [
+                            'id' => $user->id,
+                            'name' => $user->name,
+                            'email' => $user->email,
+                            // 'updated_at' => $user->updated_at,
+                            'created_at' => $user->created_at,
+                        ],
+                    ],
                     // "name" => $request->name ,
                     "message" => "User Logged In Sucessfully",
                     "token" => $token
@@ -107,9 +123,10 @@ class ApiController extends Controller
             
            return response()->json([
                 "status" => 401,
+                "data" => $user,
                 "message" => "Profile Information",
                 // Get the data from the user since the Auth::user() -> the user() method contains All the info of the User Data
-                "data" => $user
+               
            ]);
         }
 

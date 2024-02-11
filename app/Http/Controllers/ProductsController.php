@@ -26,8 +26,16 @@ class ProductsController extends Controller
         if ($product) {
             return response()->json([
                     "status" => 200,
+                    "Products" => [
+                        "id" => $product->id,
+                        "prod_type_ID" => $product->prod_type_ID,
+                        "part_num" => $product->part_num,
+                        "part_name" => $product->part_name,
+                        "brand" => $product->brand,
+                        "model" => $product->model,
+                        "price_code" => $product->price_code,
+                    ],
                     "message" => "Added the Product Successfully",
-                    "data" => $product,
                 ]);
             // return redirect()->route('products.index')
             //     ->with(response()->json([
