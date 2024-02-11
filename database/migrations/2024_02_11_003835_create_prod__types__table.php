@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('product_name');
             $table->timestamps();
         });
+
     }
 
     /**

@@ -47,7 +47,7 @@ class DatabaseSeeder extends Seeder
 
         // Supplier
         $this->command->warn(PHP_EOL . 'Creating Supplier....');
-        $producttype = $this->withProgressBar(200, fn () => Supplier::factory()->count(20)->create());
+        $producttype = $this->withProgressBar(10, fn () => Supplier::factory()->count(10)->create());
         $this->command->info('Supplier is Created.');
 
         // Products

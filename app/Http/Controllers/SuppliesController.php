@@ -22,6 +22,7 @@ class SuppliesController extends Controller
             // For digits Range : 'input' => 'required|digits_between:5,10'
             'products_ID' => 'required|integer|digits_between:1,10',
             'quantity' => 'required|integer|digits_between:1,8',
+            'set' => 'required|string|max:255'
         ]);
 
         $supply = Supplies::create($request->all());
@@ -82,6 +83,7 @@ class SuppliesController extends Controller
             // For digits Range : 'input' => 'required|digits_between:5,10'
             'products_ID' => 'required|integer|digits_between:1,10',
             'quantity' => 'required|integer|digits_between:1,8',
+            'set' => 'required|string|max:255'
         ]);
         
         if($supplies->update($request->all())){

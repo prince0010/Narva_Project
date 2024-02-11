@@ -13,5 +13,6 @@ class Supplies extends Model
         'supplier_num',
         'products_ID',
         'quantity',
+        'set',
     ];
 }
