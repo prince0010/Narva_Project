@@ -91,13 +91,11 @@ class ApiController extends Controller
                 return response()->json([
                     "status" => 200,
                     "user" => [
-                        "user" => [
                             'id' => $user->id,
                             'name' => $user->name,
                             'email' => $user->email,
                             // 'updated_at' => $user->updated_at,
                             'created_at' => $user->created_at,
-                        ],
                     ],
                     // "name" => $request->name ,
                     "message" => "User Logged In Sucessfully",
