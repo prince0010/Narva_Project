@@ -28,8 +28,8 @@ class SupplierController extends Controller
     
             return response()->json([
                 'status' => '200',
-                'message' => 'Successfully Added Supplier',
-                'Suppliers' => $SuppliersData,
+                'message' => 'successfully added supplier',
+                'suppliers' => $SuppliersData,
                 'pagination' => [
                     'current_page' => $suppliers->currentPage(),
                     'total' => $suppliers->total(),
@@ -60,12 +60,12 @@ class SupplierController extends Controller
         {
             return response()->json([
                 "status" => '200',
-                "Supppliers" =>[
+                "supppliers" =>[
                     "id" => $supplier->id,
                     "supplier_name" => $supplier->supplier_name,
                     "created_at" => $supplier->created_at
                 ],
-                    "message" => "Supplier Name Added Successfully",
+                    "message" => "supplier name added successfully",
                 ]);
         }
         else

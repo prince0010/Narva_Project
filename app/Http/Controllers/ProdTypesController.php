@@ -34,8 +34,8 @@ class ProdTypesController extends Controller
     
             return response()->json([
                 'status' => '200',
-                'message' => 'Successfully Added Product Type',
-                'Product.Types' => $Product_Types,
+                'message' => 'successfully added product type',
+                'product_types' => $Product_Types,
                 'pagination' => [
                     'current_page' => $prod_type->currentPage(),
                     'total' => $prod_type->total(),
@@ -45,7 +45,7 @@ class ProdTypesController extends Controller
         } else {
             return response()->json([
                 'status' => '401',
-                'message' => 'Product Type is empty'
+                'message' => 'product type is empty'
             ]);
         }
 
@@ -75,7 +75,7 @@ class ProdTypesController extends Controller
 
             return response()->json([ 
                 'message' => 'Added the Product Name Successfully',
-                "Product Type" => [
+                "product_type" => [
                                 "id" => $product_types->id,
                                 "product_name" => $product_types->product_name,
                                 "created_at" => $product_types->created_at,
@@ -132,7 +132,7 @@ class ProdTypesController extends Controller
                 [
                     "status" => "200",
                     "message" => "There are Products Data Found",
-                 "Products" => $product_Type
+                 "products" => $product_Type
                  ]
         );
         }

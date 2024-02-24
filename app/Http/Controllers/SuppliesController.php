@@ -28,7 +28,7 @@ class SuppliesController extends Controller
                 return [
                     'id' => $supply->id,
                     'supplier_num' => $supply->supplier_num,
-                    'products_ID' => $supply->products_ID,
+                    'products_id' => $supply->products_ID,
                     'quantity'=> $supply->quantity,
                     'set' => $supply->set 
                 ];
@@ -36,8 +36,8 @@ class SuppliesController extends Controller
     
             return response()->json([
                 'status' => '200',
-                'message' => 'Successfully Added Supplies',
-                'Suppliers' => $SuppliesData,
+                'message' => 'successfully added supplies',
+                'suppliers' => $SuppliesData,
                 'pagination' => [
                     'current_page' => $supplies->currentPage(),
                     'total' => $supplies->total(),
@@ -76,10 +76,10 @@ class SuppliesController extends Controller
 
             return response()->json([
                 'status' => '200',
-                "Supplies" => [
+                "supplies" => [
                     "id"=>$supply->id,
                     "supplier_num"=>$supply->supplier_num,
-                    "products_ID"=>$supply->products_ID,
+                    "products_id"=>$supply->products_ID,
                     "quantity"=>$supply->quantity,
                     "set"=>$supply->set,
                 ],

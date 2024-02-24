@@ -31,7 +31,7 @@ class ProductsController extends Controller
             $ProductsData = $products->map(function ($product) {
                 return [
                     'id' => $product->id,
-                    'prod_type_ID' => $product->prod_type_ID,
+                    'prod_type_id' => $product->prod_type_ID,
                     'part_num' => $product->part_num,
                     'part_name'=> $product->part_name,
                     'brand' => $product->brand,
@@ -43,7 +43,7 @@ class ProductsController extends Controller
             return response()->json([
                 'status' => '200',
                 'message' => 'Successfully Added Products',
-                'Suppliers' => $ProductsData,
+                'products' => $ProductsData,
                 'pagination' => [
                     'current_page' => $products->currentPage(),
                     'total' => $products->total(),
@@ -78,9 +78,9 @@ class ProductsController extends Controller
         if ($products) {
             return response()->json([
                     "status" => 200,
-                    "Products" => [
+                    "products" => [
                         "id" => $products->id,
-                        "prod_type_ID" => $products->prod_type_ID,
+                        "prod_type_id" => $products->prod_type_ID,
                         "part_num" => $products->part_num,
                         "part_name" => $products->part_name,
                         "brand" => $products->brand,
@@ -146,7 +146,7 @@ class ProductsController extends Controller
                 [
                     "status" => "200",
                     "message" => "There are Products Found",
-                    "Products" => $products
+                    "products" => $products
                  ]
         );
         }
