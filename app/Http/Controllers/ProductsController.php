@@ -9,7 +9,58 @@ use Illuminate\View\View;
 
 class ProductsController extends Controller
 {
+    // public function index(Request $request){
+
+    //     $products_query = Products::query();
+
+    //     if($request)
+    // }
+
+    public function index(Request $request){
+        
+        $products_query = Products::query();
+       $req = $request->keyword;
+           if ($req) {
+            $products_query->where('part_num', 'LIKE', '%' .$req.'%')
+            ->orWhere('part_name', 'LIKE', '%' .$req.'%');
+        }
+
+        $products = $products_query->paginate(10);
+
+        if($products -> count() > 0){
+            $ProductsData = $products->map(function ($product) {
+                return [
+                    'id' => $product->id,
+                    'prod_type_ID' => $product->prod_type_ID,
+                    'part_num' => $product->part_num,
+                    'part_name'=> $product->part_name,
+                    'brand' => $product->brand,
+                    'model' =>$product->model,
+                    'price_code' =>$product->price_code
+                ];
+            });
     
+            return response()->json([
+                'status' => '200',
+                'message' => 'Successfully Added Products',
+                'Suppliers' => $ProductsData,
+                'pagination' => [
+                    'current_page' => $products->currentPage(),
+                    'total' => $products->total(),
+                    'per_page' => $products->perPage(),
+                ]
+            ]);
+        } else {
+            return response()->json([
+                'status' => '401',
+                'message' => 'Products is empty'
+            ]);
+        }
+
+     }
+
+
+
     public function storeProduct(Request $request, Products $products)
     {
         //
@@ -23,11 +74,12 @@ class ProductsController extends Controller
 
         ]);
         $products = Products::create($request->all());
+  
         if ($products) {
             return response()->json([
                     "status" => 200,
                     "Products" => [
-                        "id" => $products->product_ID,
+                        "id" => $products->id,
                         "prod_type_ID" => $products->prod_type_ID,
                         "part_num" => $products->part_num,
                         "part_name" => $products->part_name,
@@ -35,6 +87,12 @@ class ProductsController extends Controller
                         "model" => $products->model,
                         "price_code" => $products->price_code,
                     ],
+                    // "pagination" => [
+                    //     'current_page' => $products->currentPage(),
+                    //     'total' => $products->total(),
+                    //     'per_page' => $products->perPage(),
+                    // ],
+                  
                     "message" => "Added the Product Successfully",
                 ]);
             // return redirect()->route('products.index')

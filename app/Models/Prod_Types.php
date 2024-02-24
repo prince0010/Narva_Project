@@ -12,4 +12,8 @@ class Prod_Types extends Model
     protected $fillable = [
         'product_name'
     ];
+
+    public function product(){
+        return $this ->hasMany(Products::class);
+    }
 }

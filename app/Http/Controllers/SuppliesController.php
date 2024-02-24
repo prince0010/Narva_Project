@@ -12,6 +12,49 @@ class SuppliesController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
+     public function index(Request $request){
+        
+        $supplies_query = Supplies::query();
+       $req = $request->keyword;
+           if ($req) {
+            $supplies_query->where('supplier_num', 'LIKE', '%' .$req.'%');
+        }
+
+        $supplies = $supplies_query->paginate(10);
+
+        if($supplies -> count() > 0){
+            $SuppliesData = $supplies->map(function ($supply) {
+                return [
+                    'id' => $supply->id,
+                    'supplier_num' => $supply->supplier_num,
+                    'products_ID' => $supply->products_ID,
+                    'quantity'=> $supply->quantity,
+                    'set' => $supply->set 
+                ];
+            });
+    
+            return response()->json([
+                'status' => '200',
+                'message' => 'Successfully Added Supplies',
+                'Suppliers' => $SuppliesData,
+                'pagination' => [
+                    'current_page' => $supplies->currentPage(),
+                    'total' => $supplies->total(),
+                    'per_page' => $supplies->perPage(),
+                ]
+            ]);
+        } else {
+            return response()->json([
+                'status' => '401',
+                'message' => 'Supplies is empty'
+            ]);
+        }
+
+     }
+
+
+
     public function addSupply(Request $request)
     {
         $request -> validate([

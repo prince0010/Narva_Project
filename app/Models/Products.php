@@ -24,6 +24,13 @@ class Products extends Model
         'price_code',
     ];
 
+    public function prod_type(){
+        return $this->belongsTo(Prod_Types::class);
+    }
+
+    public function supply(){
+        return $this->hasMany(Supplies::class);
+    }
     // Foreign and Primary Example
     // public function user(){
     //     return $this->belongsTo(User::class);

@@ -2,43 +2,105 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\Prod_Types;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class ProdTypesController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+
+     public function index(Request $request){
+        
+        $prodtype_query = Prod_Types::query();
+       
+           if ( $request->keyword ) {
+            $prodtype_query->where('product_name', 'LIKE', '%' .$request->keyword.'%');
+        }
+
+        $prod_type = $prodtype_query->paginate(10);
+
+        if($prod_type -> count() > 0){
+            $Product_Types = $prod_type->map(function ($product_type) {
+                return [
+                    'id' => $product_type->id,
+                    'product_name' => $product_type->product_name
+                ];
+            });
+    
+            return response()->json([
+                'status' => '200',
+                'message' => 'Successfully Added Product Type',
+                'Product.Types' => $Product_Types,
+                'pagination' => [
+                    'current_page' => $prod_type->currentPage(),
+                    'total' => $prod_type->total(),
+                    'per_page' => $prod_type->perPage(),
+                ]
+            ]);
+        } else {
+            return response()->json([
+                'status' => '401',
+                'message' => 'Product Type is empty'
+            ]);
+        }
+
+     }
+
+
     public function storeProductType(Request $request)
     {
-        $request-> validate([
-            'product_name' => 'required|string|max:255'
-        ]);
+        // $request-> validate([
+        //     'product_name' => 'required|string|max:255'
+        // ]);
 
         
 
-        $product_type = Prod_Types::create($request->all());
+        // $product_type = Prod_Types::create($request->all());
 
-        if($product_type){
-            return response()->json([                                                                        
-                "status" => 200,
+        $product_type = Validator::make($request->all(), [
+            'product_name' => 'required|string|max:255'
+        ]);
+
+        if($product_type -> fails()){
+            return response()->json([
+                'message' => $product_type->messages()
+            ]);
+        }else{
+                   $product_types = Prod_Types::create($request->all());
+
+            return response()->json([ 
+                'message' => 'Added the Product Name Successfully',
                 "Product Type" => [
-                    "id" => $product_type->id,
-                    "product_name" => $product_type->product_name,
-                    "created_at" => $product_type->created_at,
-                ],
-                "message" => "Added the Product Name Successfully",
+                                "id" => $product_types->id,
+                                "product_name" => $product_types->product_name,
+                                "created_at" => $product_types->created_at,
+                            ],
             ]);
         }
-        else{
-            return response()->json([
+
+        // if($product_type){
+        //     return response()->json([                                                                        
+        //         "status" => 200,
+        //         "Product Type" => [
+        //             "id" => $product_type->id,
+        //             "product_name" => $product_type->product_name,
+        //             "created_at" => $product_type->created_at,
+        //         ],
+        //         "message" => "Added the Product Name Successfully",
+        //     ]);
+        // }
+        // else{
+        //     return response()->json([
                
-                "status" => 401,
-                "message" => "Failed to Add a Product Name",
-            ]);   
-        }
+        //         "status" => 401,
+        //         "message" => "Failed to Add a Product Name",
+        //     ]);   
+        // }
     }
 
     /**

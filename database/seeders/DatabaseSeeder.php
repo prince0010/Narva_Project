@@ -83,3 +83,7 @@ class DatabaseSeeder extends Seeder
         return $items;
     }
 }
+
+
+
+//Create a static user of Admin Here Or sa UserSeeder

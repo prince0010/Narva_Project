@@ -7,6 +7,44 @@ use Illuminate\Http\Request;
 
 class SupplierController extends Controller
 {
+
+    public function index(Request $request){
+        
+        $supplier_query = Supplier::query();
+       
+           if ( $request->keyword ) {
+            $supplier_query->where('supplier_name', 'LIKE', '%' .$request->keyword.'%');
+        }
+
+        $suppliers = $supplier_query->paginate(10);
+
+        if($suppliers -> count() > 0){
+            $SuppliersData = $suppliers->map(function ($supplier) {
+                return [
+                    'id' => $supplier->id,
+                    'supplier_name' => $supplier->supplier_name
+                ];
+            });
+    
+            return response()->json([
+                'status' => '200',
+                'message' => 'Successfully Added Supplier',
+                'Suppliers' => $SuppliersData,
+                'pagination' => [
+                    'current_page' => $suppliers->currentPage(),
+                    'total' => $suppliers->total(),
+                    'per_page' => $suppliers->perPage(),
+                ]
+            ]);
+        } else {
+            return response()->json([
+                'status' => '401',
+                'message' => 'Supplier is empty'
+            ]);
+        }
+
+     }
+
     /**
      * Store a newly created resource in storage.
      */

@@ -15,4 +15,14 @@ class Supplies extends Model
         'quantity',
         'set',
     ];
+
+
+    public function supplier(){
+        return $this->belongsTo(Supplier::class);
+    }
+
+
+    public function products(){
+        return $this->belongsTo(Products::class);
+    }
 }
