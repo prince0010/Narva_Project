@@ -112,14 +112,14 @@ class ProdTypesController extends Controller
         if($product_Type){
             return response()->json([
                 "status" => "200",
-                "message" => "There are Product Data Found",
+                "message" => "There are Product Type Data Found",
                 "data" => $product_Type
             ]);
         }
         else{
             return response()->json([
                 "status" => "401",
-                "message" => "The Product Data is not Existed"
+                "message" => "The Product Type Data is not Existed"
             ]);
         }
     }
@@ -131,7 +131,7 @@ class ProdTypesController extends Controller
             return response()->json(
                 [
                     "status" => "200",
-                    "message" => "There are Products Data Found",
+                    "message" => "There are Product Type Data Found",
                  "product_type" => $product_Type
                  ]
         );
@@ -140,7 +140,7 @@ class ProdTypesController extends Controller
             return response()->json(
                 [
                     "status" => "401",
-                    "message" => "The Products Data is Not Existed",
+                    "message" => "The Product Type Data is Not Existed",
                  ]
         );
         }
