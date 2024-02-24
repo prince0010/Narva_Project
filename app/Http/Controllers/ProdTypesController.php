@@ -132,7 +132,7 @@ class ProdTypesController extends Controller
                 [
                     "status" => "200",
                     "message" => "There are Products Data Found",
-                 "products" => $product_Type
+                 "product_type" => $product_Type
                  ]
         );
         }
