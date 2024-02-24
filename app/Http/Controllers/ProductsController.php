@@ -10,7 +10,7 @@ use Illuminate\View\View;
 class ProductsController extends Controller
 {
     
-    public function storeProduct(Request $request, Products $product)
+    public function storeProduct(Request $request, Products $products)
     {
         //
         $request->validate([
@@ -22,18 +22,18 @@ class ProductsController extends Controller
             'price_code' => 'required|string|max:255', // In Specific Code there is a price on it so example in RRNB the price of it is Pesos 3150.00
 
         ]);
-        $product = Products::create($request->all());
-        if ($product) {
+        $products = Products::create($request->all());
+        if ($products) {
             return response()->json([
                     "status" => 200,
                     "Products" => [
-                        "id" => $product->id,
-                        "prod_type_ID" => $product->prod_type_ID,
-                        "part_num" => $product->part_num,
-                        "part_name" => $product->part_name,
-                        "brand" => $product->brand,
-                        "model" => $product->model,
-                        "price_code" => $product->price_code,
+                        "id" => $products->product_ID,
+                        "prod_type_ID" => $products->prod_type_ID,
+                        "part_num" => $products->part_num,
+                        "part_name" => $products->part_name,
+                        "brand" => $products->brand,
+                        "model" => $products->model,
+                        "price_code" => $products->price_code,
                     ],
                     "message" => "Added the Product Successfully",
                 ]);
