@@ -61,7 +61,7 @@ class ProdTypesController extends Controller
             ]);
         }
     }
-    public function showAllProductType(Prod_Types $product_Type)
+    public function showAllProductType()
     {
         // return view('products.show', compact('products'));
         $product_Type = Prod_Types::all()->toArray();

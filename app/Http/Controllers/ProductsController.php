@@ -79,7 +79,7 @@ class ProductsController extends Controller
        
     }
 
-    public function showAllProduct(Products $products)
+    public function showAllProduct()
     {
         // return view('products.show', compact('products'));
         $products = Products::all()->toArray();
