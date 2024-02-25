@@ -21,7 +21,6 @@ class ProductsSeeder extends Seeder
    $this->command->info('Products is Created.');
     }
 
-
     protected function withProgressBar(int $amount, Closure $createCollectionOfOne): Collection
     {
         $progressBar = new ProgressBar($this->command->getOutput(), $amount);
