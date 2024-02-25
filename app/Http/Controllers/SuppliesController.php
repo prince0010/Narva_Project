@@ -53,6 +53,19 @@ class SuppliesController extends Controller
 
      }
 
+    //  Search
+     public function searchSupplies($supplies){
+        $supp = Supplies::where('supplier_num', 'like', '%'.$supplies.'%')->get();
+ 
+        if(empty(trim($supplies))) {
+         return response()->json([
+             "status" => "204",
+             "message" => "No Input is Provided for Search",
+         ]);
+     } else {
+         return response()->json($supp);
+     }
+     }
 
 
     public function addSupply(Request $request)

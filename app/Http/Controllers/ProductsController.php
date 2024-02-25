@@ -59,6 +59,19 @@ class ProductsController extends Controller
 
      }
 
+    //  Search
+     public function searchProducts($products){
+        $prod = Products::where('part_name', 'like', '%'.$products.'%')->get();
+ 
+        if(empty(trim($products))) {
+         return response()->json([
+             "status" => "204",
+             "message" => "No Input is Provided for Search",
+         ]);
+     } else {
+         return response()->json($prod);
+     }
+     }
 
 
     public function storeProduct(Request $request, Products $products)

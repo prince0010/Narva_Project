@@ -123,6 +123,22 @@ class SupplierController extends Controller
         }
       
     }
+
+     // Search API
+     public function searchSupplier($supplier_name){
+       $supp = Supplier::where('supplier_name', 'like', '%'.$supplier_name.'%')->get();
+
+       if(empty(trim($supplier_name))) {
+        return response()->json([
+            "status" => "204",
+            "message" => "No Input is Provided for Search",
+        ]);
+    } else {
+        return response()->json($supp);
+    }
+    }
+
+
     /**
      * Show the form for editing the specified resource.
      */

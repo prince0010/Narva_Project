@@ -22,8 +22,9 @@ use App\Http\Controllers\SuppliesController;
 
     // CRUD IN PRODUCT
     Route::controller(ProductsController::class)->group(function(){
-
+        
         Route::get("/index/Products", 'index');
+        Route::get('/searchProducts/search/{products}', 'searchProducts'); 
         Route::post("/storeProduct" ,"storeProduct");
         Route::get("/showProduct/products/id={products}" ,"showProduct");
         Route::get("/showAllProduct/products" ,"showAllProduct");
@@ -33,8 +34,9 @@ use App\Http\Controllers\SuppliesController;
 
     //CRUD IN PRODUCT TYPE
     Route::controller(ProdTypesController::class)->group(function(){
-
+        
         Route::get("/index/ProductType", 'index');
+        Route::get('/searchProductType/search/{product_name}', 'searchProductType'); 
         Route::post("/storeProductType", "storeProductType");
         Route::get("/showProductType/ProductType/id={product_Type}", "showProductType");
         Route::get("/showAllProductType", "showAllProductType");
@@ -54,6 +56,7 @@ use App\Http\Controllers\SuppliesController;
     Route::controller(SupplierController::class)->group(function () {
         
         Route::get("/index/Supplier", 'index');
+        Route::get('/searchSupplier/search/{supplier_name}', 'searchSupplier'); 
         Route::post("/addSupplier/user" , "addSupplier");
         Route::get("/showSupplier/supplier/id={supplier}" , "showSupplier");
         Route::get("/showAllSupplier/supplier" , "showAllSupplier");
@@ -63,8 +66,9 @@ use App\Http\Controllers\SuppliesController;
 
     // CRUD IN SUPPLY
     Route::controller(SuppliesController::class)->group(function () {
-
+        
           Route::get("/index/Supplies", 'index');
+        Route::get('/searchSupplies/search/{supplies}', 'searchSupplies'); 
             Route::post("/addSupply/supply" , "addSupply");
             Route::put("/updateSupply/supply/id={supplies}" , "updateSupply");
             Route::get("/showSupplies/supply/id={supplies}" , "showSupplies");

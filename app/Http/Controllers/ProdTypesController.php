@@ -175,6 +175,29 @@ class ProdTypesController extends Controller
         }
     }
 
+    // Search API
+    public function searchProductType($product_name){
+        
+        $prod_t = Prod_Types::where('product_name', 'like', '%'.$product_name.'%')->get();
+
+        if(empty(trim($product_name))) {
+            return response()->json([
+                "status" => "204",
+                "message" => "No Input is Provided for Search",
+            ]);
+        } 
+
+        // elseif($products->isEmpty()) {
+        //     return response()->json([
+        //         "status" => "404",
+        //         "message" => "Cannot Found the Data",
+        //     ]);
+        // }
+        else {
+            return response()->json($prod_t);
+        }
+    }
+
     /**
      * Remove the specified resource from storage.
      */
