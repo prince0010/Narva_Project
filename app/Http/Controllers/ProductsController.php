@@ -42,7 +42,7 @@ class ProductsController extends Controller
     
             return response()->json([
                 'status' => '200',
-                'message' => 'Successfully Added Products',
+                'message' => 'Current Datas',
                 'products' => $ProductsData,
                 'pagination' => [
                     'current_page' => $products->currentPage(),
