@@ -22,14 +22,16 @@ use App\Http\Controllers\SuppliesController;
   Route::middleware('auth:api')->group( function() {
 
         Route::get("/profile", [ApiController::class, "profile"]);
+        Route::get("/logout", [ApiController::class, "logout"]);
 
+        
         // CRUD IN PRODUCT
      Route::controller(ProductsController::class)->group(function(){
         Route::get("/products", 'index');
         Route::post("/products" ,"storeProduct");
         Route::get('/products/search/{products}', 'searchProducts'); 
         Route::get("/products/id={products}" ,"showProduct");
-        Route::get("/products/allproducts" ,"showAllProduct");
+        Route::get("/products/all_products" ,"showAllProduct");
         Route::put("/products/id={products}/update" ,"updateProduct");
         Route::delete("/products/id={products}/delete" ,"destroyProduct");
     });
@@ -69,5 +71,5 @@ use App\Http\Controllers\SuppliesController;
             Route::get("/supplies/all_supply" , "showSuppliesAll");
             Route::delete("/supplies/id={supplies}/delete" , "deleteSupply");
         });
+       
     });
-    Route::get("/logout", [ApiController::class, "logout"]);
