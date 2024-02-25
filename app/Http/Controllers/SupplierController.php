@@ -97,9 +97,7 @@ class SupplierController extends Controller
                 "message" => "No Data Is Existed",
                 "Data" => $supplier
             ]);
-
         }
-      
     }
 
     public function showAllSupplier()
