@@ -16,7 +16,7 @@ class Prod_TypesFactory extends Factory
     {  
        
             return [
-                'product_name' => $this->faker->name(), 
+                'product_type_name' => $this->faker->name(), 
                 // ... other attributes
             ];
       

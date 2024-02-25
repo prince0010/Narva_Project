@@ -31,7 +31,7 @@ class ProductsController extends Controller
             $ProductsData = $products->map(function ($product) {
                 return [
                     'id' => $product->id,
-                    'prod_type_id' => $product->prod_type_ID,
+                    'prod_type' => $product->prod_type,
                     'part_num' => $product->part_num,
                     'part_name'=> $product->part_name,
                     'brand' => $product->brand,
@@ -39,7 +39,7 @@ class ProductsController extends Controller
                     'price_code' =>$product->price_code
                 ];
             });
-    
+
             return response()->json([
                 'status' => '200',
                 'message' => 'Current Datas',
@@ -93,7 +93,7 @@ class ProductsController extends Controller
                     "status" => 200,
                     "products" => [
                         "id" => $products->id,
-                        "prod_type_id" => $products->prod_type_ID,
+                        "prod_type" => $products->prod_type,
                         "part_num" => $products->part_num,
                         "part_name" => $products->part_name,
                         "brand" => $products->brand,

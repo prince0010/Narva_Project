@@ -10,19 +10,19 @@ class Supplies extends Model
     use HasFactory;
 
     protected $fillable = [
-        'supplier_num',
-        'products_ID',
+        'supplier_num', //Fk
+        'products_ID', //Fk
         'quantity',
         'set',
     ];
 
 
     public function supplier(){
-        return $this->belongsTo(Supplier::class);
+        return $this->belongsTo(Supplier::class, 'supplier_num');
     }
 
 
     public function products(){
-        return $this->belongsTo(Products::class);
+        return $this->belongsTo(Products::class, 'products_ID');
     }
 }

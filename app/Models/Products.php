@@ -16,7 +16,7 @@ class Products extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'prod_type_ID',
+        'prod_type_ID', //Fk
         'part_num',
         'part_name',
         'brand',
@@ -25,7 +25,7 @@ class Products extends Model
     ];
 
     public function prod_type(){
-        return $this->belongsTo(Prod_Types::class);
+        return $this->belongsTo(Prod_Types::class, 'prod_type_ID');
     }
 
     public function supply(){

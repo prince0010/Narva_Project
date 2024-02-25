@@ -27,8 +27,8 @@ class SuppliesController extends Controller
             $SuppliesData = $supplies->map(function ($supply) {
                 return [
                     'id' => $supply->id,
-                    'supplier_num' => $supply->supplier_num,
-                    'products_id' => $supply->products_ID,
+                    'supplier' => $supply->supplier,
+                    'products' => $supply->products,
                     'quantity'=> $supply->quantity,
                     'set' => $supply->set 
                 ];
@@ -91,8 +91,8 @@ class SuppliesController extends Controller
                 'status' => '200',
                 "supplies" => [
                     "id"=>$supply->id,
-                    "supplier_num"=>$supply->supplier_num,
-                    "products_id"=>$supply->products_ID,
+                    'supplier' => $supply->supplier,
+                    'products' => $supply->products,
                     "quantity"=>$supply->quantity,
                     "set"=>$supply->set,
                 ],

@@ -18,7 +18,7 @@ class ProdTypesController extends Controller
         $prodtype_query = Prod_Types::query();
        
            if ( $request->keyword ) {
-            $prodtype_query->where('product_name', 'LIKE', '%' .$request->keyword.'%');
+            $prodtype_query->where('product_type_name', 'LIKE', '%' .$request->keyword.'%');
         }
 
         $prod_type = $prodtype_query->paginate(10);
@@ -27,7 +27,7 @@ class ProdTypesController extends Controller
             $Product_Types = $prod_type->map(function ($product_type) {
                 return [
                     'id' => $product_type->id,
-                    'product_name' => $product_type->product_name
+                    'product_type_name' => $product_type->product_type_name
                 ];
             });
     
@@ -62,7 +62,7 @@ class ProdTypesController extends Controller
         // $product_type = Prod_Types::create($request->all());
 
         $product_type = Validator::make($request->all(), [
-            'product_name' => 'required|string|max:255'
+            'product_type_name' => 'required|string|max:255'
         ]);
 
         if($product_type -> fails()){
@@ -76,7 +76,7 @@ class ProdTypesController extends Controller
                 'message' => 'Added the Product Name Successfully',
                 "product_type" => [
                                 "id" => $product_types->id,
-                                "product_name" => $product_types->product_name,
+                                "product_type_name" => $product_types->product_type_name,
                                 "created_at" => $product_types->created_at,
                             ],
             ]);
@@ -152,7 +152,7 @@ class ProdTypesController extends Controller
     {
 
         $request->validate([
-            'product_name' => 'required|string|max:255',
+            'product_type_name' => 'required|string|max:255',
         ]);
 
         if ($product_Type->update($request->all())) {
@@ -177,7 +177,7 @@ class ProdTypesController extends Controller
     // Search API
     public function searchProductType($product_name){
         
-        $prod_t = Prod_Types::where('product_name', 'like', '%'.$product_name.'%')->get();
+        $prod_t = Prod_Types::where('product_type_name', 'like', '%'.$product_name.'%')->get();
 
         if(empty(trim($product_name))) {
             return response()->json([
