@@ -20,11 +20,11 @@ class ProductsSeeder extends Seeder
         $this->command->warn(PHP_EOL . 'Creating Products....');
         // Creating non-soft-deleted records
         $this->withProgressBar(2, function () {
-            Products::factory(5)->create();
+            Products::factory(15)->create();
         });
         // Creating soft-deleted records
         $this->withProgressBar(2, function () {
-            Products::factory(5)->create()->each(function ($productType) {
+            Products::factory(15)->create()->each(function ($productType) {
                 $productType->delete();
             });
         });
