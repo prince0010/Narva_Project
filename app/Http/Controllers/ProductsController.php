@@ -31,7 +31,8 @@ class ProductsController extends Controller
             $ProductsData = $products->map(function ($product) {
                 return [
                     'id' => $product->id,
-                    'prod_type' => $product->prod_type,
+                    // 'prod_type' => $product->prod_type,
+                    'prod_type' => $product->prod_type->product_type_name, //Specifying to show only the Product Type Name
                     'part_num' => $product->part_num,
                     'part_name'=> $product->part_name,
                     'brand' => $product->brand,
@@ -133,48 +134,66 @@ class ProductsController extends Controller
     // public function show(Products $products) : View
     public function showProduct(Products $products)
     {
-        // return view('products.show', compact('products'));
-        if($products){
+        $products_query = Products::query();
+        $prod_que = $products_query->paginate(10);
+
+        if($prod_que -> count() > 0){
+            $ProductsData = $prod_que->map(function ($product) {
+                return [
+                    'id' => $product->id,
+                    // 'prod_type' => $product->prod_type,
+                    'prod_type' => $product->prod_type->product_type_name, //Specifying to show only the Product Type Name
+                    'part_num' => $product->part_num,
+                    'part_name'=> $product->part_name,
+                    'brand' => $product->brand,
+                    'model' =>$product->model,
+                    'price_code' =>$product->price_code
+                ];
+            });
             return response()->json([
-                "status" => "200",
-                "message" => "There are Product Found",
-                "data" => $products
+                'status' => '200',
+                'message' => 'Current Datas',
+                'products' => $ProductsData,
+            ]);
+        } else {
+            return response()->json([
+                'status' => '401',
+                'message' => 'Empty Data'
             ]);
         }
-        else{
-            return response()->json([
-                "status" => "401",
-                "message" => "The Product is not Existed"
-            ]);
-        }
-       
+
     }
 
     public function showAllProduct()
     {
-        // return view('products.show', compact('products'));
-        $products = Products::all()->toArray();
-        if($products){
-            return response()->json(
-                [
-                    "status" => "200",
-                    "message" => "There are Products Found",
-                    "products" => $products
-                 ]
-        );
-        }
-        else{
-            return response()->json(
-                [
-                    "status" => "401",
-                    "message" => "The Products is Not Existed",
-                 ]
-        );
-        }
-        
+       $product_query = Products::query();
+       $prod_que = $product_query->paginate(10);
+
+       if($prod_que -> count() > 0){
+        $ProductsData = $prod_que->map(function ($product) {
+            return [
+                'id' => $product->id,
+                // 'prod_type' => $product->prod_type,
+                'prod_type' => $product->prod_type->product_type_name, //Specifying to show only the Product Type Name
+                'part_num' => $product->part_num,
+                'part_name'=> $product->part_name,
+                'brand' => $product->brand,
+                'model' =>$product->model,
+                'price_code' =>$product->price_code
+            ];
+        });
+        return response()->json([
+            'status' => '200',
+            'message' => 'Current Datas',
+            'products' => $ProductsData,
+        ]);
+    } else {
+        return response()->json([
+            'status' => '401',
+            'message' => 'Empty Data'
+        ]);
     }
-
-
+    }
 
     /**
      * Update the specified resource in storage.
@@ -184,7 +203,6 @@ class ProductsController extends Controller
     // public function update(Request $request, Products $products) : RedirectResponse
     public function updateProduct(Request $request, Products $products)
     {
-
         $request->validate([
             'prod_type_ID' => 'required|integer|digits_between:1, 10',
             'part_num' => 'required|string|max:255',
@@ -223,11 +241,7 @@ class ProductsController extends Controller
     {
         //
         if ($products->delete()) {
-            // return redirect()->route('products.index')
-            // ->with(response()->json([
-            //     "status" => 200,
-            //     "message" => "Product Deleted Sucessfully",
-            // ]));
+        
             return response()->json([
                 "status" => 200,
                 "message" => "You Deleted the Product Successfully",
@@ -241,48 +255,4 @@ class ProductsController extends Controller
         }
     }
 
-
-    /**
-     * Display a listing of the resource.
-     */
-
-    //  View from Illuminate\View\View must have a return view() function para dili mag error og para dili ma void ang View 
-    // public function Productindex(): View
-    // {
-    //     // Display a listing of the Data
-
-    //     $product = Products::latest()->paginate(5);
-
-
-    //     return view('products.Productindex', compact('products'))
-    //         ->with('i', (request()->input('page', 1) - 1) * 10);
-    //     // llike forloop
-    // }
-
-    // // REDIRECT 
-    // /**
-    //  * Show the form for editing the specified resource.
-    //  */
-    // public function editProduct(Products $products): View
-    // {
-    //     // products.edit the products here is a resource route for the web.php
-    //     return view('products.editProduct', compact('products'));
-    // }
-
-    // /**
-    //  * Show and redirect to the form for creating a new resource.
-    //  */
-    // public function createProduct(): View
-    // {
-    //     // // products.create the products here is a resource route for the web.php
-
-    //     return view('products.createProduct');
-    // }
-    // REDIRECT 
-    /**
-     * Store a newly created resource in storage.
-     */
-
-    //  RedirectResponse from Illuminate\Http\RedirectResponse must have a return redirect() function para dili mag error og para dili ma void ang RedirectResponse 
-    // public function store(Request $request): RedirectResponse
 }
