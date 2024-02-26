@@ -82,24 +82,6 @@ class ProdTypesController extends Controller
             ]);
         }
 
-        // if($product_type){
-        //     return response()->json([                                                                        
-        //         "status" => 200,
-        //         "Product Type" => [
-        //             "id" => $product_type->id,
-        //             "product_name" => $product_type->product_name,
-        //             "created_at" => $product_type->created_at,
-        //         ],
-        //         "message" => "Added the Product Name Successfully",
-        //     ]);
-        // }
-        // else{
-        //     return response()->json([
-               
-        //         "status" => 401,
-        //         "message" => "Failed to Add a Product Name",
-        //     ]);   
-        // }
     }
 
     /**
@@ -186,12 +168,7 @@ class ProdTypesController extends Controller
             ]);
         } 
 
-        // elseif($products->isEmpty()) {
-        //     return response()->json([
-        //         "status" => "404",
-        //         "message" => "Cannot Found the Data",
-        //     ]);
-        // }
+    
         else {
             return response()->json($prod_t);
         }
@@ -204,11 +181,6 @@ class ProdTypesController extends Controller
     {
         //
         if ($product_Type->delete()) {
-            // return redirect()->route('products.index')
-            // ->with(response()->json([
-            //     "status" => 200,
-            //     "message" => "Product Deleted Sucessfully",
-            // ]));
             return response()->json([
                 "status" => 200,
                 "message" => "You Deleted the Product Data Successfully.",
@@ -220,5 +192,27 @@ class ProdTypesController extends Controller
                 "message" => "Failed to Delete the Product Data.",
             ]);
         }
+    }
+
+    // Soft Delete
+    public function softdeleterecord($product_Type){
+
+        $data = Prod_Types::find($product_Type);
+
+        if(!$data){
+            return response()->json(
+                [
+                    'status' => 404,
+                    'message' => 'Product Type not found',
+                ]);
+        }
+        $data->delete();
+        return response()->json(
+            [
+                'status' => 201,
+                'message' => 'Product Type Soft Deleted Successfully',
+                'data' => $data
+            ]);
+
     }
 }

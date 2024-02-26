@@ -22,6 +22,7 @@ return new class extends Migration
                 $table->string('model');
                 $table->string('price_code');
                 $table->timestamps();
+                $table->softDeletes();
             });
         }
     }

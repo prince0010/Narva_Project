@@ -18,7 +18,16 @@ class SupplierSeeder extends Seeder
     {
         // Supplier
         $this->command->warn(PHP_EOL . 'Creating Supplier....');
-        $supplytype = $this->withProgressBar(2, fn () => Supplier::factory(5)->create());
+        // Creating non-soft-deleted records
+        $this->withProgressBar(2, function () {
+            Supplier::factory(5)->create();
+        });
+        // Creating soft-deleted records
+        $this->withProgressBar(2, function () {
+            Supplier::factory(5)->create()->each(function ($productType) {
+                $productType->delete();
+            });
+        });
         $this->command->info('Supplier is Created.');
     }
 
@@ -31,9 +40,13 @@ class SupplierSeeder extends Seeder
         $items = new Collection();
 
         foreach (range(1, $amount) as $i) {
-            $items = $items->merge(
-                $createCollectionOfOne()
-            );
+            $collection = $createCollectionOfOne();
+
+            // Check if the returned value is not null
+            if (!is_null($collection)) {
+                $items = $items->merge($collection);
+            }
+
             $progressBar->advance();
         }
 

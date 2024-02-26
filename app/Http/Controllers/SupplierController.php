@@ -185,32 +185,26 @@ class SupplierController extends Controller
         }
     }
 
+         // Soft Delete
+         public function softdeleterecord($supplier){
+
+            $data = Supplier::find($supplier);
     
-      /**
-     * Display a listing of the resource.
-     */
-    // public function index()
-    // {
-    //     $product = Supplier::latest()->paginate(5);
-
-
-    //     return view('supplier.index', compact('supplier'))
-    //         ->with('i', (request()->input('page', 1) - 1) * 10);
-    //     // llike forloop
-    // }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    // public function createSupplier() : View
-    // {
-    //     //  supplier.create the supplier here is a resource route for the web.php
-    //     return view('supplier.createSupplier');
-    // }
-
-    // public function editSupplier(Supplier $supplier): View
-    // {
-    //     // supplier.edit the supplier here is a resource route for the web.php
-    //     return view('supplier.editSupplier');
-    // }
+            if(!$data){
+                return response()->json(
+                    [
+                        'status' => 404,
+                        'message' => 'Supplier not found',
+                    ]);
+            }
+            $data->delete();
+            return response()->json(
+                [
+                    'status' => 201,
+                    'message' => 'Supplier Soft Deleted Successfully',
+                    'data' => $data
+                ]);
+    
+        }
+    
 }

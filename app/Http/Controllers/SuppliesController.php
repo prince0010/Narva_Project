@@ -238,27 +238,27 @@ class SuppliesController extends Controller
         }
     }
 
+         // Soft Delete
+         public function softdeleterecord($supplies){
 
-      /**
-     * Display a listing of the resource.
-     */
-    // public function Suppliesindex()
-    // {
-    //     $product = Supplies::latest()->paginate(5);
-
-
-    //     return view('supplies.Suppliesindex', compact('supplies'))
-    //         ->with('i', (request()->input('page', 1) - 1) * 10);
-    //     // llike forloop
-    // }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    // public function createSupplies() : View
-    // {
-    //     return view('supplies.createSupplies');
-    // }
+            $data = Supplies::find($supplies);
+    
+            if(!$data){
+                return response()->json(
+                    [
+                        'status' => 404,
+                        'message' => 'Supplies not found',
+                    ]);
+            }
+            $data->delete();
+            return response()->json(
+                [
+                    'status' => 201,
+                    'message' => 'Supplies Soft Deleted Successfully',
+                    'data' => $data
+                ]);
+    
+        }
 
 }
 

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->increments('id');
             $table->string('supplier_name');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

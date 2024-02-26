@@ -24,6 +24,7 @@ return new class extends Migration
                 // $table->string('set')->default('Piece')->default('Set');
                 $table->string('set')->default('Piece');
                 $table->timestamps();
+                $table->softDeletes();
             });
     }
     }

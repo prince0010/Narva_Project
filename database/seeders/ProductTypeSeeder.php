@@ -17,9 +17,17 @@ class ProductTypeSeeder extends Seeder
     {
         // Product Types
         $this->command->warn(PHP_EOL . 'Creating Product Type....');
-        $producttype = $this->withProgressBar(2, fn () => Prod_Types::factory(5)->create());
+        // Creating non-soft-deleted records
+        $this->withProgressBar(2, function () {
+            Prod_Types::factory(5)->create();
+        });
+        // Creating soft-deleted records
+        $this->withProgressBar(2, function () {
+            Prod_Types::factory(5)->create()->each(function ($productType) {
+                $productType->delete();
+            });
+        });
         $this->command->info('Product Type is Created.');
-
     }
 
 
@@ -34,9 +42,13 @@ class ProductTypeSeeder extends Seeder
         $items = new Collection();
 
         foreach (range(1, $amount) as $i) {
-            $items = $items->merge(
-                $createCollectionOfOne()
-            );
+            $collection = $createCollectionOfOne();
+
+            // Check if the returned value is not null
+            if (!is_null($collection)) {
+                $items = $items->merge($collection);
+            }
+
             $progressBar->advance();
         }
 

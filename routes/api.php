@@ -34,6 +34,7 @@ use App\Http\Controllers\SuppliesController;
         Route::get("/products/all_products" ,"showAllProduct");
         Route::put("/products/id={products}/update" ,"updateProduct");
         Route::delete("/products/id={products}/delete" ,"destroyProduct");
+        Route::delete("/products/id={products}/softdelete" ,"softdeleterecord");
     });
 
     // CRUD IN PRODUCT TYPE
@@ -46,6 +47,7 @@ use App\Http\Controllers\SuppliesController;
         Route::get("/product_types/all_product_types", "showAllProductType");
         Route::put("/product_types/id={product_Type}/update", "updateProductType");
         Route::delete("/product_types/id={product_Type}/delete", "destroyProductType");
+        Route::delete("/product_types/id={product_Type}/softdelete", "softdeleterecord");
     });
     
     // CRUD IN SUPPPLIER
@@ -58,6 +60,7 @@ use App\Http\Controllers\SuppliesController;
         Route::get("/supplier/all_supplier" , "showAllSupplier");
         Route::put("/supplier/id={supplier}/update" , "updateSupplier");
         Route::delete("/supplier/id={supplier}/delete" ,"deleteSupplier");
+        Route::delete("/supplier/id={supplier}/softdelete" ,"softdeleterecord");
 });
 
     // CRUD IN SUPPLY
@@ -70,6 +73,7 @@ use App\Http\Controllers\SuppliesController;
             Route::get("/supplies/id={supplies}" , "showSupplies");
             Route::get("/supplies/all_supply" , "showSuppliesAll");
             Route::delete("/supplies/id={supplies}/delete" , "deleteSupply");
+            Route::delete("/supplies/id={supplies}/softdelete" , "softdeleterecord");
         });
        
     });

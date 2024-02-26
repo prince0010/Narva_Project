@@ -255,4 +255,26 @@ class ProductsController extends Controller
         }
     }
 
+      // Soft Delete
+      public function softdeleterecord($products){
+
+        $data = Products::find($products);
+
+        if(!$data){
+            return response()->json(
+                [
+                    'status' => 404,
+                    'message' => 'Products not found',
+                ]);
+        }
+        $data->delete();
+        return response()->json(
+            [
+                'status' => 201,
+                'message' => 'Products Soft Deleted Successfully',
+                'data' => $data
+            ]);
+
+    }
+
 }

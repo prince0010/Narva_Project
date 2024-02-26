@@ -8,6 +8,7 @@ use Illuminate\Database\Seeder;
 use Closure;
 use Illuminate\Database\Eloquent\Collection;
 use Symfony\Component\Console\Helper\ProgressBar;
+
 class ProductsSeeder extends Seeder
 {
     /**
@@ -15,10 +16,19 @@ class ProductsSeeder extends Seeder
      */
     public function run(): void
     {
-   // Product
-   $this->command->warn(PHP_EOL . 'Creating Products....');
-   $product = $this->withProgressBar(2, fn () => Products::factory(5)->create());
-   $this->command->info('Products is Created.');
+        // Product
+        $this->command->warn(PHP_EOL . 'Creating Products....');
+        // Creating non-soft-deleted records
+        $this->withProgressBar(2, function () {
+            Products::factory(5)->create();
+        });
+        // Creating soft-deleted records
+        $this->withProgressBar(2, function () {
+            Products::factory(5)->create()->each(function ($productType) {
+                $productType->delete();
+            });
+        });
+        $this->command->info('Products is Created.');
     }
 
     protected function withProgressBar(int $amount, Closure $createCollectionOfOne): Collection
@@ -30,9 +40,13 @@ class ProductsSeeder extends Seeder
         $items = new Collection();
 
         foreach (range(1, $amount) as $i) {
-            $items = $items->merge(
-                $createCollectionOfOne()
-            );
+            $collection = $createCollectionOfOne();
+
+            // Check if the returned value is not null
+            if (!is_null($collection)) {
+                $items = $items->merge($collection);
+            }
+
             $progressBar->advance();
         }
 
@@ -42,5 +56,4 @@ class ProductsSeeder extends Seeder
 
         return $items;
     }
-    
 }
