@@ -18,10 +18,12 @@ class ProductsSeeder extends Seeder
     {
         // Product
         $this->command->warn(PHP_EOL . 'Creating Products....');
+
         // Creating non-soft-deleted records
         $this->withProgressBar(2, function () {
             Products::factory(15)->create();
         });
+
         // Creating soft-deleted records
         $this->withProgressBar(2, function () {
             Products::factory(15)->create()->each(function ($productType) {
@@ -31,6 +33,8 @@ class ProductsSeeder extends Seeder
         $this->command->info('Products is Created.');
     }
 
+
+    
     protected function withProgressBar(int $amount, Closure $createCollectionOfOne): Collection
     {
         $progressBar = new ProgressBar($this->command->getOutput(), $amount);

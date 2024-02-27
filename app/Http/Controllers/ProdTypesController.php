@@ -104,29 +104,67 @@ class ProdTypesController extends Controller
             ]);
         }
     }
-    public function showAllProductType()
-    {
-        // return view('products.show', compact('products'));
-        $product_Type = Prod_Types::all()->toArray();
-        if($product_Type){
-            return response()->json(
-                [
-                    "status" => "200",
-                    "message" => "There are Product Type Data Found",
-                 "product_type" => $product_Type
-                 ]
-        );
-        }
-        else{
-            return response()->json(
-                [
-                    "status" => "401",
-                    "message" => "The Product Type Data is Not Existed",
-                 ]
-        );
-        }
+    // public function showAllProductType()
+    // {
+    //     // return view('products.show', compact('products'));
+    //     $product_Type = Prod_Types::all()->toArray();
+    //     if($product_Type){
+
+    //         return response()->json(
+    //             [
+    //                 "status" => "200",
+    //                 "message" => "There are Product Type Data Found",
+    //              "product_type" => $product_Type
+    //              ]
+    //     );
+    //     }
+    //     else{
+    //         return response()->json(
+    //             [
+    //                 "status" => "401",
+    //                 "message" => "The Product Type Data is Not Existed",
+    //              ]
+    //     );
+    //     }
         
+    // }
+
+    public function showAllProductType($id)
+{
+    if ($id == 1) {
+        // Display only soft-deleted records
+        $softDeletedProductTypes = Prod_Types::onlyTrashed()->get()->toArray();
+        if (!empty($softDeletedProductTypes)) {
+            return response()->json([
+                "status" => "200",
+                "message" => "Soft-deleted Product Type Data Found",
+                "product_type" => $softDeletedProductTypes
+            ]);
+        } else {
+            return response()->json([
+                "status" => "404",
+                "message" => "No Soft-deleted Product Type Data Found",
+            ]);
+        }
+    } else {
+        // Display non-deleted records
+        $activeProductTypes = Prod_Types::all()->toArray();
+        if (!empty($activeProductTypes)) {
+            return response()->json([
+                "status" => "200",
+                "message" => "Active Product Type Data Found",
+                "product_type" => $activeProductTypes
+            ]);
+        } else {
+            return response()->json([
+                "status" => "404",
+                "message" => "No Active Product Type Data Found",
+            ]);
+        }
     }
+}
+
+
     /**
      * Update the specified resource in storage.
      */
