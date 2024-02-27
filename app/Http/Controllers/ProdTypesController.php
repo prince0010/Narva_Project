@@ -13,24 +13,25 @@ class ProdTypesController extends Controller
      * Display a listing of the resource.
      */
 
-     public function index(Request $request){
-        
+    public function index(Request $request)
+    {
+
         $prodtype_query = Prod_Types::query();
-       
-           if ( $request->keyword ) {
-            $prodtype_query->where('product_type_name', 'LIKE', '%' .$request->keyword.'%');
+
+        if ($request->keyword) {
+            $prodtype_query->where('product_type_name', 'LIKE', '%' . $request->keyword . '%');
         }
 
         $prod_type = $prodtype_query->paginate(10);
 
-        if($prod_type -> count() > 0){
+        if ($prod_type->count() > 0) {
             $Product_Types = $prod_type->map(function ($product_type) {
                 return [
                     'id' => $product_type->id,
                     'product_type_name' => $product_type->product_type_name
                 ];
             });
-    
+
             return response()->json([
                 'status' => '200',
                 'message' => 'successfully added product type',
@@ -47,8 +48,7 @@ class ProdTypesController extends Controller
                 'message' => 'product type is empty'
             ]);
         }
-
-     }
+    }
 
 
     public function storeProductType(Request $request)
@@ -57,7 +57,7 @@ class ProdTypesController extends Controller
         //     'product_name' => 'required|string|max:255'
         // ]);
 
-        
+
 
         // $product_type = Prod_Types::create($request->all());
 
@@ -65,23 +65,22 @@ class ProdTypesController extends Controller
             'product_type_name' => 'required|string|max:255'
         ]);
 
-        if($product_type -> fails()){
+        if ($product_type->fails()) {
             return response()->json([
                 'message' => $product_type->messages()
             ]);
-        }else{
-                   $product_types = Prod_Types::create($request->all());
+        } else {
+            $product_types = Prod_Types::create($request->all());
 
-            return response()->json([ 
+            return response()->json([
                 'message' => 'Added the Product Name Successfully',
                 "product_type" => [
-                                "id" => $product_types->id,
-                                "product_type_name" => $product_types->product_type_name,
-                                "created_at" => $product_types->created_at,
-                            ],
+                    "id" => $product_types->id,
+                    "product_type_name" => $product_types->product_type_name,
+                    "created_at" => $product_types->created_at,
+                ],
             ]);
         }
-
     }
 
     /**
@@ -90,79 +89,56 @@ class ProdTypesController extends Controller
     public function showProductType(Prod_Types $product_Type)
     {
         // return view('products.show', compact('products'));
-        if($product_Type){
+        if ($product_Type) {
             return response()->json([
                 "status" => "200",
                 "message" => "There are Product Type Data Found",
                 "data" => $product_Type
             ]);
-        }
-        else{
+        } else {
             return response()->json([
                 "status" => "401",
                 "message" => "The Product Type Data is not Existed"
             ]);
         }
     }
-    // public function showAllProductType()
-    // {
-    //     // return view('products.show', compact('products'));
-    //     $product_Type = Prod_Types::all()->toArray();
-    //     if($product_Type){
-
-    //         return response()->json(
-    //             [
-    //                 "status" => "200",
-    //                 "message" => "There are Product Type Data Found",
-    //              "product_type" => $product_Type
-    //              ]
-    //     );
-    //     }
-    //     else{
-    //         return response()->json(
-    //             [
-    //                 "status" => "401",
-    //                 "message" => "The Product Type Data is Not Existed",
-    //              ]
-    //     );
-    //     }
-        
-    // }
 
     public function showAllProductType($id)
-{
-    if ($id == 1) {
-        // Display only the soft-deleted records
-        $softDeletedProductTypes = Prod_Types::onlyTrashed()->get()->toArray();
-        if (!empty($softDeletedProductTypes)) {
-            return response()->json([
-                "status" => "200",
-                "message" => "Soft-deleted Product Type Data Found",
-                "product_type" => $softDeletedProductTypes
-            ]);
+    {
+        if ($id == 1) {
+            // Display only the soft-deleted records
+            $softDeletedProductTypes = Prod_Types::onlyTrashed()->get()->toArray();
+            if (!empty($softDeletedProductTypes)) {
+                return response()->json([
+                    "status" => "200",
+                    "message" => "Soft-deleted Product Type Data Found",
+                    "product_type" => $softDeletedProductTypes
+                ]);
+            } else {
+                return response()->json([
+                    "status" => "404",
+                    "message" => "No Soft-deleted Product Type Data Found",
+                ]);
+            }
         } else {
-            return response()->json([
-                "status" => "404",
-                "message" => "No Soft-deleted Product Type Data Found",
-            ]);
-        }
-    } else {
-        // Display the non-deleted records
-        $activeProductTypes = Prod_Types::all()->toArray();
-        if (!empty($activeProductTypes)) {
-            return response()->json([
-                "status" => "200",
-                "message" => "Active Product Type Data Found",
-                "product_type" => $activeProductTypes
-            ]);
-        } else {
-            return response()->json([
-                "status" => "404",
-                "message" => "No Active Product Type Data Found",
-            ]);
+            if ($id == 0) {
+                // Display the non-deleted records
+                $activeProductTypes = Prod_Types::all()->toArray();
+                if (!empty($activeProductTypes)) {
+                    return response()->json([
+                        "status" => "200",
+                        "message" => "Active Product Type Data Found",
+                        "product_type" => $activeProductTypes
+                    ]);
+                } else {
+                    return response()->json([
+                        "status" => "404",
+                        "message" => "No Active Product Type Data Found",
+                    ]);
+                }
+            }
         }
     }
-}
 
 
     /**
@@ -195,19 +171,17 @@ class ProdTypesController extends Controller
     }
 
     // Search API
-    public function searchProductType($product_name){
-        
-        $prod_t = Prod_Types::where('product_type_name', 'like', '%'.$product_name.'%')->get();
+    public function searchProductType($product_name)
+    {
 
-        if(empty(trim($product_name))) {
+        $prod_t = Prod_Types::where('product_type_name', 'like', '%' . $product_name . '%')->get();
+
+        if (empty(trim($product_name))) {
             return response()->json([
                 "status" => "204",
                 "message" => "No Input is Provided for Search",
             ]);
-        } 
-
-    
-        else {
+        } else {
             return response()->json($prod_t);
         }
     }
@@ -233,16 +207,18 @@ class ProdTypesController extends Controller
     }
 
     // Soft Delete
-    public function softdeleterecord($product_Type){
+    public function softdeleterecord($product_Type)
+    {
 
         $data = Prod_Types::find($product_Type);
 
-        if(!$data){
+        if (!$data) {
             return response()->json(
                 [
                     'status' => 404,
                     'message' => 'Product Type not found',
-                ]);
+                ]
+            );
         }
         $data->delete();
         return response()->json(
@@ -250,7 +226,7 @@ class ProdTypesController extends Controller
                 'status' => 201,
                 'message' => 'Product Type Soft Deleted Successfully',
                 'data' => $data
-            ]);
-
+            ]
+        );
     }
 }

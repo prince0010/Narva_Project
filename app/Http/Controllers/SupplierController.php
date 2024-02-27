@@ -8,24 +8,25 @@ use Illuminate\Http\Request;
 class SupplierController extends Controller
 {
 
-    public function index(Request $request){
-        
+    public function index(Request $request)
+    {
+
         $supplier_query = Supplier::query();
-       
-           if ( $request->keyword ) {
-            $supplier_query->where('supplier_name', 'LIKE', '%' .$request->keyword.'%');
+
+        if ($request->keyword) {
+            $supplier_query->where('supplier_name', 'LIKE', '%' . $request->keyword . '%');
         }
 
         $suppliers = $supplier_query->paginate(10);
 
-        if($suppliers -> count() > 0){
+        if ($suppliers->count() > 0) {
             $SuppliersData = $suppliers->map(function ($supplier) {
                 return [
                     'id' => $supplier->id,
                     'supplier_name' => $supplier->supplier_name
                 ];
             });
-    
+
             return response()->json([
                 'status' => '200',
                 'message' => 'successfully added supplier',
@@ -42,34 +43,30 @@ class SupplierController extends Controller
                 'message' => 'Supplier is empty'
             ]);
         }
-
-     }
+    }
 
     /**
      * Store a newly created resource in storage.
      */
     public function addSupplier(Request $request)
     {
-        $request -> validate([
-            'supplier_name' =>'required|string|max:255'
+        $request->validate([
+            'supplier_name' => 'required|string|max:255'
         ]);
 
         $supplier = Supplier::create($request->all());
 
-        if($supplier)
-        {
+        if ($supplier) {
             return response()->json([
                 "status" => '200',
-                "supppliers" =>[
+                "supppliers" => [
                     "id" => $supplier->id,
                     "supplier_name" => $supplier->supplier_name,
                     "created_at" => $supplier->created_at
                 ],
-                    "message" => "supplier name added successfully",
-                ]);
-        }
-        else
-        {
+                "message" => "supplier name added successfully",
+            ]);
+        } else {
             return response()->json([
                 "status" => '401',
                 "message" => "There is something wrong in Adding Supplier Name"
@@ -82,16 +79,15 @@ class SupplierController extends Controller
      */
     public function showSupplier(Supplier $supplier)
     {
-        if($supplier){
+        if ($supplier) {
             return response()->json(
-              [ 
-                  "message" => "Found the Specific User",
-                  "status" => "200",
-                  "data" => $supplier
-              ]
+                [
+                    "message" => "Found the Specific User",
+                    "status" => "200",
+                    "data" => $supplier
+                ]
             );
-        }
-        elseif($supplier == NULL){
+        } elseif ($supplier == NULL) {
             return response()->json([
                 "status" => "500",
                 "message" => "No Data Is Existed",
@@ -100,58 +96,74 @@ class SupplierController extends Controller
         }
     }
 
-    public function showAllSupplier()
+    public function showAllSupplier($id)
     {
-        $supplier = Supplier::all()->toArray();
-        if($supplier){
-            return response()->json(
-              [ 
-                "data" => $supplier,
-                "status" => "200"
-              ]
-            );
-        }
-        elseif($supplier == NULL){
+        if ($id == 1) {
+            // Display only the soft-deleted records
+            $softDeletedSupplier = Supplier::onlyTrashed()->get()->toArray();
+            if (!empty($softDeletedSupplier)) {
+                return response()->json([
+                    "status" => "200",
+                    "message" => "Soft-deleted Supplier Data Found",
+                    "product_type" => $softDeletedSupplier
+                ]);
+            } else {
+                return response()->json([
+                    "status" => "404",
+                    "message" => "No Soft-deleted Supplier Data Found",
+                ]);
+            }
+        } else {
+                // Display the non-deleted records
+                if ($id == 0) {
+                    $activeSupplier = Supplier::all()->toArray();
+                    if (!empty($activeSupplier)) {
+                        return response()->json([
+                            "status" => "200",
+                            "message" => "Active Supplier Data Found",
+                            "product_type" => $activeSupplier
+                        ]);
+                    } else {
+                        return response()->json([
+                            "status" => "404",
+                            "message" => "No Active Supplier Data Found",
+                        ]);
+                    }
+                }
+            }
+    }
+
+    // Search API
+    public function searchSupplier($supplier_name)
+    {
+        $supp = Supplier::where('supplier_name', 'like', '%' . $supplier_name . '%')->get();
+
+        if (empty(trim($supplier_name))) {
             return response()->json([
-                "status" => "500",
-                "message" => "No Data Is Existed",
-                "Data" => $supplier
+                "status" => "204",
+                "message" => "No Input is Provided for Search",
             ]);
-
+        } else {
+            return response()->json($supp);
         }
-      
-    }
-
-     // Search API
-     public function searchSupplier($supplier_name){
-       $supp = Supplier::where('supplier_name', 'like', '%'.$supplier_name.'%')->get();
-
-       if(empty(trim($supplier_name))) {
-        return response()->json([
-            "status" => "204",
-            "message" => "No Input is Provided for Search",
-        ]);
-    } else {
-        return response()->json($supp);
-    }
     }
 
 
     /**
      * Show the form for editing the specified resource.
      */
-  
+
     /**
      * Update the specified resource in storage.
      */
     public function updateSupplier(Request $request, Supplier $supplier)
     {
         $request->validate([
-            'supplier_name' =>'required|string|max:255'
+            'supplier_name' => 'required|string|max:255'
         ]);
 
         if ($supplier->update($request->all())) {
-          
+
             return response()->json([
                 'status' => 200,
                 "message" => "You Updated the Supplier Name Successfully",
@@ -171,7 +183,7 @@ class SupplierController extends Controller
     public function deleteSupplier(Supplier $supplier)
     {
         if ($supplier->delete()) {
-       
+
             return response()->json([
                 "Data" =>  $supplier,
                 "status" => 200,
@@ -185,26 +197,27 @@ class SupplierController extends Controller
         }
     }
 
-         // Soft Delete
-         public function softdeleterecord($supplier){
+    // Soft Delete
+    public function softdeleterecord($supplier)
+    {
 
-            $data = Supplier::find($supplier);
-    
-            if(!$data){
-                return response()->json(
-                    [
-                        'status' => 404,
-                        'message' => 'Supplier not found',
-                    ]);
-            }
-            $data->delete();
+        $data = Supplier::find($supplier);
+
+        if (!$data) {
             return response()->json(
                 [
-                    'status' => 201,
-                    'message' => 'Supplier Soft Deleted Successfully',
-                    'data' => $data
-                ]);
-    
+                    'status' => 404,
+                    'message' => 'Supplier not found',
+                ]
+            );
         }
-    
+        $data->delete();
+        return response()->json(
+            [
+                'status' => 201,
+                'message' => 'Supplier Soft Deleted Successfully',
+                'data' => $data
+            ]
+        );
+    }
 }

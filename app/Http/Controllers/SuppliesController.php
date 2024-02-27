@@ -146,41 +146,77 @@ class SuppliesController extends Controller
 
     }
 
-    public function showSuppliesAll()
-    {
-        //
+    // public function showSuppliesAll()
+    // {
+    //     //
       
-        $supplies_query = Supplies::query();
-        $supplies = $supplies_query->paginate(10);
+    //     $supplies_query = Supplies::query();
+    //     $supplies = $supplies_query->paginate(10);
 
-        if($supplies -> count() > 0){
-            $SuppliesData = $supplies->map(function ($supply) {
-                return [
-                    'id' => $supply->id,
-                    'supplier' => $supply->supplier->supplier_name,
-                    'products' => $supply->products,
-                    'quantity'=> $supply->quantity,
-                    'set' => $supply->set 
-                ];
-            });
+    //     if($supplies -> count() > 0){
+    //         $SuppliesData = $supplies->map(function ($supply) {
+    //             return [
+    //                 'id' => $supply->id,
+    //                 'supplier' => $supply->supplier->supplier_name,
+    //                 'products' => $supply->products,
+    //                 'quantity'=> $supply->quantity,
+    //                 'set' => $supply->set 
+    //             ];
+    //         });
     
-            return response()->json([
-                'status' => '200',
-                'message' => 'Found Data',
-                'suppliers' => $SuppliesData,
-                'pagination' => [
-                    'current_page' => $supplies->currentPage(),
-                    'total' => $supplies->total(),
-                    'per_page' => $supplies->perPage(),
-                ]
-            ]);
-        } else {
-            return response()->json([
-                'status' => '401',
-                'message' => 'Empty Data'
-            ]);
-        }
+    //         return response()->json([
+    //             'status' => '200',
+    //             'message' => 'Found Data',
+    //             'suppliers' => $SuppliesData,
+    //             'pagination' => [
+    //                 'current_page' => $supplies->currentPage(),
+    //                 'total' => $supplies->total(),
+    //                 'per_page' => $supplies->perPage(),
+    //             ]
+    //         ]);
+    //     } else {
+    //         return response()->json([
+    //             'status' => '401',
+    //             'message' => 'Empty Data'
+    //         ]);
+    //     }
 
+    // }
+    public function showSuppliesAll($id)
+    {
+        if ($id == 1) {
+            // Display only the soft-deleted records
+            $softDeletedSupplies = Supplies::onlyTrashed()->get()->toArray();
+            if (!empty($softDeletedSupplies)) {
+                return response()->json([
+                    "status" => "200",
+                    "message" => "Soft-deleted Supplies Data Found",
+                    "product_type" => $softDeletedSupplies
+                ]);
+            } else {
+                return response()->json([
+                    "status" => "404",
+                    "message" => "No Soft-deleted Supplies Data Found",
+                ]);
+            }
+        } else {
+                // Display the non-deleted records
+                if ($id == 0) {
+                    $activeSupplies = Supplies::all()->toArray();
+                    if (!empty($activeSupplies)) {
+                        return response()->json([
+                            "status" => "200",
+                            "message" => "Active Supplies Data Found",
+                            "product_type" => $activeSupplies
+                        ]);
+                    } else {
+                        return response()->json([
+                            "status" => "404",
+                            "message" => "No Active Supplies Data Found",
+                        ]);
+                    }
+                }
+            }
     }
     /**
      * Show the form for editing the specified resource.

@@ -164,35 +164,70 @@ class ProductsController extends Controller
 
     }
 
-    public function showAllProduct()
-    {
-       $product_query = Products::query();
-       $prod_que = $product_query->paginate(10);
+    // public function showAllProduct()
+    // {
+    //    $product_query = Products::query();
+    //    $prod_que = $product_query->paginate(10);
 
-       if($prod_que -> count() > 0){
-        $ProductsData = $prod_que->map(function ($product) {
-            return [
-                'id' => $product->id,
-                // 'prod_type' => $product->prod_type,
-                'prod_type' => $product->prod_type->product_type_name, //Specifying to show only the Product Type Name
-                'part_num' => $product->part_num,
-                'part_name'=> $product->part_name,
-                'brand' => $product->brand,
-                'model' =>$product->model,
-                'price_code' =>$product->price_code
-            ];
-        });
-        return response()->json([
-            'status' => '200',
-            'message' => 'Current Datas',
-            'products' => $ProductsData,
-        ]);
-    } else {
-        return response()->json([
-            'status' => '401',
-            'message' => 'Empty Data'
-        ]);
-    }
+    //    if($prod_que -> count() > 0){
+    //     $ProductsData = $prod_que->map(function ($product) {
+    //         return [
+    //             'id' => $product->id,
+    //             // 'prod_type' => $product->prod_type,
+    //             'prod_type' => $product->prod_type->product_type_name, //Specifying to show only the Product Type Name
+    //             'part_num' => $product->part_num,
+    //             'part_name'=> $product->part_name,
+    //             'brand' => $product->brand,
+    //             'model' =>$product->model,
+    //             'price_code' =>$product->price_code
+    //         ];
+    //     });
+    //     return response()->json([
+    //         'status' => '200',
+    //         'message' => 'Current Datas',
+    //         'products' => $ProductsData,
+    //     ]);
+    // } else {
+    //     return response()->json([
+    //         'status' => '401',
+    //         'message' => 'Empty Data'
+    //     ]);
+    // }
+    // }
+
+    public function showAllProduct($id)
+    {
+        if ($id == 1) {
+            // Display only the soft-deleted records
+            $softDeletedProduct = Products::onlyTrashed()->get()->toArray();
+            if (!empty($softDeletedProduct)) {
+                return response()->json([
+                    "status" => "200",
+                    "message" => "Soft-deleted Product Data Found",
+                    "product_type" => $softDeletedProduct
+                ]);
+            } else {
+                return response()->json([
+                    "status" => "404",
+                    "message" => "No Soft-deleted Product Data Found",
+                ]);
+            }
+        } else {
+            // Display the non-deleted records
+            $activeProduct = Products::all()->toArray();
+            if (!empty($activeProduct)) {
+                return response()->json([
+                    "status" => "200",
+                    "message" => "Active Product Data Found",
+                    "product_type" => $activeProduct
+                ]);
+            } else {
+                return response()->json([
+                    "status" => "404",
+                    "message" => "No Active Product Data Found",
+                ]);
+            }
+        }
     }
 
     /**
