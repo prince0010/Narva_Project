@@ -132,7 +132,7 @@ class ProdTypesController extends Controller
     public function showAllProductType($id)
 {
     if ($id == 1) {
-        // Display only soft-deleted records
+        // Display only the soft-deleted records
         $softDeletedProductTypes = Prod_Types::onlyTrashed()->get()->toArray();
         if (!empty($softDeletedProductTypes)) {
             return response()->json([
@@ -147,7 +147,7 @@ class ProdTypesController extends Controller
             ]);
         }
     } else {
-        // Display non-deleted records
+        // Display the non-deleted records
         $activeProductTypes = Prod_Types::all()->toArray();
         if (!empty($activeProductTypes)) {
             return response()->json([
