@@ -81,7 +81,7 @@ class SupplierController extends Controller
             $SupplierData = [
                 'id' => $supplier->id,
                 // 'prod_type' => $product->prod_type,
-                'supplier_name' => $supplier->supplier_name, //Specifying to show only the Product Type Name
+                'supplier_name' => $supplier, //Specifying to show only the Product Type Name
                 
             ];
 

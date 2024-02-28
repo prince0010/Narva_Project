@@ -91,7 +91,7 @@ class ProdTypesController extends Controller
             $producttypeData = [
                 'id' => $product_type->id,
                 // 'prod_type' => $product->prod_type,
-                'product_type_name' => $product_type->product_type_name, //Specifying to show only the Product Type Name
+                'product_type_name' => $product_type, //Specifying to show only the Product Type Name
                 
             ];
 
