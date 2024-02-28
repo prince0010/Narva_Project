@@ -83,27 +83,63 @@ class ProdTypesController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
+    public function showById($id){
+        
+        $product_type = Prod_Types::find($id);
+
+        if($product_type){
+            $producttypeData = [
+                'id' => $product_type->id,
+                // 'prod_type' => $product->prod_type,
+                'product_type_name' => $product_type->product_type_name, //Specifying to show only the Product Type Name
+                
+            ];
+
+            return response()->json([
+                'status' => '200',
+                'message' => 'Current Datas',   
+                'products' => $producttypeData,
+            ]);
+        }
+      
+        else {
+            return response()->json([
+                'status' => '401',
+                'message' => 'Empty Data'
+            ]);
+        }
+
+    }
+
+   
     public function showProductType(Prod_Types $product_Type)
     {
-        // return view('products.show', compact('products'));
-        if ($product_Type) {
+        $prodtype_que = $product_Type->paginate(10);
+
+        if($prodtype_que -> count() > 0){
+            $ProductsTypeData = $prodtype_que->map(function ($producttype) {
+                return [
+                    'id' => $producttype->id,
+                    // 'prod_type' => $product->prod_type,
+                    'product_type_name' => $producttype->product_type_name, //Specifying to show only the Product Type Name
+                     
+                ];
+            });
             return response()->json([
-                "status" => "200",
-                "message" => "There are Product Type Data Found",
-                "data" => $product_Type
+                'status' => '200',
+                'message' => 'Current Datas',
+                'products' => $ProductsTypeData,
             ]);
         } else {
             return response()->json([
-                "status" => "401",
-                "message" => "The Product Type Data is not Existed"
+                'status' => '401',
+                'message' => 'Empty Data'
             ]);
         }
+
     }
 
-    public function showAllProductType($id)
+    public function showSoftDeletedProductType($id)
     {
         if ($id == 1) {
             // Display only the soft-deleted records

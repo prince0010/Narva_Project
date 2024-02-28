@@ -54,10 +54,10 @@ class SuppliesController extends Controller
      }
 
     //  Search
-     public function searchSupplies($supplies){
-        $supp = Supplies::where('supplier_num', 'like', '%'.$supplies.'%')->get();
+     public function searchSupplies($id){
+        $supp = Supplies::where('id', 'like', '%'.$id.'%')->get();
  
-        if(empty(trim($supplies))) {
+        if(empty(trim($id))) {
          return response()->json([
              "status" => "204",
              "message" => "No Input is Provided for Search",
@@ -146,43 +146,37 @@ class SuppliesController extends Controller
 
     }
 
-    // public function showSuppliesAll()
-    // {
-    //     //
+    public function showById($id){
+        
+        $supplies = Supplies::with(['supplier', 'products'])->find($id);
+       
+        if($supplies){
+            $suppliesData = [
+                'id' => $supplies->id,
+                'supplier' => $supplies->supplier,
+                'products' => $supplies->products,
+                'quantity'=> $supplies->quantity,
+                'set' => $supplies->set 
+            ];
+
+            return response()->json([
+                'status' => '200',
+                'message' => 'Current Datas',   
+                'products' => $suppliesData,
+            ]);
+        }
       
-    //     $supplies_query = Supplies::query();
-    //     $supplies = $supplies_query->paginate(10);
+        else {
+            return response()->json([
+                'status' => '401',
+                'message' => 'Empty Data'
+            ]);
+        }
 
-    //     if($supplies -> count() > 0){
-    //         $SuppliesData = $supplies->map(function ($supply) {
-    //             return [
-    //                 'id' => $supply->id,
-    //                 'supplier' => $supply->supplier->supplier_name,
-    //                 'products' => $supply->products,
-    //                 'quantity'=> $supply->quantity,
-    //                 'set' => $supply->set 
-    //             ];
-    //         });
+    }
+
     
-    //         return response()->json([
-    //             'status' => '200',
-    //             'message' => 'Found Data',
-    //             'suppliers' => $SuppliesData,
-    //             'pagination' => [
-    //                 'current_page' => $supplies->currentPage(),
-    //                 'total' => $supplies->total(),
-    //                 'per_page' => $supplies->perPage(),
-    //             ]
-    //         ]);
-    //     } else {
-    //         return response()->json([
-    //             'status' => '401',
-    //             'message' => 'Empty Data'
-    //         ]);
-    //     }
-
-    // }
-    public function showSuppliesAll($id)
+    public function showSoftDeletedSupplier($id)
     {
         if ($id == 1) {
             // Display only the soft-deleted records

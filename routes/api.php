@@ -27,11 +27,12 @@ use App\Http\Controllers\SuppliesController;
         
         // CRUD IN PRODUCT
      Route::controller(ProductsController::class)->group(function(){
-        Route::get("/products", 'index');
+        Route::get("/products/index", 'index');
         Route::post("/products" ,"storeProduct");
         Route::get('/products/search/{products}', 'searchProducts'); 
-        Route::get("/products/id={products}" ,"showProduct");
-        Route::get("/products/all_products/{id}" ,"showAllProduct");
+        Route::get("/products" ,"showProduct"); //Show All Products
+        Route::get("/products/id={id}" ,"showById"); //Show By ID Products
+        Route::get("/products/{id}/all_products/" ,"showSoftDeletedProduct"); // Show Soft Deleted and Non Deleted Products || 1 = Soft Deleted | 0 = Not Soft Deleted
         Route::put("/products/id={products}/update" ,"updateProduct");
         Route::delete("/products/id={products}/delete" ,"destroyProduct");
         Route::delete("/products/id={products}/softdelete" ,"softdeleterecord");
@@ -40,12 +41,12 @@ use App\Http\Controllers\SuppliesController;
     // CRUD IN PRODUCT TYPE
     Route::controller(ProdTypesController::class)->group(function(){
         
-        Route::get("/product_types", 'index');
+        Route::get("/product_types/index", 'index');
         Route::post("/product_types", "storeProductType");
         Route::get('/product_types/search/{product_name}', 'searchProductType'); 
-        Route::get("/product_types/id={product_Type}", "showProductType");
-        // Route::get("/product_types/all_product_types", "showAllProductType");
-        Route::get("/product_types/all_product_types/{id}", "showAllProductType");
+        Route::get("/product_types", "showProductType"); //Show All Products Type
+        Route::get("/product_types/id={id}" ,"showById"); //Show By ID Products Type
+        Route::get("/product_types/{id}/all_product_types/", "showSoftDeletedProductType"); // Show Soft Deleted and Non Deleted Products Type || 1 = Soft Deleted | 0 = Not Soft Deleted
         Route::put("/product_types/id={product_Type}/update", "updateProductType");
         Route::delete("/product_types/id={product_Type}/delete", "destroyProductType");
         Route::delete("/product_types/id={product_Type}/softdelete", "softdeleterecord");
@@ -54,11 +55,12 @@ use App\Http\Controllers\SuppliesController;
     // CRUD IN SUPPPLIER
     Route::controller(SupplierController::class)->group(function () {
         
-        Route::get("/supplier", 'index');
+        Route::get("/supplier/index", 'index');
         Route::post("/supplier" , "addSupplier");
         Route::get('/supplier/search/{supplier_name}', 'searchSupplier'); 
-        Route::get("/supplier/id={supplier}" , "showSupplier");
-        Route::get("/supplier/all_supplier/{id}" , "showAllSupplier");
+        Route::get("/supplier", "showSupplier"); //Show All Supplier
+        Route::get("/supplier/id={id}" , "showById"); //Show All Supplier
+        Route::get("/supplier/{id}/all_supplier" , "showSoftDeletedSupplier"); // Show Soft Deleted and Non Deleted Supplier || 1 = Soft Deleted | 0 = Not Soft Deleted
         Route::put("/supplier/id={supplier}/update" , "updateSupplier");
         Route::delete("/supplier/id={supplier}/delete" ,"deleteSupplier");
         Route::delete("/supplier/id={supplier}/softdelete" ,"softdeleterecord");
@@ -67,12 +69,13 @@ use App\Http\Controllers\SuppliesController;
     // CRUD IN SUPPLY
     Route::controller(SuppliesController::class)->group(function () {
         
-          Route::get("/supplies", 'index');
+          Route::get("/supplies/index", 'index');
           Route::post("/supplies" , "addSupply");
-          Route::get('/supplies/search/{supplies}', 'searchSupplies'); 
+          Route::get('/supplies/{id}/search', 'searchSupplies'); 
             Route::put("/supplies/id={supplies}/update" , "updateSupply");
-            Route::get("/supplies/id={supplies}" , "showSupplies");
-            Route::get("/supplies/all_supply/{id}" , "showSuppliesAll");
+            Route::get("/supplies" , "showSupplies"); //Show All Supplier
+            Route::get("/supplies/id={id}" , "showById"); //Show All Supplier
+            Route::get("/supplies/{id}/all_supply" , "showSoftDeletedSupplier"); // Show Soft Deleted and Non Deleted Supplier || 1 = Soft Deleted | 0 = Not Soft Deleted
             Route::delete("/supplies/id={supplies}/delete" , "deleteSupply");
             Route::delete("/supplies/id={supplies}/softdelete" , "softdeleterecord");
         });

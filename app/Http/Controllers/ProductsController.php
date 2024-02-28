@@ -128,14 +128,42 @@ class ProductsController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    // public function show(Products $products) : View
+    
+    public function showById($id){
+        
+        $product = Products::with('prod_type')->find($id);
+        if($product){
+            $productData = [
+                'id' => $product->id,
+                // 'prod_type' => $product->prod_type,
+                'prod_type' => $product->prod_type->product_type_name, //Specifying to show only the Product Type Name
+                'part_num' => $product->part_num,
+                'part_name'=> $product->part_name,
+                'brand' => $product->brand,
+                'model' =>$product->model,
+                'price_code' =>$product->price_code
+            ];
+
+            return response()->json([
+                'status' => '200',
+                'message' => 'Current Datas',   
+                'products' => $productData,
+            ]);
+        }
+      
+        else {
+            return response()->json([
+                'status' => '401',
+                'message' => 'Empty Data'
+            ]);
+        }
+
+    }
+
     public function showProduct(Products $products)
     {
-        $products_query = Products::query();
-        $prod_que = $products_query->paginate(10);
+        
+        $prod_que = $products->paginate(10);
 
         if($prod_que -> count() > 0){
             $ProductsData = $prod_que->map(function ($product) {
@@ -164,38 +192,8 @@ class ProductsController extends Controller
 
     }
 
-    // public function showAllProduct()
-    // {
-    //    $product_query = Products::query();
-    //    $prod_que = $product_query->paginate(10);
 
-    //    if($prod_que -> count() > 0){
-    //     $ProductsData = $prod_que->map(function ($product) {
-    //         return [
-    //             'id' => $product->id,
-    //             // 'prod_type' => $product->prod_type,
-    //             'prod_type' => $product->prod_type->product_type_name, //Specifying to show only the Product Type Name
-    //             'part_num' => $product->part_num,
-    //             'part_name'=> $product->part_name,
-    //             'brand' => $product->brand,
-    //             'model' =>$product->model,
-    //             'price_code' =>$product->price_code
-    //         ];
-    //     });
-    //     return response()->json([
-    //         'status' => '200',
-    //         'message' => 'Current Datas',
-    //         'products' => $ProductsData,
-    //     ]);
-    // } else {
-    //     return response()->json([
-    //         'status' => '401',
-    //         'message' => 'Empty Data'
-    //     ]);
-    // }
-    // }
-
-    public function showAllProduct($id)
+    public function showSoftDeletedProduct($id)
     {
         if ($id == 1) {
             // Display only the soft-deleted records

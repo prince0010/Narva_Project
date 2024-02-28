@@ -74,29 +74,60 @@ class SupplierController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function showSupplier(Supplier $supplier)
+    public function showById($id)
     {
+        $supplier = Supplier::find($id);
         if ($supplier) {
-            return response()->json(
-                [
-                    "message" => "Found the Specific User",
-                    "status" => "200",
-                    "data" => $supplier
-                ]
-            );
-        } elseif ($supplier == NULL) {
+            $SupplierData = [
+                'id' => $supplier->id,
+                // 'prod_type' => $product->prod_type,
+                'supplier_name' => $supplier->supplier_name, //Specifying to show only the Product Type Name
+                
+            ];
+
             return response()->json([
-                "status" => "500",
-                "message" => "No Data Is Existed",
-                "Data" => $supplier
+                'status' => '200',
+                'message' => 'Current Datas',   
+                'products' => $SupplierData,
+            ]);
+        }
+      
+        else {
+            return response()->json([
+                'status' => '401',
+                'message' => 'Empty Data'
             ]);
         }
     }
 
-    public function showAllSupplier($id)
+    
+    public function showSupplier(Supplier $suppliers)
+    {
+        $supplier_que = $suppliers->paginate(10);
+
+        if($supplier_que -> count() > 0){
+            $SuppliersData = $supplier_que->map(function ($supplier) {
+                return [
+                    'id' => $supplier->id,
+                    // 'prod_type' => $product->prod_type,
+                    'supplier_name' => $supplier->supplier_name, 
+                ];
+            });
+            return response()->json([
+                'status' => '200',
+                'message' => 'Current Datas',
+                'products' => $SuppliersData,
+            ]);
+        } else {
+            return response()->json([
+                'status' => '401',
+                'message' => 'Empty Data'
+            ]);
+        }
+
+    }
+
+    public function showSoftDeletedSupplier($id)
     {
         if ($id == 1) {
             // Display only the soft-deleted records
