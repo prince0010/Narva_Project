@@ -11,7 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('prod__types', function (Blueprint $table) {
+        if(!Schema::hasTable('prod_types')){
+        Schema::create('prod_types', function (Blueprint $table) {
             $table->increments('id');
             $table->string('product_type_name');
             $table->timestamps();
@@ -21,7 +22,7 @@ return new class extends Migration
             //     $table->softDeletes();
             // });
         });
-
+    }
     }
 
     /**
@@ -32,6 +33,6 @@ return new class extends Migration
         // Schema::table('prod__types', function (Blueprint $table) {
         //     $table->dropSoftDeletes();
         // });
-        Schema::dropIfExists('prod__types');
+        Schema::dropIfExists('prod_types');
     }
 };

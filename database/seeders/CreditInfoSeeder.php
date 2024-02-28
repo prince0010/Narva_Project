@@ -2,33 +2,41 @@
 
 namespace Database\Seeders;
 
-use App\Models\Supplier;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Credit_Info;
+use App\Providers\currencyformatterprovider;
 use Illuminate\Database\Seeder;
-use Closure;
+use Faker\Factory as FakerFactory;
+use Faker\Generator as FakerGenerator;
 use Illuminate\Database\Eloquent\Collection;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Closure;
 
-class SupplierSeeder extends Seeder
+class CreditInfoSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        // Supplier
-        $this->command->warn(PHP_EOL . 'Creating Supplier....');
+        $this->command->warn(PHP_EOL . 'Creating Credit Information....');
+    
         // Creating non-soft-deleted records
         $this->withProgressBar(2, function () {
-            Supplier::factory(5)->create();
+            Credit_Info::factory(5)->create();
         });
+    
+        // Access the application instance using the app() function
+        $faker = app(FakerGenerator::class);
+        $faker->addProvider(new currencyformatterprovider($faker));
+    
         // Creating soft-deleted records
-        $this->withProgressBar(2, function () {
-            Supplier::factory(5)->create()->each(function ($supplier) {
-                $supplier->delete();
+        $this->withProgressBar(2, function () use ($faker) {
+            Credit_Info::factory(5)->create()->each(function ($creditInfo) use ($faker) {
+                $creditInfo->delete();
             });
         });
-        $this->command->info('Supplier is Created.');
+    
+        $this->command->info('Credit Information created successfully.');
     }
 
     protected function withProgressBar(int $amount, Closure $createCollectionOfOne): Collection

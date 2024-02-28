@@ -15,7 +15,7 @@ return new class extends Migration
             Schema::create('products', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('prod_type_ID')->unsigned();
-                $table->foreign('prod_type_ID')->references('id')->on('prod__types')->onUpdate('cascade')->onDelete('cascade');
+                $table->foreign('prod_type_ID')->references('id')->on('prod_types')->onUpdate('cascade')->onDelete('cascade');
                 $table->string('part_num');
                 $table->string('part_name');
                 $table->string('brand');

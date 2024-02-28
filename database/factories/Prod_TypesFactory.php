@@ -16,7 +16,7 @@ class Prod_TypesFactory extends Factory
     {  
        
             return [
-                'product_type_name' =>  $this->faker->randomElement(['Main Bearing', 'Wheel Hub', 'Steering', 'Engine', 'Spare Tire Covers', 'Car Ornaments']),
+                'product_type_name' => $this->faker->randomElement(['Main Bearing', 'Wheel Hub', 'Steering', 'Engine', 'Spare Tire Covers', 'Car Ornaments']),
                 // ... other attributes
             ];
       

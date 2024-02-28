@@ -21,13 +21,13 @@ class ProductsSeeder extends Seeder
 
         // Creating non-soft-deleted records
         $this->withProgressBar(2, function () {
-            Products::factory(15)->create();
+            Products::factory(5)->create();
         });
 
         // Creating soft-deleted records
         $this->withProgressBar(2, function () {
-            Products::factory(15)->create()->each(function ($productType) {
-                $productType->delete();
+            Products::factory(5)->create()->each(function ($product) {
+                $product->delete();
             });
         });
         $this->command->info('Products is Created.');

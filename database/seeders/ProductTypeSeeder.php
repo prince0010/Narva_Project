@@ -19,18 +19,16 @@ class ProductTypeSeeder extends Seeder
         $this->command->warn(PHP_EOL . 'Creating Product Type....');
         // Creating non-soft-deleted records
         $this->withProgressBar(2, function () {
-            Prod_Types::factory(5)->create();
+            Prod_Types::factory(2)->create();
         });
         // Creating soft-deleted records
         $this->withProgressBar(2, function () {
-            Prod_Types::factory(5)->create()->each(function ($productType) {
+            Prod_Types::factory(4)->create()->each(function ($productType) {
                 $productType->delete();
             });
         });
         $this->command->info('Product Type is Created.');
     }
-
-
 
 
     protected function withProgressBar(int $amount, Closure $createCollectionOfOne): Collection
