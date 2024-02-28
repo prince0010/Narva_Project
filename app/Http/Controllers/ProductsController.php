@@ -130,13 +130,13 @@ class ProductsController extends Controller
 
     
     public function showById($id){
-        
+
         $product = Products::with('prod_type')->find($id);
         if($product){
             $productData = [
                 'id' => $product->id,
                 // 'prod_type' => $product->prod_type,
-                'prod_type' => $product->prod_type->product_type_name, //Specifying to show only the Product Type Name
+                'prod_type' => $product->prod_type, //Specifying to show only the Product Type Name
                 'part_num' => $product->part_num,
                 'part_name'=> $product->part_name,
                 'brand' => $product->brand,
