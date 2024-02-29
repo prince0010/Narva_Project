@@ -80,15 +80,14 @@ class SupplierController extends Controller
         if ($supplier) {
             $SupplierData = [
                 'id' => $supplier->id,
-                // 'prod_type' => $product->prod_type,
-                'supplier_name' => $supplier->supplier_name, //Specifying to show only the Product Type Name
+                'supplier_name' => $supplier->supplier_name, //Specifying to show only the Supplier Name
                 
             ];
 
             return response()->json([
                 'status' => '200',
                 'message' => 'Current Datas',   
-                'products' => $SupplierData,
+                'supplier' => $SupplierData,
             ]);
         }
       
@@ -109,14 +108,13 @@ class SupplierController extends Controller
             $SuppliersData = $supplier_que->map(function ($supplier) {
                 return [
                     'id' => $supplier->id,
-                    // 'prod_type' => $product->prod_type,
                     'supplier_name' => $supplier->supplier_name, 
                 ];
             });
             return response()->json([
                 'status' => '200',
                 'message' => 'Current Datas',
-                'products' => $SuppliersData,
+                'supplier' => $SuppliersData,
             ]);
         } else {
             return response()->json([
@@ -136,7 +134,7 @@ class SupplierController extends Controller
                 return response()->json([
                     "status" => "200",
                     "message" => "Soft-deleted Supplier Data Found",
-                    "product_type" => $softDeletedSupplier
+                    "supplier" => $softDeletedSupplier
                 ]);
             } else {
                 return response()->json([
@@ -152,7 +150,7 @@ class SupplierController extends Controller
                         return response()->json([
                             "status" => "200",
                             "message" => "Active Supplier Data Found",
-                            "product_type" => $activeSupplier
+                            "supplier" => $activeSupplier
                         ]);
                     } else {
                         return response()->json([
