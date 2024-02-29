@@ -87,7 +87,7 @@ class SupplierController extends Controller
             return response()->json([
                 'status' => '200',
                 'message' => 'Current Datas',   
-                'supplier' => $SupplierData,
+                'suppliers' => $SupplierData,
             ]);
         }
       
@@ -114,7 +114,7 @@ class SupplierController extends Controller
             return response()->json([
                 'status' => '200',
                 'message' => 'Current Datas',
-                'supplier' => $SuppliersData,
+                'suppliers' => $SuppliersData,
             ]);
         } else {
             return response()->json([
@@ -134,7 +134,7 @@ class SupplierController extends Controller
                 return response()->json([
                     "status" => "200",
                     "message" => "Soft-deleted Supplier Data Found",
-                    "supplier" => $softDeletedSupplier
+                    "suppliers" => $softDeletedSupplier
                 ]);
             } else {
                 return response()->json([
@@ -150,7 +150,7 @@ class SupplierController extends Controller
                         return response()->json([
                             "status" => "200",
                             "message" => "Active Supplier Data Found",
-                            "supplier" => $activeSupplier
+                            "suppliers" => $activeSupplier
                         ]);
                     } else {
                         return response()->json([
