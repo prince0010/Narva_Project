@@ -22,7 +22,10 @@ class ProductsController extends Controller
        $req = $request->keyword;
            if ($req) {
             $products_query->where('part_num', 'LIKE', '%' .$req.'%')
-            ->orWhere('part_name', 'LIKE', '%' .$req.'%');
+            ->orWhere('part_name', 'LIKE', '%' .$req.'%')
+            ->orWhere('brand', 'LIKE', '%' .$req.'%')
+            ->orWhere('model', 'LIKE', '%' .$req.'%')
+            ->orWhere('price_code', 'LIKE', '%' .$req.'%');
         }
 
         $products = $products_query->paginate(10);
