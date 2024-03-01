@@ -42,7 +42,6 @@ use App\Http\Controllers\SuppliesController;
 
     // CRUD IN PRODUCT TYPE
     Route::controller(ProdTypesController::class)->group(function(){
-        
         Route::get("/product_types/index", 'index');
         Route::post("/product_types", "storeProductType");
         Route::get('/product_types/search/{product_name}', 'searchProductType'); 
@@ -93,5 +92,5 @@ use App\Http\Controllers\SuppliesController;
         Route::delete("/sales/id={sales}/delete" ,"destroySales");
         Route::delete("/sales/id={sales}/softdelete" ,"softdeleterecord");
     });
-    
+
     });

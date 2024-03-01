@@ -18,6 +18,9 @@ class Supplier extends Model
         'contact_number'
     ];
 
- 
+    public function product(){
+        return $this ->hasMany(Products::class);
+    }
+
 
 }

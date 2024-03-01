@@ -37,6 +37,7 @@ class ProductsController extends Controller
                     'id' => $product->id,
                     // 'prod_type' => $product->prod_type,
                     'prod_type' => $product->prod_type->product_type_name, //Specifying to show only the Product Type Name
+                    'supplier_type'=>$product->supplier->supplier_name,
                     'part_num' => $product->part_num,
                     'part_name'=> $product->part_name,
                     'brand' => $product->brand,
@@ -67,7 +68,8 @@ class ProductsController extends Controller
 
     //  Search
      public function searchProducts($products){
-        $prod = Products::where('part_name', 'like', '%'.$products.'%')->get();
+        $prod = Products::where('part_name', 'like', '%'.$products.'%')
+                        ->orWhere('supplier_ID', 'like', '%'.$products.'%')->get();
  
         if(empty(trim($products))) {
          return response()->json([
@@ -84,7 +86,8 @@ class ProductsController extends Controller
     {
         //
         $request->validate([
-            'prod_type_ID' => 'required|integer|digits_between:1, 10',
+            'prod_type_ID' => 'required|integer|digits_between:1, 999',
+            'supplier_ID' => 'required|integer|digits_between:1, 999',
             'part_num' => 'required|string|max:255',
             'part_name'=> 'required|string|max:255',
             'brand' => 'required|string|max:255',
@@ -100,6 +103,7 @@ class ProductsController extends Controller
                     "products" => [
                         "id" => $products->id,
                         "prod_type" => $products->prod_type,
+                        "supplier_type" => $products->supplier,
                         "part_num" => $products->part_num,
                         "part_name" => $products->part_name,
                         "brand" => $products->brand,
@@ -145,6 +149,7 @@ class ProductsController extends Controller
                 'id' => $product->id,
                 // 'prod_type' => $product->prod_type,
                 'prod_type' => $product->prod_type, //Specifying to show only the Product Type Name
+                "supplier_type" => $product->supplier,
                 'part_num' => $product->part_num,
                 'part_name'=> $product->part_name,
                 'brand' => $product->brand,
@@ -180,6 +185,7 @@ class ProductsController extends Controller
                     'id' => $product->id,
                     // 'prod_type' => $product->prod_type,
                     'prod_type' => $product->prod_type->product_type_name, //Specifying to show only the Product Type Name
+                    "supplier_type" => $product->supplier,
                     'part_num' => $product->part_num,
                     'part_name'=> $product->part_name,
                     'brand' => $product->brand,
@@ -247,6 +253,7 @@ class ProductsController extends Controller
     {
         $request->validate([
             'prod_type_ID' => 'required|integer|digits_between:1, 10',
+            'supplier_ID' => 'required|integer|digits_between:1, 999',
             'part_num' => 'required|string|max:255',
             'part_name'=> 'required|string|max:255',
             'brand' => 'required|string|max:255',

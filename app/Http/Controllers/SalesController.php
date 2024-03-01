@@ -26,9 +26,10 @@ class SalesController extends Controller
             $SalesData = $sales->map(function ($sale) {
                 return [
                     'id' => $sale->id,
-                    // 'product_id' => $sale->products->part_name, 
-                    'product_id' => $sale->products,
-                    'interest_id' => $sale->interest,
+                    'product_id' => $sale->product->part_name, 
+                    // 'product_type' => $sale->product,
+                    // 'interest_type' => $sale->interest,
+                    'interest_type' => $sale->interest->interest_name,
                     'quantity' => $sale->quantity,
                     'total' => $sale->total,
                     'sale_date' => $sale->sale_date,
@@ -49,7 +50,7 @@ class SalesController extends Controller
         } else {
             return response()->json([
                 'status' => '401',
-                'message' => 'Sakes is empty'
+                'message' => 'Sales is empty'
             ]);
         }
     }

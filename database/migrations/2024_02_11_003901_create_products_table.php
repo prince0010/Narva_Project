@@ -16,6 +16,8 @@ return new class extends Migration
                 $table->increments('id');
                 $table->integer('prod_type_ID')->unsigned();
                 $table->foreign('prod_type_ID')->references('id')->on('prod_types')->onUpdate('cascade')->onDelete('cascade');
+                $table->integer('supplier_ID')->unsigned();
+                $table->foreign('supplier_ID')->references('id')->on('suppliers')->onUpdate('cascade')->onDelete('cascade');
                 $table->string('part_num');
                 $table->string('part_name');
                 $table->string('brand');

@@ -18,6 +18,7 @@ class Products extends Model
      */
     protected $fillable = [
         'prod_type_ID', //Fk
+        'supplier_ID',
         'part_num',
         'part_name',
         'brand',
@@ -34,5 +35,7 @@ class Products extends Model
         return $this ->hasOne(sales::class);
     }
    
-   
+   public function supplier(){
+        return $this ->belongsTo(Supplier::class, 'supplier_ID');
+   }
 }
