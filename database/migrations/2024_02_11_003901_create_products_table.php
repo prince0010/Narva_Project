@@ -21,6 +21,7 @@ return new class extends Migration
                 $table->string('brand');
                 $table->string('model');
                 $table->string('price_code');
+                $table->integer('stock');
                 $table->timestamps();
                 $table->softDeletes();
             });

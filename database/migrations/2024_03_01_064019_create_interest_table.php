@@ -11,20 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('suppliers', function (Blueprint $table) {
+        if(!Schema::hasTable('interest')){ 
+        Schema::create('interest', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('supplier_name');
-            $table->bigInteger('contact_number');
+            $table->string('interest_name');
+            $table->float('interest_rate', 5, 2);
             $table->timestamps();
             $table->softDeletes();
         });
     }
-
+    }
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('suppliers');
+        Schema::dropIfExists('interest');
     }
 };

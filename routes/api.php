@@ -3,8 +3,10 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Controllers\InterestController;
 use App\Http\Controllers\ProdTypesController ;
 use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\SalesController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SuppliesController;
 
@@ -66,18 +68,30 @@ use App\Http\Controllers\SuppliesController;
         Route::delete("/supplier/id={supplier}/softdelete" ,"softdeleterecord");
 });
 
-    // CRUD IN SUPPLY
-    Route::controller(SuppliesController::class)->group(function () {
-        
-          Route::get("/supplies/index", 'index');
-          Route::post("/supplies" , "addSupply");
-          Route::get('/supplies/{id}/search', 'searchSupplies'); 
-            Route::put("/supplies/id={supplies}/update" , "updateSupply");
-            Route::get("/supplies" , "showSupplies"); //Show All Supplier
-            Route::get("/supplies/id={id}" , "showById"); //Show All Supplier
-            Route::get("/supplies/{id}/all_supply" , "showSoftDeletedSupplier"); // Show Soft Deleted and Non Deleted Supplier || 1 = Soft Deleted | 0 = Not Soft Deleted
-            Route::delete("/supplies/id={supplies}/delete" , "deleteSupply");
-            Route::delete("/supplies/id={supplies}/softdelete" , "softdeleterecord");
-        });
-       
+    // CRUD IN Interest
+    Route::controller(InterestController::class)->group(function(){
+        Route::get("/interest/index", 'index');
+        Route::post("/interest" ,"storeInterest");
+        Route::get('/interest/search/{products}', 'searchInterest'); 
+        Route::get("/interest" ,"showInterest"); //Show All Products
+        Route::get("/interest/id={id}" ,"showById"); //Show By ID Products
+        Route::get("/interest/{id}/all_interest/" ,"showSoftDeletedInterest"); // Show Soft Deleted and Non Deleted Products || 1 = Soft Deleted | 0 = Not Soft Deleted
+        Route::put("/interest/id={interest}/update" ,"updateInterest");
+        Route::delete("/interest/id={interest}/delete" ,"destroyInterest");
+        Route::delete("/interest/id={interest}/softdelete" ,"softdeleterecord");
+    });
+
+     // CRUD IN Sales
+     Route::controller(SalesController::class)->group(function(){
+        Route::get("/sales/index", 'index');
+        Route::post("/sales" ,"storeSales");
+        Route::get('/sales/search/{sales}', 'searchSales'); 
+        Route::get("/sales" ,"showSales"); 
+        Route::get("/sales/id={id}" ,"showById"); 
+        Route::get("/sales/{id}/all_sales/" ,"showSoftDeletedSales"); 
+        Route::put("/sales/id={sales}/update" ,"updateSales");
+        Route::delete("/sales/id={sales}/delete" ,"destroySales");
+        Route::delete("/sales/id={sales}/softdelete" ,"softdeleterecord");
+    });
+    
     });

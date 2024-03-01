@@ -25,7 +25,8 @@ class ProductsController extends Controller
             ->orWhere('part_name', 'LIKE', '%' .$req.'%')
             ->orWhere('brand', 'LIKE', '%' .$req.'%')
             ->orWhere('model', 'LIKE', '%' .$req.'%')
-            ->orWhere('price_code', 'LIKE', '%' .$req.'%');
+            ->orWhere('price_code', 'LIKE', '%' .$req.'%')
+            ->orWhere('stock', 'LIKE', '%' .$req. '%');
         }
 
         $products = $products_query->paginate(10);
@@ -40,7 +41,8 @@ class ProductsController extends Controller
                     'part_name'=> $product->part_name,
                     'brand' => $product->brand,
                     'model' =>$product->model,
-                    'price_code' =>$product->price_code
+                    'price_code' =>$product->price_code,
+                    'stock' => $product->stock
                 ];
             });
 
@@ -88,7 +90,7 @@ class ProductsController extends Controller
             'brand' => 'required|string|max:255',
             'model' => 'required|string|max:255',
             'price_code' => 'required|string|max:255', // In Specific Code there is a price on it so example in RRNB the price of it is Pesos 3150.00
-
+            'stock' => 'required|integer|digits_between: 1, 10',
         ]);
         $products = Products::create($request->all());
   
@@ -103,6 +105,7 @@ class ProductsController extends Controller
                         "brand" => $products->brand,
                         "model" => $products->model,
                         "price_code" => $products->price_code,
+                        "stock"=>$products->stock
                     ],
                     // "pagination" => [
                     //     'current_page' => $products->currentPage(),
@@ -135,6 +138,8 @@ class ProductsController extends Controller
     public function showById($id){
 
         $product = Products::with('prod_type')->find($id);
+
+
         if($product){
             $productData = [
                 'id' => $product->id,
@@ -144,7 +149,8 @@ class ProductsController extends Controller
                 'part_name'=> $product->part_name,
                 'brand' => $product->brand,
                 'model' =>$product->model,
-                'price_code' =>$product->price_code
+                'price_code' =>$product->price_code,
+                'stock'=>$product->stock
             ];
 
             return response()->json([
@@ -178,7 +184,8 @@ class ProductsController extends Controller
                     'part_name'=> $product->part_name,
                     'brand' => $product->brand,
                     'model' =>$product->model,
-                    'price_code' =>$product->price_code
+                    'price_code' =>$product->price_code,
+                    'stock'=>$product->stock
                 ];
             });
             return response()->json([
@@ -195,7 +202,6 @@ class ProductsController extends Controller
 
     }
 
-
     public function showSoftDeletedProduct($id)
     {
         if ($id == 1) {
@@ -205,7 +211,7 @@ class ProductsController extends Controller
                 return response()->json([
                     "status" => "200",
                     "message" => "Soft-deleted Product Data Found",
-                    "product_type" => $softDeletedProduct
+                    "product" => $softDeletedProduct
                 ]);
             } else {
                 return response()->json([
@@ -220,7 +226,7 @@ class ProductsController extends Controller
                 return response()->json([
                     "status" => "200",
                     "message" => "Active Product Data Found",
-                    "product_type" => $activeProduct
+                    "product" => $activeProduct
                 ]);
             } else {
                 return response()->json([
@@ -246,6 +252,7 @@ class ProductsController extends Controller
             'brand' => 'required|string|max:255',
             'model' => 'required|string|max:255',
             'price_code' => 'required|string|max:255', // In Specific Code there is a price on it so example in RRNB the price of it is Pesos 3150.00
+            'stock' => 'required|integer|digits_between: 1, 10',
         ]);
 
         if ($products->update($request->all())) {

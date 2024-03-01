@@ -20,4 +20,8 @@ class Prod_Types extends Model
     public function product(){
         return $this ->hasMany(Products::class);
     }
+
+    public function sales(){
+        return $this ->hasOne(sales::class);
+    }
 }

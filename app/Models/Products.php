@@ -23,17 +23,16 @@ class Products extends Model
         'brand',
         'model',
         'price_code',
+        'stock'
     ];
 
     public function prod_type(){
         return $this->belongsTo(Prod_Types::class, 'prod_type_ID');
     }
 
-    public function supply(){
-        return $this->hasMany(Supplies::class);
+    public function sales(){
+        return $this ->hasOne(sales::class);
     }
-    // Foreign and Primary Example
-    // public function user(){
-    //     return $this->belongsTo(User::class);
-    // }
+   
+   
 }

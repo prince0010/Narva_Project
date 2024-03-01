@@ -14,7 +14,8 @@ class SupplierController extends Controller
         $supplier_query = Supplier::query();
 
         if ($request->keyword) {
-            $supplier_query->where('supplier_name', 'LIKE', '%' . $request->keyword . '%');
+            $supplier_query->where('supplier_name', 'LIKE', '%' . $request->keyword . '%')
+            ->orWhere('contact_number', 'LIKE' , '%' . $request->keyword . '%');
         }
 
         $suppliers = $supplier_query->paginate(10);
@@ -23,7 +24,8 @@ class SupplierController extends Controller
             $SuppliersData = $suppliers->map(function ($supplier) {
                 return [
                     'id' => $supplier->id,
-                    'supplier_name' => $supplier->supplier_name
+                    'supplier_name' => $supplier->supplier_name,
+                    'contact_number' => $supplier->contact_number,
                 ];
             });
 
@@ -51,7 +53,12 @@ class SupplierController extends Controller
     public function addSupplier(Request $request)
     {
         $request->validate([
-            'supplier_name' => 'required|string|max:255'
+            'supplier_name' => 'required|string|max:255',
+            'contact_number' => [
+                'required',
+                'regex:/^[0-9()+\-. ]+$/',
+                'max:12', 
+            ],
         ]);
 
         $supplier = Supplier::create($request->all());
@@ -62,6 +69,7 @@ class SupplierController extends Controller
                 "supppliers" => [
                     "id" => $supplier->id,
                     "supplier_name" => $supplier->supplier_name,
+                    "contact_number" => $supplier->contact_number,
                     "created_at" => $supplier->created_at
                 ],
                 "message" => "supplier name added successfully",
@@ -81,6 +89,7 @@ class SupplierController extends Controller
             $SupplierData = [
                 'id' => $supplier->id,
                 'supplier_name' => $supplier->supplier_name, //Specifying to show only the Supplier Name
+                'contact_number' => $supplier->contact_number,
                 
             ];
 
@@ -109,6 +118,7 @@ class SupplierController extends Controller
                 return [
                     'id' => $supplier->id,
                     'supplier_name' => $supplier->supplier_name, 
+                    'contact_number' => $supplier->contact_number,
                 ];
             });
             return response()->json([
@@ -188,7 +198,13 @@ class SupplierController extends Controller
     public function updateSupplier(Request $request, Supplier $supplier)
     {
         $request->validate([
-            'supplier_name' => 'required|string|max:255'
+            'supplier_name' => 'required|string|max:255',
+            "supppliers" => [
+                "id" => $supplier->id,
+                "supplier_name" => $supplier->supplier_name,
+                "contact_number" => $supplier->contact_number,
+                "created_at" => $supplier->created_at
+            ],
         ]);
 
         if ($supplier->update($request->all())) {
