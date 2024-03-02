@@ -18,7 +18,7 @@ class Products extends Model
      */
     protected $fillable = [
         'prod_type_ID', //Fk
-        'supplier_ID',
+        'supplier_ID', //Fk
         'part_num',
         'part_name',
         'brand',

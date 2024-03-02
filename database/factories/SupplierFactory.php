@@ -17,6 +17,7 @@ class SupplierFactory extends Factory
         return [
 
             'supplier_name' => $this->faker->name(), 
+            'contact_number' => $this->faker->numerify('###########'),
             
         ];
     }

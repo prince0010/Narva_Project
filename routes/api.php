@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\InterestController;
+use App\Http\Controllers\MarkupController;
 use App\Http\Controllers\ProdTypesController ;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\SalesController;
@@ -67,17 +68,17 @@ use App\Http\Controllers\SuppliesController;
         Route::delete("/supplier/id={supplier}/softdelete" ,"softdeleterecord");
 });
 
-    // CRUD IN Interest
-    Route::controller(InterestController::class)->group(function(){
-        Route::get("/interest/index", 'index');
-        Route::post("/interest" ,"storeInterest");
-        Route::get('/interest/search/{products}', 'searchInterest'); 
-        Route::get("/interest" ,"showInterest"); //Show All Products
-        Route::get("/interest/id={id}" ,"showById"); //Show By ID Products
-        Route::get("/interest/{id}/all_interest/" ,"showSoftDeletedInterest"); // Show Soft Deleted and Non Deleted Products || 1 = Soft Deleted | 0 = Not Soft Deleted
-        Route::put("/interest/id={interest}/update" ,"updateInterest");
-        Route::delete("/interest/id={interest}/delete" ,"destroyInterest");
-        Route::delete("/interest/id={interest}/softdelete" ,"softdeleterecord");
+    // CRUD IN Markup
+    Route::controller(MarkupController::class)->group(function(){
+        Route::get("/markup/index", 'index');
+        Route::post("/markup" ,"storeMarkup");
+        Route::get('/markup/search/{markup}', 'searchMarkup'); 
+        Route::get("/markup" ,"showMarkup"); //Show All Products
+        Route::get("/markup/id={id}" ,"showById"); //Show By ID Products
+        Route::get("/markup/{id}/all_markup/" ,"showSoftDeletedMarkup"); // Show Soft Deleted and Non Deleted Products || 1 = Soft Deleted | 0 = Not Soft Deleted
+        Route::put("/markup/id={markup}/update" ,"updateMarkup");
+        Route::delete("/markup/id={markup}/delete" ,"destroyMarkup");
+        Route::delete("/markup/id={markup}/softdelete" ,"softdeleterecord");
     });
 
      // CRUD IN Sales

@@ -15,8 +15,8 @@ return new class extends Migration
             $table->increments('id');
             $table->integer('product_id')->unsigned();
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade')->onUpdate('cascade');
-            $table->integer('interest_id')->unsigned();
-            $table->foreign('interest_id')->references('id')->on('interest')->onUpdate('cascade')->onUpdate('cascade');
+            $table->integer('markup_id')->unsigned();
+            $table->foreign('markup_id')->references('id')->on('markup')->onUpdate('cascade')->onUpdate('cascade');
             $table->integer('quantity');
             $table->double('total', 5, 2);
             $table->date('sale_date');

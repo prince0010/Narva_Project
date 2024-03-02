@@ -37,7 +37,7 @@ class ProductsController extends Controller
                     'id' => $product->id,
                     // 'prod_type' => $product->prod_type,
                     'prod_type' => $product->prod_type->product_type_name, //Specifying to show only the Product Type Name
-                    'supplier_type'=>$product->supplier->supplier_name,
+                    'supplier'=>$product->supplier->supplier_name,
                     'part_num' => $product->part_num,
                     'part_name'=> $product->part_name,
                     'brand' => $product->brand,
@@ -93,7 +93,7 @@ class ProductsController extends Controller
             'brand' => 'required|string|max:255',
             'model' => 'required|string|max:255',
             'price_code' => 'required|string|max:255', // In Specific Code there is a price on it so example in RRNB the price of it is Pesos 3150.00
-            'stock' => 'required|integer|digits_between: 1, 10',
+            'stock' => 'required|integer|digits_between: 1, 999',
         ]);
         $products = Products::create($request->all());
   
@@ -103,7 +103,7 @@ class ProductsController extends Controller
                     "products" => [
                         "id" => $products->id,
                         "prod_type" => $products->prod_type,
-                        "supplier_type" => $products->supplier,
+                        "supplier" => $products->supplier,
                         "part_num" => $products->part_num,
                         "part_name" => $products->part_name,
                         "brand" => $products->brand,
@@ -111,24 +111,10 @@ class ProductsController extends Controller
                         "price_code" => $products->price_code,
                         "stock"=>$products->stock
                     ],
-                    // "pagination" => [
-                    //     'current_page' => $products->currentPage(),
-                    //     'total' => $products->total(),
-                    //     'per_page' => $products->perPage(),
-                    // ],
                   
                     "message" => "Added the Product Successfully",
                 ]);
-            // return redirect()->route('products.index')
-            //     ->with(response()->json([
-            //         'status' => 200,
-            //         "message" => "Added the Product Successfully",
-            //     ]));
-
-            //    return response()->json([
-            //         'status' => 200,
-            //         "message" => "Added the Product Successfully",
-            //     ]);
+         
         } else {
             return response()->json([
                
@@ -149,7 +135,7 @@ class ProductsController extends Controller
                 'id' => $product->id,
                 // 'prod_type' => $product->prod_type,
                 'prod_type' => $product->prod_type, //Specifying to show only the Product Type Name
-                "supplier_type" => $product->supplier,
+                "supplier" => $product->supplier,
                 'part_num' => $product->part_num,
                 'part_name'=> $product->part_name,
                 'brand' => $product->brand,
@@ -183,9 +169,9 @@ class ProductsController extends Controller
             $ProductsData = $prod_que->map(function ($product) {
                 return [
                     'id' => $product->id,
-                    // 'prod_type' => $product->prod_type,
-                    'prod_type' => $product->prod_type->product_type_name, //Specifying to show only the Product Type Name
-                    "supplier_type" => $product->supplier,
+                    'prod_type' => $product->prod_type,
+                    // 'prod_type' => $product->prod_type->product_type_name, //Specifying to show only the Product Type Name
+                    "supplier" => $product->supplier,
                     'part_num' => $product->part_num,
                     'part_name'=> $product->part_name,
                     'brand' => $product->brand,
@@ -252,14 +238,14 @@ class ProductsController extends Controller
     public function updateProduct(Request $request, Products $products)
     {
         $request->validate([
-            'prod_type_ID' => 'required|integer|digits_between:1, 10',
+            'prod_type_ID' => 'required|integer|digits_between:1, 999',
             'supplier_ID' => 'required|integer|digits_between:1, 999',
             'part_num' => 'required|string|max:255',
             'part_name'=> 'required|string|max:255',
             'brand' => 'required|string|max:255',
             'model' => 'required|string|max:255',
             'price_code' => 'required|string|max:255', // In Specific Code there is a price on it so example in RRNB the price of it is Pesos 3150.00
-            'stock' => 'required|integer|digits_between: 1, 10',
+            'stock' => 'required|integer|digits_between: 1, 999',
         ]);
 
         if ($products->update($request->all())) {

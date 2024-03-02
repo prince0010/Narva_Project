@@ -5,23 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-class interest extends Model
+
+class markup extends Model
 {
-    
     use HasFactory;
     use SoftDeletes;
 
 
-    protected $table = 'interest'; 
+    protected $table = 'markup'; 
 
     protected $fillable = [
-        'interest_name',
-        'interest_rate'
+        'markup_name',
+        'markup_rate'
     ];
 
   
     public function sales(){
-        return $this ->hasMany(sales::class);
+        return $this->hasMany(sales::class);
     }
 
 }

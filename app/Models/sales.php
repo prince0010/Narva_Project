@@ -12,8 +12,8 @@ class sales extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'product_id', 
-        'interest_id',
+        'product_id', //Fk
+        'markup_id', //Fk
         'quantity',
         'total',
         'sale_date',
@@ -22,8 +22,8 @@ class sales extends Model
     ];
 
 
-    public function interest(){
-        return $this->belongsTo(interest::class, 'interest_id');
+    public function markup(){
+        return $this->belongsTo(markup::class, 'markup_id');
     }
 
     public function product(){

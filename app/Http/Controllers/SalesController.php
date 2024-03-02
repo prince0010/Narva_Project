@@ -12,6 +12,7 @@ class SalesController extends Controller
     {
 
         $sales_query = sales::query();
+        
         $req = $request->keyword;
         if ($req) {
             $sales_query->where('quantity', 'LIKE', '%' . $req . '%')
@@ -26,10 +27,10 @@ class SalesController extends Controller
             $SalesData = $sales->map(function ($sale) {
                 return [
                     'id' => $sale->id,
-                    'product_id' => $sale->product->part_name, 
+                    'product' => $sale->product->part_name, 
                     // 'product_type' => $sale->product,
-                    // 'interest_type' => $sale->interest,
-                    'interest_type' => $sale->interest->interest_name,
+                    // 'markup' => $sale->markup,
+                    "markup" => $sale->markup->markup_name,
                     'quantity' => $sale->quantity,
                     'total' => $sale->total,
                     'sale_date' => $sale->sale_date,
@@ -59,9 +60,9 @@ class SalesController extends Controller
     {
         $salesData = Sales::select('sales.*') 
         ->join('products', 'sales.product_id', '=', 'products.id')
-        ->join('interest', 'sales.interest_id', '=', 'interest.id')
+        ->join('markup', 'sales.markup_id', '=', 'markup.id')
         ->where('products.part_name', 'like', '%' . $sales . '%')
-        ->orWhere('interest.interest_name', 'like', '%' . $sales . '%')
+        ->orWhere('markup.markup_name', 'like', '%' . $sales . '%')
         ->get();
 
         if (empty(trim($sales))) {
@@ -78,9 +79,9 @@ class SalesController extends Controller
             foreach ($salesData as $sale) {
                 $response['sales'][] = [
                     "id" => $sale->id,
-                    "product_id" => [
+                    "product" => [
                         "id" => $sale->product->id,
-                        "prod_type_ID" => $sale->product->prod_type,
+                        "prod_type" => $sale->product->prod_type,
                         "part_num" => $sale->product->part_num,
                         "part_name" => $sale->product->part_name,
                         "brand" => $sale->product->brand,
@@ -91,7 +92,7 @@ class SalesController extends Controller
                         "updated_at" => $sale->product->updated_at,
                         "deleted_at" => $sale->product->deleted_at,
                     ],
-                    "interest_id" => $sale->interest,
+                    "markup" => $sale->markup,
                     "quantity" => $sale->quantity,
                     "total" => $sale->total,
                     "sale_date" => $sale->sale_date,
@@ -108,7 +109,7 @@ class SalesController extends Controller
         //
         $request->validate([
             'product_id' => 'required|integer|digits_between:1, 999',
-            'interest_id' => 'required|integer|digits_between:1, 999',
+            'markup_id' => 'required|integer|digits_between:1, 999',
             'quantity' => 'required|integer|digits_between:1,8',
             'total' => 'required|numeric|min:0|max:999.99',
             'sale_date' => 'required|date|date_format:Y-m-d',
@@ -122,10 +123,10 @@ class SalesController extends Controller
                 "status" => 200,
                 "sales" => [
                     "id" => $sales->id,
-                    "product_id" => [
+                    "product" => [
                         "id" => $sales-> product -> id,
 
-                        "prod_type_ID" => $sales -> product -> prod_type,
+                        "prod_type" => $sales -> product -> prod_type,
 
                         "part_num" => $sales -> product -> part_num,
                         "part_name" => $sales-> product -> part_name,
@@ -138,7 +139,7 @@ class SalesController extends Controller
                         "deleted_at" => $sales -> product -> deleted_at,
                     ],
                     
-                    "interest_id" => $sales->interest,
+                    "markup" => $sales-> markup,
 
                     "quantity" => $sales->quantity,
                     "total" => $sales->total,
@@ -160,16 +161,16 @@ class SalesController extends Controller
     public function showById($id)
     {
 
-        $sales = sales::with(['product', 'interest'])->find($id);
+        $sales = sales::with(['product', 'markup'])->find($id);
 
 
         if ($sales) {
             $salesData = [
                 'id' => $sales->id,
-                "product_id" => [
+                "product" => [
                     "id" => $sales-> product -> id,
 
-                    "prod_type_ID" => $sales -> product -> prod_type,
+                    "prod_type" => $sales -> product -> prod_type,
 
                     "part_num" => $sales -> product -> part_num,
                     "part_name" => $sales-> product -> part_name,
@@ -182,7 +183,7 @@ class SalesController extends Controller
                     "deleted_at" => $sales -> product -> deleted_at,
                 ],
                 
-                "interest_id" => $sales->interest,
+                "markup" => $sales->markup,
 
                 "quantity" => $sales->quantity,
                 "total" => $sales->total,
@@ -211,10 +212,10 @@ class SalesController extends Controller
             $SalesData = $sales_que->map(function ($sale) {
                 return [
                     "id" => $sale->id,
-                    "product_id" => [
+                    "product" => [
                         "id" => $sale-> product -> id,
 
-                        "prod_type_ID" => $sale -> product -> prod_type,
+                        "prod_type" => $sale -> product -> prod_type,
 
                         "part_num" => $sale -> product -> part_num,
                         "part_name" => $sale-> product -> part_name,
@@ -227,7 +228,7 @@ class SalesController extends Controller
                         "deleted_at" => $sale -> product -> deleted_at,
                     ],
                     
-                    "interest_id" => $sale->interest,
+                    "markup" => $sale->markup,
 
                     "quantity" => $sale->quantity,
                     "total" => $sale->total,
@@ -267,16 +268,16 @@ class SalesController extends Controller
             }
         } else {
             // Display the non-deleted records
-            $activeSales = sales::with(['product', 'interest'])->get();
+            $activeSales = sales::with(['product', 'markup'])->get();
             if (!empty($activeSales)) {
                 $formattedSales = [];
 
                 foreach ($activeSales as $sale) {
                     $formattedSale = [
                         "id" => $sale->id,
-                        "product_id" => [
+                        "product" => [
                             "id" => $sale->product->id,
-                            "prod_type_ID" => $sale -> product -> prod_type,
+                            "prod_type" => $sale -> product -> prod_type,
                             "part_num" => $sale->product->part_num,
                             "part_name" => $sale-> product -> part_name,
                             "brand" => $sale -> product -> brand,
@@ -287,7 +288,7 @@ class SalesController extends Controller
                             "updated_at" => $sale -> product -> updated_at,
                             "deleted_at" => $sale -> product -> deleted_at,
                         ],
-                        "interest_id" => $sale->interest->id,
+                        "markup" => $sale->markup,
                         "quantity" => $sale->quantity,
                         "total" => $sale->total,
                         "sale_date" => $sale->sale_date,
@@ -314,8 +315,8 @@ class SalesController extends Controller
     public function updateSales(Request $request, sales $sales)
     {
         $request->validate([
-            'product_id' => 'required|integer|digits_between:1, 10',
-            'interest_id' => 'required|integer|digits_between:1, 10',
+            'product_id' => 'required|integer|digits_between:1, 999',
+            'markup_id' => 'required|integer|digits_between:1, 999',
             'quantity' => 'required|integer|digits_between:1,8',
             'total' => 'required|numeric|min:0|max:999.99',
             'sale_date' => 'required|date|date_format:Y-m-d',
@@ -329,10 +330,10 @@ class SalesController extends Controller
                 "message" => "You Updated the Sales Successfully",
                 "data" => [
                     "id" => $sales->id,
-                    "product_id" => [
+                    "product" => [
                         "id" => $sales-> product -> id,
 
-                        "prod_type_ID" => $sales -> product -> prod_type,
+                        "prod_type" => $sales -> product -> prod_type,
 
                         "part_num" => $sales -> product -> part_num,
                         "part_name" => $sales-> product -> part_name,
@@ -345,7 +346,7 @@ class SalesController extends Controller
                         "deleted_at" => $sales -> product -> deleted_at,
                     ],
                     
-                    "interest_id" => $sales->interest,
+                    "markup" => $sales->markup,
 
                     "quantity" => $sales->quantity,
                     "total" => $sales->total,
@@ -371,10 +372,10 @@ class SalesController extends Controller
                 "message" => "You Deleted the Sales Successfully",
                 "data" => [
                     "id" => $sales->id,
-                    "product_id" => [
+                    "product" => [
                         "id" => $sales-> product -> id,
 
-                        "prod_type_ID" => $sales -> product -> prod_type,
+                        "prod_type" => $sales -> product -> prod_type,
 
                         "part_num" => $sales -> product -> part_num,
                         "part_name" => $sales-> product -> part_name,
@@ -387,7 +388,7 @@ class SalesController extends Controller
                         "deleted_at" => $sales -> product -> deleted_at,
                     ],
                     
-                    "interest_id" => $sales->interest,
+                    "markup" => $sales->markup,
 
                     "quantity" => $sales->quantity,
                     "total" => $sales->total,
@@ -423,10 +424,10 @@ class SalesController extends Controller
                 'message' => 'Sales Soft Deleted Successfully',
                "data" => [
                 "id" => $sale->id,
-                "product_id" => [
+                "product" => [
                     "id" => $sale-> product -> id,
 
-                    "prod_type_ID" => $sale -> product -> prod_type,
+                    "prod_type" => $sale -> product -> prod_type,
 
                     "part_num" => $sale -> product -> part_num,
                     "part_name" => $sale-> product -> part_name,
@@ -439,7 +440,7 @@ class SalesController extends Controller
                     "deleted_at" => $sale -> product -> deleted_at,
                 ],
                 
-                "interest_id" => $sale->interest,
+                "markup" => $sale->markup,
 
                 "quantity" => $sale->quantity,
                 "total" => $sale->total,
