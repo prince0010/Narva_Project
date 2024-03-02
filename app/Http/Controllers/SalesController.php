@@ -41,7 +41,7 @@ class SalesController extends Controller
             return response()->json([
                 'status' => '200',
                 'message' => 'Current Datas',
-                'products' => $SalesData,
+                'sales' => $SalesData,
                 'pagination' => [
                     'current_page' => $sales->currentPage(),
                     'total' => $sales->total(),
@@ -194,7 +194,7 @@ class SalesController extends Controller
             return response()->json([
                 'status' => '200',
                 'message' => 'Current Datas',
-                'products' => $salesData,
+                'sales' => $salesData,
             ]);
         } else {
             return response()->json([
