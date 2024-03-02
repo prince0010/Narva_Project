@@ -110,7 +110,7 @@ class SalesController extends Controller
         $request->validate([
             'product_id' => 'required|integer|digits_between:1, 999',
             'markup_id' => 'required|integer|digits_between:1, 999',
-            'quantity' => 'required|integer|digits_between:1,8',
+            'quantity' => 'required|integer|digits_between:1,100',
             'total' => 'required|numeric|min:0|max:999.99',
             'sale_date' => 'required|date|date_format:Y-m-d',
             'remarks' => 'required|string|max:255',
@@ -317,7 +317,7 @@ class SalesController extends Controller
         $request->validate([
             'product_id' => 'required|integer|digits_between:1, 999',
             'markup_id' => 'required|integer|digits_between:1, 999',
-            'quantity' => 'required|integer|digits_between:1,8',
+            'quantity' => 'required|integer|digits_between:1,100',
             'total' => 'required|numeric|min:0|max:999.99',
             'sale_date' => 'required|date|date_format:Y-m-d',
             'remarks' => 'required|string|max:255',

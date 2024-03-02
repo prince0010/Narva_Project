@@ -23,10 +23,16 @@ class sales extends Model
 
 
     public function markup(){
-        return $this->belongsTo(markup::class, 'markup_id');
+        return $this->belongsTo(markup::class, 'markup_id')->withTrashed();
     }
+    // public function markup(){
+    //     return $this->belongsTo(markup::class, 'markup_id');
+    // }
 
     public function product(){
-        return $this->belongsTo(Products::class, 'product_id')->with('prod_type');
+        return $this->belongsTo(Products::class, 'product_id')->with('prod_type')->withTrashed();;
     }
+    // public function product(){
+    //     return $this->belongsTo(Products::class, 'product_id')->with('prod_type');
+    // }
 }
