@@ -27,7 +27,12 @@ class SalesController extends Controller
             $SalesData = $sales->map(function ($sale) {
                 return [
                     'id' => $sale->id,
-                    'product' => $sale->product->part_name, 
+                    'part_name' => $sale->product->part_name, 
+                    'part_num' => $sale->product->part_num, 
+                    'brand' =>  $sale->product->brand,
+                    'model' => $sale->product->model,
+                    'price_code' => $sale->product->price_code,
+                    "supplier" => $sale->product->supplier->supplier_name,
                     // 'product_type' => $sale->product,
                     // 'markup' => $sale->markup,
                     "markup" => $sale->markup->markup_name,
