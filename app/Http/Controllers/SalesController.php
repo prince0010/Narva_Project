@@ -20,7 +20,9 @@ class SalesController extends Controller
                 ->orWhere('sale_date', 'LIKE', '%' . $req . '%')
                 ->orWhere('remarks', 'LIKE', '%' . $req . '%');
         }
-
+        
+         // Add order by sale_date in descending order
+        $sales_query->orderBy('id', 'desc');
         $sales = $sales_query->paginate(10);
 
         if ($sales->count() > 0) {
