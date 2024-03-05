@@ -38,4 +38,29 @@ class Products extends Model
    public function supplier(){
         return $this ->belongsTo(Supplier::class, 'supplier_ID');
    }
+
+
+//    Para sa Subtract Stock
+
+   public function subtractStock(int $quantity): bool
+   {
+    if($quantity <=0 || $this->stock < $quantity){
+        return false;
+    }
+    
+    $this->stock -= $quantity;
+    return $this->save();
+   }
+
+//   Para sa Add Stock
+
+   public function addStock(int $quantity): bool
+   {
+    if($quantity <= 0 ){
+        return false;
+    }
+   
+    $this->stock += $quantity;
+    return $this->save();
+   }
 }

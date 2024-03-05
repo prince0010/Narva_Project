@@ -39,6 +39,8 @@ use App\Http\Controllers\SuppliesController;
         Route::put("/products/id={products}/update" ,"updateProduct");
         Route::delete("/products/id={products}/delete" ,"destroyProduct");
         Route::delete("/products/id={products}/softdelete" ,"softdeleterecord");
+        Route::post("products/id={products}/subtract-stock", "subtractStock");
+        Route::post("products/id={products}/add-stock", "addStock");
     });
 
     // CRUD IN PRODUCT TYPE
@@ -52,6 +54,7 @@ use App\Http\Controllers\SuppliesController;
         Route::put("/product_types/id={product_Type}/update", "updateProductType");
         Route::delete("/product_types/id={product_Type}/delete", "destroyProductType");
         Route::delete("/product_types/id={product_Type}/softdelete", "softdeleterecord");
+        
     });
     
     // CRUD IN SUPPPLIER

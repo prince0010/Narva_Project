@@ -313,4 +313,69 @@ class ProductsController extends Controller
 
     }
 
+    public function subtractStock(Request $request, $products){
+        
+        $request->validate([
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $product = Products::find($products);
+
+        if(!$product){
+            return response()->json([
+                'status' => 404,
+                'message' => 'Product Not Found'
+            ]);
+        }
+  // temporary input
+        $quantity = (int) $request->input('quantity');
+
+        if($product->subtractStock($quantity)){
+            return response()->json([
+                'status' => '201',
+                'message' => 'Stock Subtracted Successfully',
+                'stock-left' => $product->stock,
+            ]);
+        }
+        else{
+            return response()->json([
+                'status' => 500,
+                'message' => 'Failed to Subtract the Stock',
+            ]);
+        }
+    }
+
+    public function addStock(Request $request, $products){
+
+        $request->validate([
+            'quantity' =>'required|integer|min:1',
+        ]);
+
+        $product = Products::find($products);
+
+        if(!$product){
+            return response()->json([
+                'status' => 404,
+                'message' => 'Product Not Found'
+            ]);
+        }
+
+        // temporary input 
+        $quantity = (int) $request->input('quantity');
+
+        if($product->addStock($quantity)){
+            return response()->json([
+                'status' => '201',
+                'message' => 'Stock Added Successfully',
+                'stock-left' => $product->stock,
+            ]);
+        }
+        else{
+            return response()->json([
+                'status' => 500,
+                'message' => 'Failed to Add the Stock',
+            ]);
+        }
+    }
+
 }
