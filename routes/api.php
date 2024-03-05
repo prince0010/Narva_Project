@@ -41,6 +41,7 @@ use App\Http\Controllers\SuppliesController;
         Route::delete("/products/id={products}/softdelete" ,"softdeleterecord");
         Route::post("products/id={products}/subtract-stock", "subtractStock");
         Route::post("products/id={products}/add-stock", "addStock");
+        Route::get("/products/top-low-stock-products", "lowestStock");
     });
 
     // CRUD IN PRODUCT TYPE
@@ -54,6 +55,7 @@ use App\Http\Controllers\SuppliesController;
         Route::put("/product_types/id={product_Type}/update", "updateProductType");
         Route::delete("/product_types/id={product_Type}/delete", "destroyProductType");
         Route::delete("/product_types/id={product_Type}/softdelete", "softdeleterecord");
+        
         
     });
     
@@ -95,6 +97,10 @@ use App\Http\Controllers\SuppliesController;
         Route::put("/sales/id={sales}/update" ,"updateSales");
         Route::delete("/sales/id={sales}/delete" ,"destroySales");
         Route::delete("/sales/id={sales}/softdelete" ,"softdeleterecord");
+        Route::get('/sales/top-products', 'getTopProducts');
+        Route::get('/sales/{yearly}/top-products', 'getTopProducts'); //Yearly Reports
+        Route::get('/sales/{yearly}/{monthly}/top-products', 'getTopProducts'); //Monthly Reports
+        Route::delete('/sales/id={id}/delete-sales', 'deletedSales'); // Delete the Session in Sales
     });
 
     });

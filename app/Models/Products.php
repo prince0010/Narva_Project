@@ -32,11 +32,11 @@ class Products extends Model
     }
 
     public function sales(){
-        return $this ->hasOne(sales::class);
-    }
+      return $this ->hasMany(sales::class, 'product_id');
+        }
    
    public function supplier(){
-        return $this ->belongsTo(Supplier::class, 'supplier_ID');
+    return $this->belongsTo(Supplier::class, 'supplier_ID')->withTrashed();;
    }
 
 
@@ -63,4 +63,5 @@ class Products extends Model
     $this->stock += $quantity;
     return $this->save();
    }
+ 
 }

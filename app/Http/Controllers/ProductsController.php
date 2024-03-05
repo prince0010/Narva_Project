@@ -163,14 +163,13 @@ class ProductsController extends Controller
     public function showProduct(Products $products)
     {
         
-        $prod_que = $products->paginate(10);
+        $prod_que = $products->get();
 
         if($prod_que -> count() > 0){
             $ProductsData = $prod_que->map(function ($product) {
                 return [
                     'id' => $product->id,
                     'prod_type' => $product->prod_type,
-                    // 'prod_type' => $product->prod_type->product_type_name, //Specifying to show only the Product Type Name
                     "supplier" => $product->supplier,
                     'part_num' => $product->part_num,
                     'part_name'=> $product->part_name,
@@ -312,39 +311,7 @@ class ProductsController extends Controller
             ]);
 
     }
-
-    public function subtractStock(Request $request, $products){
-        
-        $request->validate([
-            'quantity' => 'required|integer|min:1',
-        ]);
-
-        $product = Products::find($products);
-
-        if(!$product){
-            return response()->json([
-                'status' => 404,
-                'message' => 'Product Not Found'
-            ]);
-        }
-  // temporary input
-        $quantity = (int) $request->input('quantity');
-
-        if($product->subtractStock($quantity)){
-            return response()->json([
-                'status' => '201',
-                'message' => 'Stock Subtracted Successfully',
-                'stock-left' => $product->stock,
-            ]);
-        }
-        else{
-            return response()->json([
-                'status' => 500,
-                'message' => 'Failed to Subtract the Stock',
-            ]);
-        }
-    }
-
+    // Adding the Quantity of Stock
     public function addStock(Request $request, $products){
 
         $request->validate([
@@ -378,4 +345,57 @@ class ProductsController extends Controller
         }
     }
 
+    // Display the Top 10 Lowest Stock
+
+    public function lowestStock()
+    {
+        
+        $lowestStockProducts = Products::select(
+            'products.id',
+            'products.supplier_ID',
+            'suppliers.supplier_name',
+            'products.part_num',
+            'products.part_name',
+            'products.brand',
+            'products.model',
+            'products.price_code',
+            'products.stock',
+        )
+
+        // get the supplier name in the suppliers based on the supplier_ID in the products table
+        ->leftJoin('suppliers', 'products.supplier_ID', '=', 'suppliers.id')
+        ->orderBy('products.stock')
+        ->limit(10)
+        ->get();
+    
+        if ($lowestStockProducts->count() > 0) {
+            $lowStockProductsData = $lowestStockProducts->map(function ($product) {
+                return [
+                    'products_id' => $product->id,
+                    'supplier' => [
+                        'supplier_id' => $product->supplier_ID,
+                        'supplier_name' => $product->supplier_name,
+                    ],
+                    'part_num' => $product->part_num,
+                    'part_name' => $product->part_name,
+                    'brand' => $product->brand,
+                    'model' => $product->model,
+                    'price_code' => $product->price_code,
+                    'stock-left' => $product->stock,
+                   
+                ];
+            });
+    
+            return response()->json([
+                'status' => 200,
+                'message' => 'The Top 10 Products with the Lowest Stock',
+                'stocks_data' => $lowStockProductsData
+            ]);
+        } else {
+            return response()->json([
+                'status' => 401,
+                'message' => 'No Products Stock Available'
+            ]);
+        }
+    }
 }
