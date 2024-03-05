@@ -512,7 +512,6 @@ class SalesController extends Controller
                     'brand' => $product->brand,
                     'model' => $product->model,
                     'price_code' => $product->price_code,
-                    // 'stock' => $product->stock,
                     'total_quantity' => $product->total_quantity,
                 ];
             });
