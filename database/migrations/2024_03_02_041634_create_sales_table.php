@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('markup_id')->unsigned();
             $table->foreign('markup_id')->references('id')->on('markup')->onUpdate('cascade')->onUpdate('cascade');
             $table->integer('quantity');
-            $table->double('total', 5, 2);
+            $table->double('total', 9, 2);
             $table->date('sale_date');
             $table->string('remarks');
             $table->timestamps();
