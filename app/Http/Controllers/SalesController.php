@@ -473,61 +473,74 @@ class SalesController extends Controller
             ]
         );
     }
+   
+
 
     // Get the Monthly and Yearly Reports
     public function getTopProducts($yearly = null, $monthly = null)
-    {
-        $query = Products::select(
-                'products.id',
-                DB::raw('MAX(products.part_num) as part_num'),
-                DB::raw('MAX(products.part_name) as part_name'),
-                DB::raw('MAX(products.brand) as brand'),
-                DB::raw('MAX(products.model) as model'),
-                DB::raw('MAX(products.price_code) as price_code'),
-                DB::raw('MAX(products.stock) as stock'),
-                DB::raw('SUM(sales.quantity) as total_quantity')
-            )
-            ->join('sales', 'products.id', '=', 'sales.product_id')
-            ->whereYear('sales.sale_date', $yearly);
+{
+    $query = Products::select(
+            'products.id',
+            'products.part_num',
+            'products.part_name',
+            'products.brand',
+            'products.model',
+            'products.price_code',
+            'products.stock',
+            DB::raw('(SELECT MAX(supplier_name) FROM suppliers WHERE id = products.supplier_ID) as supplier_name'), // Libog na subquery para makuha ang supplier_name
+            DB::raw('SUM(sales.quantity) as total_quantity')
+        )
+        ->join('sales', 'products.id', '=', 'sales.product_id')
+        ->whereYear('sales.sale_date', $yearly);
 
-        if($monthly) {
-            $query->whereMonth('sales.sale_date', $monthly);
-        }
-
-        $topProducts = $query
-            ->groupBy('products.id')
-            ->orderByDesc('total_quantity')
-            ->take(10)
-            ->get();
-
-        if($topProducts->count() > 0) {
-            $topProductsData = $topProducts->map(function ($product) {
-                // Get an array of Sales ID
-                $salesID = $product->sales->pluck('id');
-                return [
-                    'sales_id' => $salesID,
-                    'product_id' => $product->id,
-                    'part_num' => $product->part_num,
-                    'part_name' => $product->part_name,
-                    'brand' => $product->brand,
-                    'model' => $product->model,
-                    'price_code' => $product->price_code,
-                    'total_quantity' => $product->total_quantity,
-                ];
-            });
-
-            return response()->json([
-                'status' => '200',
-                'message' => 'Top 10 Products with Highest Total Quantity in Sales',
-                'products' => $topProductsData,
-            ]);
-        } else {
-            return response()->json([
-                'status' => '401',
-                'message' => 'No Sales Data Available',
-            ]);
-        }
+    if ($monthly) {
+        $query->whereMonth('sales.sale_date', $monthly);
     }
+
+    $topProducts = $query
+        ->groupBy(
+            'products.id',
+            'products.part_num',
+            'products.part_name',
+            'products.brand',
+            'products.model',
+            'products.price_code',
+            'products.stock',
+            'products.supplier_ID' // Include supplier_ID in GROUP BY
+        )
+        ->orderByDesc('total_quantity')
+        ->take(10)
+        ->get();
+
+    if ($topProducts->count() > 0) {
+        $topProductsData = $topProducts->map(function ($product) {
+            // Get an array of Sales ID
+            $salesID = $product->sales->pluck('id');
+            return [
+                'sales_id' => $salesID,
+                'product_id' => $product->id,
+                'part_num' => $product->part_num,
+                'part_name' => $product->part_name,
+                'brand' => $product->brand,
+                'model' => $product->model,
+                'price_code' => $product->price_code,
+                'supplier_name' => $product->supplier_name,
+                'total_quantity' => $product->total_quantity,
+            ];
+        });
+
+        return response()->json([
+            'status' => '200',
+            'message' => 'Top 10 Products with Highest Total Quantity in Sales',
+            'products' => $topProductsData,
+        ]);
+    } else {
+        return response()->json([
+            'status' => '401',
+            'message' => 'No Sales Data Available',
+        ]);
+    }
+}
 
     // Deleted Sales == the quantity mubalik sa Products na quantity sa orginal quantity
     public function deletedSales($id){
