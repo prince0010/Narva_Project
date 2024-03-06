@@ -373,7 +373,6 @@ class ProductsController extends Controller
                 return [
                     'products_id' => $product->id,
                     'supplier' => [
-                        'supplier_id' => $product->supplier_ID,
                         'supplier_name' => $product->supplier_name,
                     ],
                     'part_num' => $product->part_num,
