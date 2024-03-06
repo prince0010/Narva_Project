@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('credit_names', function (Blueprint $table) {
+        Schema::create('downpayment_info', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('credit_name');
-            $table->integer('credit_info_id')->unsigned();
-            $table->foreign('credit_info_id')->references('id')->on('credit_information')->onUpdate('cascade')->onDelete('cascade');
-            $table->softDeletes();
+            $table->double('downpayment', 5,2);
+            $table->date('dp_date');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('credit_names');
+        Schema::dropIfExists('downpayment_info');
     }
 };

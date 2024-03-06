@@ -370,9 +370,10 @@ class ProductsController extends Controller
     
         if ($lowestStockProducts->count() > 0) {
             $lowStockProductsData = $lowestStockProducts->map(function ($product) {
+                $supplierName = $product->supplier ? $product->supplier->supplier_name : null;
                 return [
                     'products_id' => $product->id,
-                    'supplier_name' => $product->supplier_name,
+                    'supplier_name' => $supplierName,
                     'part_num' => $product->part_num,
                     'part_name' => $product->part_name,
                     'brand' => $product->brand,
@@ -395,4 +396,43 @@ class ProductsController extends Controller
             ]);
         }
     }
+
+    // Out Of Stock
+    public function outofStock(){
+        
+        $outOfStockProducts = Products::where('stock', 0)
+        ->leftJoin('suppliers', 'products.supplier_ID', '=', 'suppliers.id')
+        ->select([
+            'products.id',
+            'products.supplier_ID',
+            'suppliers.supplier_name',
+            'products.part_num',
+            'products.part_name',
+            'products.brand',
+            'products.model',
+            'products.price_code',
+            'products.stock',
+        ])
+        ->orderByDesc('products.id')
+        ->get();
+
+    $formattedProducts = [];
+
+    foreach ($outOfStockProducts as $product) {
+        $supplierName = $product->supplier ? $product->supplier->supplier_name : null;
+
+        $formattedProducts[] = [
+            'products_id' => $product->id,
+            'supplier_name' => $supplierName,
+            'part_num' => $product->part_num,
+            'part_name' => $product->part_name,
+            'brand' => $product->brand,
+            'model' => $product->model,
+            'price_code' => $product->price_code,
+            'stock' => $product->stock,
+        ];
+    }
+
+    return response()->json(['product' => $formattedProducts]);
+}
 }

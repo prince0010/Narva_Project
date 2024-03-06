@@ -42,6 +42,7 @@ use App\Http\Controllers\SuppliesController;
         Route::post("products/id={products}/subtract-stock", "subtractStock");
         Route::post("products/id={products}/add-stock", "addStock");
         Route::get("/products/top-low-stock-products", "lowestStock");
+        Route::get("/products/outofstock", "outofStock");
     });
 
     // CRUD IN PRODUCT TYPE

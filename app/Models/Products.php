@@ -36,7 +36,7 @@ class Products extends Model
         }
    
    public function supplier(){
-    return $this->belongsTo(Supplier::class, 'supplier_ID')->withTrashed();;
+    return $this->belongsTo(Supplier::class, 'supplier_ID');
    }
 
 
