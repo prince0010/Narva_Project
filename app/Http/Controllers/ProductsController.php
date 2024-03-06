@@ -372,9 +372,7 @@ class ProductsController extends Controller
             $lowStockProductsData = $lowestStockProducts->map(function ($product) {
                 return [
                     'products_id' => $product->id,
-                    'supplier' => [
-                        'supplier_name' => $product->supplier_name,
-                    ],
+                    'supplier_name' => $product->supplier_name,
                     'part_num' => $product->part_num,
                     'part_name' => $product->part_name,
                     'brand' => $product->brand,
