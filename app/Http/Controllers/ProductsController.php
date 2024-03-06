@@ -413,7 +413,7 @@ class ProductsController extends Controller
             'products.price_code',
             'products.stock',
         ])
-        ->orderByDesc('products.id')
+        ->orderByDesc('products.id') //Desc Order
         ->get();
 
     $formattedProducts = [];
