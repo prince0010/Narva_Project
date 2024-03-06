@@ -30,7 +30,7 @@ class SalesController extends Controller
         if ($sales->count() > 0) {
             $SalesData = $sales->map(function ($sale) {
                 return [
-                    'sale_id' => $sale->id,
+                    'id' => $sale->id,
                     'part_name' => $sale->product->part_name, 
                     'part_num' => $sale->product->part_num, 
                     'brand' =>  $sale->product->brand,
