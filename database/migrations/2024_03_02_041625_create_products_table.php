@@ -14,16 +14,16 @@ return new class extends Migration
         if(!Schema::hasTable('products')){
             Schema::create('products', function (Blueprint $table) {
                 $table->increments('id');
-                $table->integer('prod_type_ID')->unsigned();
+                $table->integer('prod_type_ID')->unsigned()->nullable();
                 $table->foreign('prod_type_ID')->references('id')->on('prod_types')->onUpdate('cascade')->onDelete('cascade');
-                $table->integer('supplier_ID')->unsigned();
+                $table->integer('supplier_ID')->unsigned()->nullable();
                 $table->foreign('supplier_ID')->references('id')->on('suppliers')->onUpdate('cascade')->onDelete('cascade');
-                $table->string('part_num');
-                $table->string('part_name');
-                $table->string('brand');
-                $table->string('model');
-                $table->string('price_code');
-                $table->integer('stock');
+                $table->string('part_num')->nullable();
+                $table->string('part_name')->nullable();
+                $table->string('brand')->nullable();
+                $table->string('model')->nullable();
+                $table->string('price_code')->nullable();
+                $table->string('stock')->nullable();
                 $table->timestamps();
                 $table->softDeletes();
             });

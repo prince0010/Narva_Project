@@ -11,7 +11,7 @@ class Products extends Model
     use HasFactory;
     use SoftDeletes;
 
-     /**
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
@@ -27,41 +27,43 @@ class Products extends Model
         'stock'
     ];
 
-    public function prod_type(){
+    public function prod_type()
+    {
         return $this->belongsTo(Prod_Types::class, 'prod_type_ID');
     }
 
-    public function sales(){
-      return $this ->hasMany(sales::class, 'product_id');
+    public function sales()
+    {
+        return $this->hasMany(sales::class, 'product_id');
+    }
+
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class, 'supplier_ID');
+    }
+
+
+    //    Para sa Subtract Stock
+
+    public function subtractStock(int $quantity): bool
+    {
+        if ($quantity <= 0 || $this->stock < $quantity) {
+            return false;
         }
-   
-   public function supplier(){
-    return $this->belongsTo(Supplier::class, 'supplier_ID');
-   }
 
-
-//    Para sa Subtract Stock
-
-   public function subtractStock(int $quantity): bool
-   {
-    if($quantity <=0 || $this->stock < $quantity){
-        return false;
+        $this->stock -= $quantity;
+        return $this->save();
     }
-    
-    $this->stock -= $quantity;
-    return $this->save();
-   }
 
-//   Para sa Add Stock
+    // Para sa Add Stock
+    public function addStock(int $quantity): bool
+    {
+        if ($quantity <= 0) {
+            return false;
+        }
 
-   public function addStock(int $quantity): bool
-   {
-    if($quantity <= 0 ){
-        return false;
+        $this->stock += $quantity;
+
+        return $this->save();
     }
-   
-    $this->stock += $quantity;
-    return $this->save();
-   }
- 
 }

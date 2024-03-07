@@ -43,6 +43,9 @@ use App\Http\Controllers\SuppliesController;
         Route::post("products/id={products}/add-stock", "addStock");
         Route::get("/products/top-low-stock-products", "lowestStock");
         Route::get("/products/outofstock", "outofStock");
+        Route::get("/products/import-form", "import");
+        Route::post("/products/import" , "import");
+        Route::post("/products/add-quantites", "addQuantities");
     });
 
     // CRUD IN PRODUCT TYPE
