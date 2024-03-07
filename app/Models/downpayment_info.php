@@ -17,6 +17,7 @@ class downpayment_info extends Model
     ];
 
     public function credit_info(){
-      return $this->hasMany(credit_info::class); 
+      return $this->hasOne(credit_info::class); 
     }
+
 }

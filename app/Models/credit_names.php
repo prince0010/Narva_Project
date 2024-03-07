@@ -15,4 +15,8 @@ class credit_names extends Model
         'credit_name',
         'credit_info_ID'
     ];
+
+    public function credit_info(){
+        return $this->belongsTo(credit_info::class, 'credit_info_ID');
+    }
 }

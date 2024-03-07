@@ -24,5 +24,9 @@ class credit_info extends Model
     public function downpayment_info(){
         return $this->belongsTo(downpayment_info::class, 'dp_ID')->withTrashed();
     }
-    
+
+    public function credit_names(){
+        return $this->hasOne(credit_names::class);
+    }
+
 }
