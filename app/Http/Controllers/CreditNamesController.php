@@ -25,9 +25,8 @@ class CreditNamesController extends Controller
                 return [
                     'credit_name_id' => $cred_name_inform->id,
                     'credit_name' => $cred_name_inform->credit_name,
-                    'credit_info_ID' => $cred_name_inform->credit_info_ID,
                     'downpayment' => $cred_name_inform->downpayment,
-                    'DP_date' => $cred_name_inform->DP_date,
+                    'dp_date' => $cred_name_inform->dp_date,
                 ];
             });
             return response()->json([
@@ -67,9 +66,8 @@ class CreditNamesController extends Controller
  {
      $request->validate([
                     'credit_name' => 'required|string|max:255',
-                    'credit_info_ID' =>'required|integer|digits_between:1, 999',
                     'downpayment' => 'required|numeric|between:0,999999.99',
-                    'DP_date' =>  'required|date|date_format:Y-m-d',
+                    'dp_date' =>  'required|date|date_format:Y-m-d',
      ]);
 
      $cred_name = credit_names::create($request->all());
@@ -86,9 +84,8 @@ class CreditNamesController extends Controller
              'credit_name' => [
                 'credit_name_id' => $cred_name->id,
                      'credit_name' => $cred_name->credit_name,
-                    'credit_info_ID' =>$cred_name->credit_info_ID,
                     'downpayment' => $cred_name->downpayment,
-                    'DP_date' =>  $cred_name->DP_date,
+                    'dp_date' =>  $cred_name->dp_date,
              ]
          ]);
      }
@@ -102,10 +99,9 @@ class CreditNamesController extends Controller
      if ($cred_name) {
          $CreditNameData = [
              'credit_name_id' => $cred_name->id,
-             'credit_name' => $cred_name->prod_type, //Specifying to show only the cred_name Type Name
-             'credit_info_ID' => $cred_name->supplier,
-             'downpayment' => $cred_name->part_num,
-             'DP_date' => $cred_name->part_name,
+             'credit_name' => $cred_name->credit_name, //Specifying to show only the cred_name Type Name
+             'downpayment' => $cred_name->downpayment,
+             'dp_date' => $cred_name->dp_date,
          ];
 
          return response()->json([
@@ -132,9 +128,8 @@ class CreditNamesController extends Controller
              return [
                  'credit_name_id' => $cred_n->id,
                  'credit_name' => $cred_n->credit_name,
-                 'credit_info_ID' => $cred_n->credit_info_ID,
                  'downpayment' => $cred_n->downpayment,
-                 'DP_date' => $cred_n->DP_date,
+                 'dp_date' => $cred_n->dp_date,
                 
              ];
          });
@@ -185,13 +180,12 @@ class CreditNamesController extends Controller
          }
      }
  }
- public function updateProduct(Request $request, credit_names $credit_name)
+ public function updateCreditName(Request $request, credit_names $credit_name)
  {
      $request->validate([
         'credit_name' => 'required|string|max:255',
-        'credit_info_ID' =>'required|integer|digits_between:1, 999',
         'downpayment' => 'required|numeric|between:0,999999.99',
-        'DP_date' =>  'required|date|date_format:Y-m-d',
+        'dp_date' =>  'required|date|date_format:Y-m-d',
          
      ]);
 

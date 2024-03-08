@@ -53,7 +53,11 @@ class CreditInfoController extends Controller
     //  Search
     public function searchCredit_Info($credit_inform)
     {
-        $cred = credit_info::where('invoice_number', 'like', '%' . $credit_inform . '%')->get();
+        $credData = credit_info::select('credit_info.*')
+        ->join('credit_names', 'credit_info.credit_name_ID', '=', 'credit_names.id')
+        ->where('credit_names.credit_name', 'like', '%' . $credit_inform . '%')
+        ->orWhere('invoice_number', 'like', '%' . $credit_inform . '%')
+        ->get();
 
         if (empty(trim($credit_inform))) {
             return response()->json([
@@ -61,14 +65,39 @@ class CreditInfoController extends Controller
                 "message" => "No Input is Provided for Search",
             ]);
         } else {
-            return response()->json($cred);
+           $response = [
+                "status" => 200,
+                "credit_info" => [],
+            ];
+
+            foreach ($credData as $cred) {
+                $response['credit_info'][] = [
+                    "credit_info_ID" => $cred->id,
+                    "credit_name" => [
+                        "credit_name_ID" => $cred->credit_names->id,
+                        "credit_name" => $cred->credit_names->credit_name,
+                        "downpayment" => $cred->credit_names->downpayment,
+                        "dp_date" => $cred->credit_names->dp_date,
+                       
+                    ],
+                    "credit_date" => $cred->credit_date,
+                    'invoice_number' => $cred->invoice_number,
+                    'charge' => $cred->charge,
+                    'credit_limit' => $cred->credit_limit,
+                    'balance' => $cred->balance,
+                    'status' => $cred->status
+                ];
+            }
+
+            return response()->json($response);
         }
-    }
+        }
 
     public function storeCreditInfo(Request $request)
     {
         $request->validate([
-            'credit_date' => 'required|date|date_format:Y-m-d',
+            'credit_date' => 'required|date|date_format:Y-m-d', //Mao ning gihatagan nila na 1 month para makabayad or full pay sa credit line nila or utang
+            'credit_name_ID'=>'required|integer|digits_between:1, 999',
             'invoice_number' => 'required|string|max:255',
             'charge' => 'required|numeric|between:0,999999.99',
             'credit_limit' => 'required|numeric|between:0,999999.99',
@@ -89,6 +118,7 @@ class CreditInfoController extends Controller
                 'message' => 'Successfully Added the Credit Information',
                 'credit_info' => [
                     'credit_info_id' => $cred_info->id,
+                    'credit_name_ID' => $cred_info->credit_names,
                     'credit_date' => $cred_info->credit_date,
                     'invoice_number' => $cred_info->invoice_number,
                     'charge' => $cred_info->charge,
@@ -108,6 +138,7 @@ class CreditInfoController extends Controller
      if ($cred_info) {
          $CreditInfoData = [
             'credit_info_id' => $cred_info->id,
+            'credit_name_ID' => $cred_info->credit_names,
             'credit_date' => $cred_info->credit_date,
             'invoice_number' => $cred_info->invoice_number,
             'charge' => $cred_info->charge,
@@ -141,6 +172,7 @@ class CreditInfoController extends Controller
             $Cred_Data = $cred_info_data->map(function ($credit_inform) {
                 return [
                     'credit_info_id' => $credit_inform->id,
+                    'credit_name_ID' => $credit_inform->credit_names,
                     'credit_date' => $credit_inform->credit_date,
                     'invoice_number' => $credit_inform->invoice_number,
                     'charge' => $credit_inform->charge,
@@ -208,6 +240,7 @@ class CreditInfoController extends Controller
     {
         $request->validate([
             'credit_date' => 'required|date|date_format:Y-m-d',
+            'credit_name_ID'=>'required|integer|digits_between:1, 999',
             'invoice_number' => 'required|string|max:255',
             'charge' => 'required|numeric|between:0,999999.99',
             'credit_limit' => 'required|numeric|between:0,999999.99',
@@ -221,6 +254,7 @@ class CreditInfoController extends Controller
                 "message" => "You Updated the Credit Information Successfully",
                 "credit_info" => [
                     'credit_info_id' => $credit_inform->id,
+                    'credit_name_ID' => $credit_inform->credit_name_ID,
                     'credit_date' => $credit_inform->credit_date,
                     'invoice_number' => $credit_inform->invoice_number,
                     'charge' => $credit_inform->charge,
@@ -240,39 +274,46 @@ class CreditInfoController extends Controller
         }
     }
 
-    public function destroyCreditInfo(credit_info $credit_info)
+    public function destroyCreditInfo($credit_info)
     {
-        //
-        if ($credit_info->delete()) {
+
+        $cred_info  = credit_info::find($credit_info);
+
+
+        if (!$cred_info) {
+            return response()->json(
+                [
+                    'status' => 404,
+                    'message' => 'Credit Information not found',
+                ]
+            );
+        }
+       $cred_info->delete();
             return response()->json([
                 "status" => 200,
                 "message" => "You Deleted the Credit Information Successfully",
                 "credit_info" => [
-                    'credit_info_id' => $credit_inform->id,
-                    'credit_date' => $credit_inform->credit_date,
-                    'invoice_number' => $credit_inform->invoice_number,
-                    'charge' => $credit_inform->charge,
-                    'credit_limit' => $credit_inform->credit_limit,
-                    'balance' => $credit_inform->balance,
-                    'status' => $credit_inform->status,
-                    'created_at' => $credit_inform->created_at,
-                    'updated_at' => $credit_inform->updated_at,
-                    'deleted_at' => $credit_inform->deleted_at
+                    'credit_info_id' => $cred_info->id,
+                    'credit_name_ID' => $cred_info->credit_name_ID,
+                    'credit_date' => $cred_info->credit_date,
+                    'invoice_number' => $cred_info->invoice_number,
+                    'charge' => $cred_info->charge,
+                    'credit_limit' => $cred_info->credit_limit,
+                    'balance' => $cred_info->balance,
+                    'status' => $cred_info->status,
+                    'created_at' => $cred_info->created_at,
+                    'updated_at' => $cred_info->updated_at,
+                    'deleted_at' => $cred_info->deleted_at
                 ],
             ]);
-        } else {
-            return response()->json([
-                "status" => 401,
-                "message" => "Failed to Delete the Credit Information",
-            ]);
-        }
+      
     }
 
     // Soft Delete
     public function softdeleterecord($credit_info)
     {
 
-        $cred_info  = sales::find($credit_info);
+        $cred_info  = credit_info::find($credit_info);
 
         if (!$cred_info) {
             return response()->json(
@@ -288,16 +329,17 @@ class CreditInfoController extends Controller
                 'status' => 201,
                 'message' => 'Credit Information Soft Deleted Successfully',
                 "credit_info" => [
-                    'credit_info_id' => $credit_inform->id,
-                    'credit_date' => $credit_inform->credit_date,
-                    'invoice_number' => $credit_inform->invoice_number,
-                    'charge' => $credit_inform->charge,
-                    'credit_limit' => $credit_inform->credit_limit,
-                    'balance' => $credit_inform->balance,
-                    'status' => $credit_inform->status,
-                    'created_at' => $credit_inform->created_at,
-                    'updated_at' => $credit_inform->updated_at,
-                    'deleted_at' => $credit_inform->deleted_at
+                    'credit_info_id' => $cred_info->id,
+                    'credit_name_ID' => $cred_info->credit_name_ID,
+                    'credit_date' => $cred_info->credit_date,
+                    'invoice_number' => $cred_info->invoice_number,
+                    'charge' => $cred_info->charge,
+                    'credit_limit' => $cred_info->credit_limit,
+                    'balance' => $cred_info->balance,
+                    'status' => $cred_info->status,
+                    'created_at' => $cred_info->created_at,
+                    'updated_at' => $cred_info->updated_at,
+                    'deleted_at' => $cred_info->deleted_at
                 ],
             ]
         );

@@ -10,15 +10,14 @@ class credit_names extends Model
 {
     use HasFactory;
     use SoftDeletes;
-
+    protected $table = 'credit_names'; 
     protected $fillable = [
         'credit_name',
-        'credit_info_ID',
         'downpayment',
-        'DP_date'
+        'dp_date'
     ];
 
     public function credit_info(){
-        return $this->belongsTo(credit_info::class, 'credit_info_ID');
+        return $this->hasOne(credit_info::class);
     }
 }

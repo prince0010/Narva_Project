@@ -48,7 +48,7 @@ use App\Http\Controllers\SuppliesController;
         Route::get("/products/import-form", "import");
         Route::post("/products/import" , "import");
         Route::post("/products/add-quantites", "addQuantities");
-        Route::post('/products/{productId}/stock/{quantity}', 'addStockbyID'); 
+        Route::post('/products/id={productId}/stock/', 'addStockbyID'); 
     });
 
     // CRUD IN PRODUCT TYPE
@@ -133,7 +133,7 @@ use App\Http\Controllers\SuppliesController;
         Route::get("/credit_names", 'showCreditName');
         Route::get("/credit_names/id={id}" ,"showById"); 
         Route::get("/credit_names/{id}/all_credit_name/", "showSoftDeletedCreditName");
-        Route::put("/credit_names/id={credit_name}/update" ,"updateProduct");
+        Route::put("/credit_names/id={credit_name}/update" ,"updateCreditName");
         Route::delete("/credit_names/id={credit_name}/delete" ,"destroyCreditName");
         Route::delete("/credit_names/id={credit_name}/softdelete" ,"softdeleterecord");
     });

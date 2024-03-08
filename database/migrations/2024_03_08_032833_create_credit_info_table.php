@@ -14,8 +14,8 @@ return new class extends Migration
         if(!Schema::hasTable('credit_info')){
             Schema::create('credit_info', function (Blueprint $table) {
                 $table->increments('id');
-                // $table->integer('dp_ID')->unsigned();
-                // $table->foreign('dp_ID')->references('id')->on('downpayment_info')->onUpdate('CASCADE')->onDelete('CASCADE');
+                $table->integer('credit_name_ID')->unsigned();
+                $table->foreign('credit_name_ID')->references('id')->on('credit_names')->onUpdate('cascade')->onUpdate('cascade');
                 $table->date('credit_date');
                 $table->string('invoice_number');
                 $table->double('charge', 10, 2);

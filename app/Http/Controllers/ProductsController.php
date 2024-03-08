@@ -485,39 +485,49 @@ class ProductsController extends Controller
             'data' => $prod_que
         ]);
     }
-    public function addStockbyID($id, $quantity){
-        $product = Products::find($id);
+    public function addStockbyID(Request $request, $productId){
+        $request->validate([
+            'quantity' => 'required|numeric|min:1',
+        ]);
 
-        if(!$product){
+        try {
+            $product = Products::findOrFail($productId);
+
+            // Check if the current stock is 0
+            if ($product->stock == 0) {
+                $quantity = $request->input('quantity');
+                
+                $product->addStock($quantity);
+
+                $prod_que[] = [
+                        "product_id" => $product->id,
+                        "prod_type" => $product->prod_type,
+                        "supplier" => $product->supplier,
+                        "part_num" => $product->part_num,
+                        "part_name" => $product->part_name,
+                        "brand" => $product->brand,
+                        "model" => $product->model,
+                        "price_code" => $product->price_code,
+                        "stock" => $product->stock
+                ];
+
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Stock Added Successfully',
+                    'product' => $prod_que,
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'This Product still have Stock in it.',
+                ]);
+            }
+        } catch (\Exception $e) {
             return response()->json([
-                'status' => 'error',
-                'message' => 'Product not found',
-            ], 404);
-        }
-
-        if ($product->stock == 0) {
-            $product->addStock($quantity);
-
-            $prod_que[] = [
-                'product_id' => $product->id,
-                'part_num' => $product->part_num,
-                'brand' => $product->brand,
-                'model' => $product->model,
-                'quantity_added' => $quantity,
-                'stock' => $product->stock,
-            ];
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Stock added successfully',
-                'product' => $prod_que,
+                'status' => 500,
+                'message' => 'Failed to add stock',
+                'error' => $e->getMessage(),
             ]);
         }
-
-       
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Stock is not zero for this product',
-        ]);
     }
     }
