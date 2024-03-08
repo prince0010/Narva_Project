@@ -13,7 +13,9 @@ class credit_names extends Model
 
     protected $fillable = [
         'credit_name',
-        'credit_info_ID'
+        'credit_info_ID',
+        'downpayment',
+        'DP_date'
     ];
 
     public function credit_info(){

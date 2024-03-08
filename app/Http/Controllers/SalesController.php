@@ -14,7 +14,7 @@ class SalesController extends Controller
     {
 
         $sales_query = sales::query();
-        
+
         $req = $request->keyword;
         if ($req) {
             $sales_query->where('quantity', 'LIKE', '%' . $req . '%')
@@ -22,8 +22,8 @@ class SalesController extends Controller
                 ->orWhere('sale_date', 'LIKE', '%' . $req . '%')
                 ->orWhere('remarks', 'LIKE', '%' . $req . '%');
         }
-        
-         // Add order by sale_date in descending order
+
+        // Add order by sale_date in descending order
         $sales_query->orderBy('id', 'desc');
         $sales = $sales_query->paginate(10);
 
@@ -31,8 +31,8 @@ class SalesController extends Controller
             $SalesData = $sales->map(function ($sale) {
                 return [
                     'id' => $sale->id,
-                    'part_name' => $sale->product->part_name, 
-                    'part_num' => $sale->product->part_num, 
+                    'part_name' => $sale->product->part_name,
+                    'part_num' => $sale->product->part_num,
                     'brand' =>  $sale->product->brand,
                     'model' => $sale->product->model,
                     'price_code' => $sale->product->price_code,
@@ -67,12 +67,12 @@ class SalesController extends Controller
     //  Search
     public function searchSales($sales)
     {
-        $salesData = sales::select('sales.*') 
-        ->join('products', 'sales.product_id', '=', 'products.id')
-        ->join('markup', 'sales.markup_id', '=', 'markup.id')
-        ->where('products.part_name', 'like', '%' . $sales . '%')
-        ->orWhere('markup.markup_name', 'like', '%' . $sales . '%')
-        ->get();
+        $salesData = sales::select('sales.*')
+            ->join('products', 'sales.product_id', '=', 'products.id')
+            ->join('markup', 'sales.markup_id', '=', 'markup.id')
+            ->where('products.part_name', 'like', '%' . $sales . '%')
+            ->orWhere('markup.markup_name', 'like', '%' . $sales . '%')
+            ->get();
 
         if (empty(trim($sales))) {
             return response()->json([
@@ -84,7 +84,7 @@ class SalesController extends Controller
                 "status" => 200,
                 "sales" => [],
             ];
-    
+
             foreach ($salesData as $sale) {
                 $response['sales'][] = [
                     "sale_id" => $sale->id,
@@ -108,7 +108,7 @@ class SalesController extends Controller
                     "remarks" => $sale->remarks,
                 ];
             }
-    
+
             return response()->json($response);
         }
     }
@@ -123,21 +123,21 @@ class SalesController extends Controller
             'sale_date' => 'required|date|date_format:Y-m-d',
             'remarks' => 'required|string|max:255',
         ]);
-       
-       
+
+
 
         // Find the Product ID Based sa gi input na product_ID
         $product = Products::find($request->input('product_id'));
-    
+
         if (!$product) {
             return response()->json([
                 'status' => 404,
                 'message' => 'Product Not Found'
             ]);
         }
-    
+
         $quantity = (int)$request->input('quantity');
-    
+
         // Checking if naa bay enough stock
         if ($product->stock < $quantity) {
             return response()->json([
@@ -145,9 +145,9 @@ class SalesController extends Controller
                 'message' => 'Insufficient stock',
             ]);
         }
-    
+
         $sales = sales::create($request->all());
-    
+
         if ($sales) {
             // Subtract the stock from the product
             if ($product->subtractStock($quantity)) {
@@ -168,7 +168,6 @@ class SalesController extends Controller
                         'remarks' => $sales->remarks
                     ],
                 ]);
-
             } else {
                 // If deducting the stock fails then I rollback ang sales entry
                 // Delete the Created and Request Sales Input
@@ -185,7 +184,7 @@ class SalesController extends Controller
             ]);
         }
     }
-    
+
 
     public function showById($id)
     {
@@ -197,21 +196,20 @@ class SalesController extends Controller
             $salesData = [
                 'id' => $sales->id,
                 "product" => [
-                    "id" => $sales-> product -> id,
-                    "prod_type" => $sales -> product -> prod_type,
-                    "part_num" => $sales -> product -> part_num,
-                    "part_name" => $sales-> product -> part_name,
-                    "brand" => $sales -> product -> brand,
-                    "model" => $sales -> product -> model,
-                    "price_code" => $sales -> product -> price_code,
-                    "stock"  => $sales -> product -> stock,
-                    "created_at" => $sales -> product -> created_at,
-                    "updated_at" => $sales -> product -> updated_at,
-                    "deleted_at" => $sales -> product -> deleted_at,
+                    "id" => $sales->product->id,
+                    "prod_type" => $sales->product->prod_type,
+                    "part_num" => $sales->product->part_num,
+                    "part_name" => $sales->product->part_name,
+                    "brand" => $sales->product->brand,
+                    "model" => $sales->product->model,
+                    "price_code" => $sales->product->price_code,
+                    "stock"  => $sales->product->stock,
+                    "created_at" => $sales->product->created_at,
+                    "updated_at" => $sales->product->updated_at,
+                    "deleted_at" => $sales->product->deleted_at,
                 ],
-                
-                "markup" => $sales->markup,
 
+                "markup" => $sales->markup,
                 "quantity" => $sales->quantity,
                 "total" => $sales->total,
                 "sale_date" => $sales->sale_date,
@@ -240,19 +238,19 @@ class SalesController extends Controller
                 return [
                     "id" => $sale->id,
                     "product" => [
-                        "product_id" => $sale-> product -> id,
-                        "prod_type" => $sale -> product -> prod_type,
-                        "part_num" => $sale -> product -> part_num,
-                        "part_name" => $sale-> product -> part_name,
-                        "brand" => $sale -> product -> brand,
-                        "model" => $sale -> product -> model,
-                        "price_code" => $sale -> product -> price_code,
-                        "stock"  => $sale -> product -> stock,
-                        "created_at" => $sale -> product -> created_at,
-                        "updated_at" => $sale -> product -> updated_at,
-                        "deleted_at" => $sale -> product -> deleted_at,
+                        "product_id" => $sale->product->id,
+                        "prod_type" => $sale->product->prod_type,
+                        "part_num" => $sale->product->part_num,
+                        "part_name" => $sale->product->part_name,
+                        "brand" => $sale->product->brand,
+                        "model" => $sale->product->model,
+                        "price_code" => $sale->product->price_code,
+                        "stock"  => $sale->product->stock,
+                        "created_at" => $sale->product->created_at,
+                        "updated_at" => $sale->product->updated_at,
+                        "deleted_at" => $sale->product->deleted_at,
                     ],
-                    
+
                     "markup" => $sale->markup,
 
                     "quantity" => $sale->quantity,
@@ -302,16 +300,16 @@ class SalesController extends Controller
                         "id" => $sale->id,
                         "product" => [
                             "id" => $sale->product->id,
-                            "prod_type" => $sale -> product -> prod_type,
+                            "prod_type" => $sale->product->prod_type,
                             "part_num" => $sale->product->part_num,
-                            "part_name" => $sale-> product -> part_name,
-                            "brand" => $sale -> product -> brand,
-                            "model" => $sale -> product -> model,
-                            "price_code" => $sale -> product -> price_code,
-                            "stock"  => $sale -> product -> stock,
-                            "created_at" => $sale -> product -> created_at,
-                            "updated_at" => $sale -> product -> updated_at,
-                            "deleted_at" => $sale -> product -> deleted_at,
+                            "part_name" => $sale->product->part_name,
+                            "brand" => $sale->product->brand,
+                            "model" => $sale->product->model,
+                            "price_code" => $sale->product->price_code,
+                            "stock"  => $sale->product->stock,
+                            "created_at" => $sale->product->created_at,
+                            "updated_at" => $sale->product->updated_at,
+                            "deleted_at" => $sale->product->deleted_at,
                         ],
                         "markup" => $sale->markup,
                         "quantity" => $sale->quantity,
@@ -319,10 +317,10 @@ class SalesController extends Controller
                         "sale_date" => $sale->sale_date,
                         "remarks" => $sale->remarks,
                     ];
-            
+
                     $formattedSales[] = $formattedSale;
                 }
-            
+
                 return response()->json([
                     "status" => "200",
                     "message" => "Active Sales Data Found",
@@ -334,8 +332,8 @@ class SalesController extends Controller
                     "message" => "No Active Sales Data Found",
                 ]);
             }
+        }
     }
-}
 
     public function updateSales(Request $request, sales $sales)
     {
@@ -356,21 +354,21 @@ class SalesController extends Controller
                 "data" => [
                     "id" => $sales->id,
                     "product" => [
-                        "id" => $sales-> product -> id,
+                        "id" => $sales->product->id,
 
-                        "prod_type" => $sales -> product -> prod_type,
+                        "prod_type" => $sales->product->prod_type,
 
-                        "part_num" => $sales -> product -> part_num,
-                        "part_name" => $sales-> product -> part_name,
-                        "brand" => $sales -> product -> brand,
-                        "model" => $sales -> product -> model,
-                        "price_code" => $sales -> product -> price_code,
-                        "stock"  => $sales -> product -> stock,
-                        "created_at" => $sales -> product -> created_at,
-                        "updated_at" => $sales -> product -> updated_at,
-                        "deleted_at" => $sales -> product -> deleted_at,
+                        "part_num" => $sales->product->part_num,
+                        "part_name" => $sales->product->part_name,
+                        "brand" => $sales->product->brand,
+                        "model" => $sales->product->model,
+                        "price_code" => $sales->product->price_code,
+                        "stock"  => $sales->product->stock,
+                        "created_at" => $sales->product->created_at,
+                        "updated_at" => $sales->product->updated_at,
+                        "deleted_at" => $sales->product->deleted_at,
                     ],
-                    
+
                     "markup" => $sales->markup,
 
                     "quantity" => $sales->quantity,
@@ -398,21 +396,21 @@ class SalesController extends Controller
                 "data" => [
                     "id" => $sales->id,
                     "product" => [
-                        "id" => $sales-> product -> id,
+                        "id" => $sales->product->id,
 
-                        "prod_type" => $sales -> product -> prod_type,
+                        "prod_type" => $sales->product->prod_type,
 
-                        "part_num" => $sales -> product -> part_num,
-                        "part_name" => $sales-> product -> part_name,
-                        "brand" => $sales -> product -> brand,
-                        "model" => $sales -> product -> model,
-                        "price_code" => $sales -> product -> price_code,
-                        "stock"  => $sales -> product -> stock,
-                        "created_at" => $sales -> product -> created_at,
-                        "updated_at" => $sales -> product -> updated_at,
-                        "deleted_at" => $sales -> product -> deleted_at,
+                        "part_num" => $sales->product->part_num,
+                        "part_name" => $sales->product->part_name,
+                        "brand" => $sales->product->brand,
+                        "model" => $sales->product->model,
+                        "price_code" => $sales->product->price_code,
+                        "stock"  => $sales->product->stock,
+                        "created_at" => $sales->product->created_at,
+                        "updated_at" => $sales->product->updated_at,
+                        "deleted_at" => $sales->product->deleted_at,
                     ],
-                    
+
                     "markup" => $sales->markup,
 
                     "quantity" => $sales->quantity,
@@ -434,7 +432,7 @@ class SalesController extends Controller
 
         $sale  = sales::find($sales);
 
-        if (!$sale ) {
+        if (!$sale) {
             return response()->json(
                 [
                     'status' => 404,
@@ -442,46 +440,46 @@ class SalesController extends Controller
                 ]
             );
         }
-        $sale ->delete();
+        $sale->delete();
         return response()->json(
             [
                 'status' => 201,
                 'message' => 'Sales Soft Deleted Successfully',
-               "data" => [
-                "id" => $sale->id,
-                "product" => [
-                    "product_id" => $sale-> product -> id,
+                "data" => [
+                    "id" => $sale->id,
+                    "product" => [
+                        "product_id" => $sale->product->id,
 
-                    "prod_type" => $sale -> product -> prod_type,
+                        "prod_type" => $sale->product->prod_type,
 
-                    "part_num" => $sale -> product -> part_num,
-                    "part_name" => $sale-> product -> part_name,
-                    "brand" => $sale -> product -> brand,
-                    "model" => $sale -> product -> model,
-                    "price_code" => $sale -> product -> price_code,
-                    "stock"  => $sale -> product -> stock,
-                    "created_at" => $sale -> product -> created_at,
-                    "updated_at" => $sale -> product -> updated_at,
-                    "deleted_at" => $sale -> product -> deleted_at,
-                ],
-                
-                "markup" => $sale->markup,
+                        "part_num" => $sale->product->part_num,
+                        "part_name" => $sale->product->part_name,
+                        "brand" => $sale->product->brand,
+                        "model" => $sale->product->model,
+                        "price_code" => $sale->product->price_code,
+                        "stock"  => $sale->product->stock,
+                        "created_at" => $sale->product->created_at,
+                        "updated_at" => $sale->product->updated_at,
+                        "deleted_at" => $sale->product->deleted_at,
+                    ],
 
-                "quantity" => $sale->quantity,
-                "total" => $sale->total,
-                "sale_date" => $sale->sale_date,
-                "remarks" => $sale->remarks
+                    "markup" => $sale->markup,
+
+                    "quantity" => $sale->quantity,
+                    "total" => $sale->total,
+                    "sale_date" => $sale->sale_date,
+                    "remarks" => $sale->remarks
                 ],
             ]
         );
     }
-   
+
 
 
     // Get the Monthly and Yearly Reports
     public function getTopProducts($yearly = null, $monthly = null)
-{
-    $query = Products::select(
+    {
+        $query = Products::select(
             'products.id',
             'products.part_num',
             'products.part_name',
@@ -492,60 +490,62 @@ class SalesController extends Controller
             DB::raw('(SELECT MAX(supplier_name) FROM suppliers WHERE id = products.supplier_ID) as supplier_name'), // Libog na subquery para makuha ang supplier_name
             DB::raw('SUM(sales.quantity) as total_quantity')
         )
-        ->join('sales', 'products.id', '=', 'sales.product_id')
-        ->whereYear('sales.sale_date', $yearly);
+            ->join('sales', 'products.id', '=', 'sales.product_id')
+            ->whereYear('sales.sale_date', $yearly);
 
-    if ($monthly) {
-        $query->whereMonth('sales.sale_date', $monthly);
+        if ($monthly) {
+            $query->whereMonth('sales.sale_date', $monthly);
+        }
+
+        $topProducts = $query
+            ->groupBy(
+                'products.id',
+                'products.part_num',
+                'products.part_name',
+                'products.brand',
+                'products.model',
+                'products.price_code',
+                'products.stock',
+                'products.supplier_ID' // Include supplier_ID in GROUP BY
+            )
+            ->orderByDesc('total_quantity')
+            ->take(10)
+            ->get();
+
+        if ($topProducts->count() > 0) {
+            $topProductsData = $topProducts->map(function ($product) {
+                // Get an array of Sales ID
+                $salesID = $product->sales->pluck('id');
+                return [
+                    'sales_id' => $salesID,
+                    'product_id' => $product->id,
+                    'part_num' => $product->part_num,
+                    'part_name' => $product->part_name,
+                    'brand' => $product->brand,
+                    'model' => $product->model,
+                    'price_code' => $product->price_code,
+                    'supplier_name' => $product->supplier_name,
+                    'total_quantity' => $product->total_quantity,
+                ];
+            });
+
+            return response()->json([
+                'status' => '200',
+                'message' => 'Top 10 Products with Highest Total Quantity in Sales',
+                'products' => $topProductsData,
+            ]);
+        } else {
+            return response()->json([
+                'status' => '401',
+                'message' => 'No Sales Data Available',
+            ]);
+        }
     }
 
-    $topProducts = $query
-        ->groupBy(
-            'products.id',
-            'products.part_num',
-            'products.part_name',
-            'products.brand',
-            'products.model',
-            'products.price_code',
-            'products.stock',
-            'products.supplier_ID' // Include supplier_ID in GROUP BY
-        )
-        ->orderByDesc('total_quantity')
-        ->take(10)
-        ->get();
-
-    if ($topProducts->count() > 0) {
-        $topProductsData = $topProducts->map(function ($product) {
-            // Get an array of Sales ID
-            $salesID = $product->sales->pluck('id');
-            return [
-                'sales_id' => $salesID,
-                'product_id' => $product->id,
-                'part_num' => $product->part_num,
-                'part_name' => $product->part_name,
-                'brand' => $product->brand,
-                'model' => $product->model,
-                'price_code' => $product->price_code,
-                'supplier_name' => $product->supplier_name,
-                'total_quantity' => $product->total_quantity,
-            ];
-        });
-
-        return response()->json([
-            'status' => '200',
-            'message' => 'Top 10 Products with Highest Total Quantity in Sales',
-            'products' => $topProductsData,
-        ]);
-    } else {
-        return response()->json([
-            'status' => '401',
-            'message' => 'No Sales Data Available',
-        ]);
-    }
-}
-
+    // If Sales deleted the Quantity here in sales will go back to the Products of Stock Quantity
     // Deleted Sales == the quantity mubalik sa Products na quantity sa orginal quantity
-    public function deletedSales($id){
+    public function deletedSales($id)
+    {
         $sales = sales::find($id);
 
         if (!$sales) {
@@ -577,4 +577,4 @@ class SalesController extends Controller
             ]);
         }
     }
-    }
+}

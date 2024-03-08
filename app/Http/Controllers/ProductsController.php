@@ -485,4 +485,39 @@ class ProductsController extends Controller
             'data' => $prod_que
         ]);
     }
-}
+    public function addStockbyID($id, $quantity){
+        $product = Products::find($id);
+
+        if(!$product){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Product not found',
+            ], 404);
+        }
+
+        if ($product->stock == 0) {
+            $product->addStock($quantity);
+
+            $prod_que[] = [
+                'product_id' => $product->id,
+                'part_num' => $product->part_num,
+                'brand' => $product->brand,
+                'model' => $product->model,
+                'quantity_added' => $quantity,
+                'stock' => $product->stock,
+            ];
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Stock added successfully',
+                'product' => $prod_que,
+            ]);
+        }
+
+       
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Stock is not zero for this product',
+        ]);
+    }
+    }

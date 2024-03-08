@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('credit_name');
             $table->integer('credit_info_ID')->unsigned();
             $table->foreign('credit_info_ID')->references('id')->on('credit_info')->onUpdate('CASCADE')->onDelete('CASCADE');
+            $table->double('downpayment', 5,2);
+            $table->date('dp_date');
             $table->timestamps();
             $table->softDeletes();
         });

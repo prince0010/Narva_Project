@@ -12,8 +12,7 @@ class credit_info extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'dp_ID',
-        'credit_date',
+        'credit_date', //Mao ning Date na ilang ihatag sa mga nangutang like 30 days or 60 days depende sa ila so input lang nio na date dapat
         'invoice_number',
         'charge',
         'credit_limit',
@@ -21,9 +20,6 @@ class credit_info extends Model
         'status'
     ];
 
-    public function downpayment_info(){
-        return $this->belongsTo(downpayment_info::class, 'dp_ID')->withTrashed();
-    }
 
     public function credit_names(){
         return $this->hasOne(credit_names::class);

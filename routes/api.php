@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Controllers\CreditInfoController;
+use App\Http\Controllers\CreditNamesController;
 use App\Http\Controllers\InterestController;
 use App\Http\Controllers\MarkupController;
 use App\Http\Controllers\ProdTypesController ;
@@ -46,6 +48,7 @@ use App\Http\Controllers\SuppliesController;
         Route::get("/products/import-form", "import");
         Route::post("/products/import" , "import");
         Route::post("/products/add-quantites", "addQuantities");
+        Route::post('/products/{productId}/stock/{quantity}', 'addStockbyID'); 
     });
 
     // CRUD IN PRODUCT TYPE
@@ -105,6 +108,34 @@ use App\Http\Controllers\SuppliesController;
         Route::get('/sales/{yearly}/top-products', 'getTopProducts'); //Yearly Reports
         Route::get('/sales/{yearly}/{monthly}/top-products', 'getTopProducts'); //Monthly Reports
         Route::delete('/sales/id={id}/delete-sales', 'deletedSales'); // Delete the Session in Sales
+    });
+
+    Route::controller(CreditInfoController::class)->group(function (){
+
+        Route::get("/credit_info/index", 'index');
+        Route::post("/credit_info" , 'storeCreditInfo');
+        Route::get("/credit_info", 'showCreditInfo');
+        Route::get("/credit_info/id={id}" ,"showById"); 
+        Route::get('/credit_info/search/{credit_inform}', 'searchCredit_Info');
+        Route::get("/credit_info/{id}/all_credit_info/", "showSoftDeleteCredit");
+        Route::put("/credit_info/id={credit_info}/update" ,"updateCreditInfo");
+        Route::delete("/credit_info/id={credit_info}/delete" ,"destroyCreditInfo");
+        Route::delete("/credit_info/id={credit_info}/softdelete" ,"softdeleterecord");
+
+    });
+
+
+    Route::controller(CreditNamesController::class)->group(function (){
+
+        Route::get("/credit_names/index", 'index');
+        Route::post("/credit_names" , 'storeCreditNameInfo');
+        Route::get('/credit_names/search/{credit_name}', 'searchCredit_Name');
+        Route::get("/credit_names", 'showCreditName');
+        Route::get("/credit_names/id={id}" ,"showById"); 
+        Route::get("/credit_names/{id}/all_credit_name/", "showSoftDeletedCreditName");
+        Route::put("/credit_names/id={credit_name}/update" ,"updateProduct");
+        Route::delete("/credit_names/id={credit_name}/delete" ,"destroyCreditName");
+        Route::delete("/credit_names/id={credit_name}/softdelete" ,"softdeleterecord");
     });
 
     });
