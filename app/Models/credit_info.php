@@ -13,18 +13,33 @@ class credit_info extends Model
 
     protected $table = 'credit_info'; 
     protected $fillable = [
-        'credit_date', //Mao ning Date na ilang ihatag sa mga nangutang like 30 days or 60 days depende sa ila so input lang nio na date dapat
-        'credit_name_ID',
-        'invoice_number',
-        'charge',
-        'credit_limit',
+      
+        'credit_names_id',
+        'total_charge',
+        'total_downpayment',
         'balance',
         'status'
     ];
 
 
     public function credit_names(){
-        return $this->belongsTo(credit_names::class, 'credit_name_ID');
+        return $this->belongsTo(credit_names::class, 'credit_names_id');
     }
+
+    // Credit_Info model
+public function getTotalChargeAttribute()
+{
+    return $this->credit_names->sum('charge');
+}
+
+public function getTotalDownpaymentAttribute()
+{
+    return $this->credit_names->sum('downpayment');
+}
+
+public function getBalanceAttribute()
+{
+    return $this->total_charge - $this->total_downpayment;
+}
 
 }

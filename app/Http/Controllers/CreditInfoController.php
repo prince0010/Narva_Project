@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\credit_info;
+use App\Models\credit_names;
 use Illuminate\Http\Request;
 
 class CreditInfoController extends Controller
@@ -24,10 +25,8 @@ class CreditInfoController extends Controller
             $Credit_Data = $credit_inform->map(function ($cred_inform) {
                 return [
                     'credit_info_id' => $cred_inform->id,
-                    'credit_date' => $cred_inform->credit_date,
-                    'invoice_number' => $cred_inform->invoice_number,
-                    'charge' => $cred_inform->charge,
-                    'credit_limit' => $cred_inform->credit_limit,
+                    'total_charge' =>$cred_inform->total_charge,
+                    'total_downpayment' =>$cred_inform->total_downpayment,
                     'balance' => $cred_inform->balance,
                     'status' => $cred_inform->status
                 ];
@@ -54,7 +53,7 @@ class CreditInfoController extends Controller
     public function searchCredit_Info($credit_inform)
     {
         $credData = credit_info::select('credit_info.*')
-        ->join('credit_names', 'credit_info.credit_name_ID', '=', 'credit_names.id')
+        ->join('credit_names', 'credit_info.credit_names_id', '=', 'credit_names.id')
         ->where('credit_names.credit_name', 'like', '%' . $credit_inform . '%')
         ->orWhere('invoice_number', 'like', '%' . $credit_inform . '%')
         ->get();
@@ -74,16 +73,14 @@ class CreditInfoController extends Controller
                 $response['credit_info'][] = [
                     "credit_info_ID" => $cred->id,
                     "credit_name" => [
-                        "credit_name_ID" => $cred->credit_names->id,
+                        "credit_names_id" => $cred->credit_names->id,
                         "credit_name" => $cred->credit_names->credit_name,
                         "downpayment" => $cred->credit_names->downpayment,
                         "dp_date" => $cred->credit_names->dp_date,
                        
                     ],
-                    "credit_date" => $cred->credit_date,
-                    'invoice_number' => $cred->invoice_number,
-                    'charge' => $cred->charge,
-                    'credit_limit' => $cred->credit_limit,
+                    'total_downpayment' =>$cred->total_downpayment,
+                    'total_charge' =>$cred->total_charge,
                     'balance' => $cred->balance,
                     'status' => $cred->status
                 ];
@@ -93,42 +90,91 @@ class CreditInfoController extends Controller
         }
         }
 
-    public function storeCreditInfo(Request $request)
-    {
-        $request->validate([
-            'credit_date' => 'required|date|date_format:Y-m-d', //Mao ning gihatagan nila na 1 month para makabayad or full pay sa credit line nila or utang
-            'credit_name_ID'=>'required|integer|digits_between:1, 999',
-            'invoice_number' => 'required|string|max:255',
-            'charge' => 'required|numeric|between:0,999999.99',
-            'credit_limit' => 'required|numeric|between:0,999999.99',
-            'balance' => 'required|numeric|between:0,999999.99',
-            'status' => 'required|string|max:255',
-        ]);
+        // public function storeCreditInfo(Request $request)
+        // {
+        //     $request->validate([
+        //         'credit_date' => 'nullable|date|date_format:Y-m-d',
+        //         'credit_names_id' => 'required|integer|digits_between:1,999',
+        //         'status' => 'required|string|max:255',
+        //     ]);
+        
+        //     $creditName = credit_names::findOrFail($request->input('credit_names_id'));
+        
+        //     // Retrieve all related records for the given credit_names_id
+        //     $relatedCharges = credit_names::where('id', $request->input('credit_names_id'))->get();
+        
+        //     // Calculate the total charge by summing the 'charge' field of related records
+        //     $totalCharge = $relatedCharges->sum('charge');
+        
+        //     // Calculate the total downpayment by summing the 'downpayment' field of related records
+        //     $totalDownpayment = $relatedCharges->sum('downpayment');
+        
+        //     $balance = $totalCharge - $totalDownpayment;
+        
+        //     $credInfo = credit_info::create([
+        //         'credit_date' => $request->input('credit_date'),
+        //         'credit_names_id' => $request->input('credit_names_id'),
+        //         'total_charge' => $totalCharge,
+        //         'total_downpayment' => $totalDownpayment,
+        //         'balance' => $balance,
+        //         'status' => $request->input('status'),
+        //     ]);
+        
+        //     if (!$credInfo) {
+        //         return response()->json([
+        //             'status' => 500,
+        //             'message' => 'Failed to Add the Credit Information'
+        //         ]);
+        //     } else {
+        //         return response()->json([
+        //             'status' => 200,
+        //             'message' => 'Successfully Added the Credit Information',
+        //             'credit_info' => [
+        //                 'credit_info_id' => $credInfo->id,
+        //                 'credit_names_id' => $credInfo->credit_names,
+        //                 'credit_date' => $credInfo->credit_date,
+        //                 'total_charge' => $credInfo->total_charge,
+        //                 'total_downpayment' => $credInfo->total_downpayment,
+        //                 'balance' => $credInfo->balance,
+        //                 'status' => $credInfo->status,
+        //             ]
+        //         ]);
+        //     }
+        // }
 
-        $cred_info = credit_info::create($request->all());
+//         public function storeCreditInfo(Request $request)
+// {
+//     $request->validate([
+//         'credit_date' => 'nullable|date|date_format:Y-m-d',
+//         'credit_names_id' => 'required|integer|digits_between:1,999',
+//         'status' => 'required|string|max:255',
+//     ]);
 
-        if (!$cred_info) {
-            return response()->json([
-                'status' => 500,
-                'message' => 'Failed to Add the Credit Information'
-            ]);
-        } else {
-            return response()->json([
-                'status' => 200,
-                'message' => 'Successfully Added the Credit Information',
-                'credit_info' => [
-                    'credit_info_id' => $cred_info->id,
-                    'credit_name_ID' => $cred_info->credit_names,
-                    'credit_date' => $cred_info->credit_date,
-                    'invoice_number' => $cred_info->invoice_number,
-                    'charge' => $cred_info->charge,
-                    'credit_limit' => $cred_info->credit_limit,
-                    'balance' => $cred_info->balance,
-                    'status' => $cred_info->status
-                ]
-            ]);
-        }
-    }
+//     $creditInfo = credit_info::create([
+//         'credit_names_id' => $request->input('credit_names_id'),
+//         'status' => $request->input('status'),
+//     ]);
+
+//     if (!$creditInfo) {
+//         return response()->json([
+//             'status' => 500,
+//             'message' => 'Failed to Add the Credit Information'
+//         ]);
+//     }
+
+//     return response()->json([
+//         'status' => 200,
+//         'message' => 'Successfully Added the Credit Information',
+//         'credit_info' => [
+//             'credit_info_id' => $creditInfo->id,
+//             'credit_names_id' => $creditInfo->credit_names,
+//             'total_charge' => $creditInfo->total_charge,
+//             'total_downpayment' => $creditInfo->total_downpayment,
+//             'balance' => $creditInfo->balance,
+//             'status' => $creditInfo->status
+//         ]
+//     ]);
+// }
 
     public function showById($id)
  {
@@ -138,11 +184,9 @@ class CreditInfoController extends Controller
      if ($cred_info) {
          $CreditInfoData = [
             'credit_info_id' => $cred_info->id,
-            'credit_name_ID' => $cred_info->credit_names,
-            'credit_date' => $cred_info->credit_date,
-            'invoice_number' => $cred_info->invoice_number,
-            'charge' => $cred_info->charge,
-            'credit_limit' => $cred_info->credit_limit,
+            'credit_names_id' => $cred_info->credit_names,
+            'total_charge' =>$cred_info->total_charge,
+            'total_downpayment' =>$cred_info->total_downpayment,
             'balance' => $cred_info->balance,
             'status' => $cred_info->status
          ];
@@ -172,11 +216,9 @@ class CreditInfoController extends Controller
             $Cred_Data = $cred_info_data->map(function ($credit_inform) {
                 return [
                     'credit_info_id' => $credit_inform->id,
-                    'credit_name_ID' => $credit_inform->credit_names,
-                    'credit_date' => $credit_inform->credit_date,
-                    'invoice_number' => $credit_inform->invoice_number,
-                    'charge' => $credit_inform->charge,
-                    'credit_limit' => $credit_inform->credit_limit,
+                    'credit_names_id' => $credit_inform->credit_names,
+                    'total_charge' =>$credit_inform->total_charge,
+                    'total_downpayment' => $credit_inform->total_downpayment,
                     'balance' => $credit_inform->balance,
                     'status' => $credit_inform->status,
                     'created_at' => $credit_inform->created_at,
@@ -239,11 +281,9 @@ class CreditInfoController extends Controller
     public function updateCreditInfo(Request $request, credit_info $credit_info)
     {
         $request->validate([
-            'credit_date' => 'required|date|date_format:Y-m-d',
-            'credit_name_ID'=>'required|integer|digits_between:1, 999',
-            'invoice_number' => 'required|string|max:255',
-            'charge' => 'required|numeric|between:0,999999.99',
-            'credit_limit' => 'required|numeric|between:0,999999.99',
+            'credit_names_id'=>'required|integer|digits_between:1, 999',
+            'total_charge' =>'required|numeric|between:0,999999.99',
+            'total_downpayment' =>'required|numeric|between:0,999999.99',
             'balance' => 'required|numeric|between:0,999999.99',
             'status' => 'required|string|max:255',
         ]);
@@ -254,11 +294,9 @@ class CreditInfoController extends Controller
                 "message" => "You Updated the Credit Information Successfully",
                 "credit_info" => [
                     'credit_info_id' => $credit_inform->id,
-                    'credit_name_ID' => $credit_inform->credit_name_ID,
-                    'credit_date' => $credit_inform->credit_date,
-                    'invoice_number' => $credit_inform->invoice_number,
-                    'charge' => $credit_inform->charge,
-                    'credit_limit' => $credit_inform->credit_limit,
+                    'credit_names_id' => $credit_inform->credit_names_id,
+                    'total_charge' =>$credit_inform->total_charge,
+                    'total_downpayment' => $credit_inform->total_downpayment,
                     'balance' => $credit_inform->balance,
                     'status' => $credit_inform->status,
                     'created_at' => $credit_inform->created_at,
@@ -294,11 +332,9 @@ class CreditInfoController extends Controller
                 "message" => "You Deleted the Credit Information Successfully",
                 "credit_info" => [
                     'credit_info_id' => $cred_info->id,
-                    'credit_name_ID' => $cred_info->credit_name_ID,
-                    'credit_date' => $cred_info->credit_date,
-                    'invoice_number' => $cred_info->invoice_number,
-                    'charge' => $cred_info->charge,
-                    'credit_limit' => $cred_info->credit_limit,
+                    'credit_names_id' => $cred_info->credit_names_id,
+                    'total_charge' =>$cred_info->total_charge,
+                    'total_downpayment' => $cred_info->total_downpayment,
                     'balance' => $cred_info->balance,
                     'status' => $cred_info->status,
                     'created_at' => $cred_info->created_at,
@@ -330,11 +366,9 @@ class CreditInfoController extends Controller
                 'message' => 'Credit Information Soft Deleted Successfully',
                 "credit_info" => [
                     'credit_info_id' => $cred_info->id,
-                    'credit_name_ID' => $cred_info->credit_name_ID,
-                    'credit_date' => $cred_info->credit_date,
-                    'invoice_number' => $cred_info->invoice_number,
-                    'charge' => $cred_info->charge,
-                    'credit_limit' => $cred_info->credit_limit,
+                    'credit_names_id' => $cred_info->credit_names_id,
+                    'total_charge' =>$cred_info->total_charge,
+                    'total_downpayment' => $cred_info->total_downpayment,
                     'balance' => $cred_info->balance,
                     'status' => $cred_info->status,
                     'created_at' => $cred_info->created_at,

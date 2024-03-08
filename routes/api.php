@@ -136,6 +136,7 @@ use App\Http\Controllers\SuppliesController;
         Route::put("/credit_names/id={credit_name}/update" ,"updateCreditName");
         Route::delete("/credit_names/id={credit_name}/delete" ,"destroyCreditName");
         Route::delete("/credit_names/id={credit_name}/softdelete" ,"softdeleterecord");
+        Route::post("/credit_names/id={credit_name}/downpayment" ,"addDownpayment");
     });
 
     });

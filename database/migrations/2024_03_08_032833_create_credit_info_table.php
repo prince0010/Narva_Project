@@ -14,16 +14,14 @@ return new class extends Migration
         if(!Schema::hasTable('credit_info')){
             Schema::create('credit_info', function (Blueprint $table) {
                 $table->increments('id');
-                $table->integer('credit_name_ID')->unsigned();
-                $table->foreign('credit_name_ID')->references('id')->on('credit_names')->onUpdate('cascade')->onUpdate('cascade');
-                $table->date('credit_date');
-                $table->string('invoice_number');
-                $table->double('charge', 10, 2);
-                $table->double('credit_limit', 10, 2);
+                $table->integer('credit_names_id')->unsigned();
+                $table->foreign('credit_names_id')->references('id')->on('credit_names')->onUpdate('cascade')->onUpdate('cascade');
+                $table->double('total_charge', 10, 2)->nullable();
+                $table->double('total_downpayment', 10, 2)->nullable();
                 // $table->date('dp_date');
                 // $table->string('downpayment', 10, 2);
-                $table->double('balance', 10, 2);
-                $table->string('status');
+                $table->double('balance', 10, 2)->nullable(); 
+                $table->string('status')->nullable();;
                 $table->timestamps();
                 $table->softDeletes();
             });
