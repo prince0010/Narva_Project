@@ -41,8 +41,10 @@ class ProductsController extends Controller
                 return [
                     'id' => $product->id,
                     // 'prod_type' => $product->prod_type,
-                    'prod_type' => $product->prod_type->product_type_name, //Specifying to show only the Product Type Name
-                    'supplier' => $product->supplier->supplier_name,
+                    // 'prod_type' => $product->prod_type->product_type_name, //Specifying to show only the Product Type Name
+                    // 'supplier' => $product->supplier->supplier_name,
+                    'prod_type' => $product->prod_type ? $product->prod_type->product_type_name : null,
+'supplier' => $product->supplier ? $product->supplier->supplier_name : null,
                     'part_num' => $product->part_num,
                     'part_name' => $product->part_name,
                     'brand' => $product->brand,

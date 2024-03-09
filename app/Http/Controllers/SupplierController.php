@@ -26,8 +26,10 @@ class SupplierController extends Controller
             $SuppliersData = $suppliers->map(function ($supplier) {
                 return [
                     'id' => $supplier->id,
-                    'supplier_name' => $supplier->supplier_name,
-                    'contact_number' => $supplier->contact_number,
+                    'supplier_name' => $supplier->supplier_name ?? null,
+                    'contact_number' => $supplier->contact_number ?? null,
+
+                   
                 ];
             });
 
