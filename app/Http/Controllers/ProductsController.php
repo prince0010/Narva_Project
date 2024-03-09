@@ -1,12 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Imports\BaseImport;
 use App\Imports\ProductsImport;
 use App\Models\Products;
 use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -438,18 +439,25 @@ class ProductsController extends Controller
 
         return response()->json(['product' => $formattedProducts]);
     }
-
+   
     public function import(Request $request)
     {
         try {
-            $data = Excel::import(new ProductsImport(), request()->file('file'));
+            $filePath = $request->file('file')->getRealPath();
+
+            // Load the Excel file using Maatwebsite\Excel
+            $import = new ProductsImport();
+            Excel::import($import, $filePath);
+
             return response()->json([
-                'status' => 200,'message' => 'Import successful', 'data' => $data]);
+                'status' => 200,
+                'message' => 'Import successful',
+            ]);
         } catch (\Exception $e) {
+            Log::error("Error during import: " . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
 
     // Add Quantities if out of stock
     public function addQuantities(Request $request)

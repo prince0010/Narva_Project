@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('suppliers', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('supplier_name');
-            $table->bigInteger('contact_number');
+            $table->string('supplier_name')->nullable();
+            $table->bigInteger('contact_number')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

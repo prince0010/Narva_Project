@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\SupplierImport;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SupplierController extends Controller
 {
@@ -264,5 +266,17 @@ class SupplierController extends Controller
                 'data' => $data
             ]
         );
+    }
+
+    public function import(Request $request)
+    {
+        try {
+            $data = Excel::import(new SupplierImport(), request()->file('file'));
+            return response()->json([
+                'status' => 200,'message' => 'Import successful', 'data' => $data]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+        
     }
 }

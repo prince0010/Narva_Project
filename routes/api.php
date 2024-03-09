@@ -45,7 +45,7 @@ use App\Http\Controllers\SuppliesController;
         Route::post("products/id={products}/add-stock", "addStock");
         Route::get("/products/top-low-stock-products", "lowestStock");
         Route::get("/products/outofstock", "outofStock");
-        Route::get("/products/import-form", "import");
+        // Route::get("/products/import-form", "import");
         Route::post("/products/import" , "import");
         Route::post("/products/add-quantites", "addQuantities");
         Route::post('/products/id={productId}/stock/', 'addStockbyID'); 
@@ -78,7 +78,9 @@ use App\Http\Controllers\SuppliesController;
         Route::put("/supplier/id={supplier}/update" , "updateSupplier");
         Route::delete("/supplier/id={supplier}/delete" ,"deleteSupplier");
         Route::delete("/supplier/id={supplier}/softdelete" ,"softdeleterecord");
-});
+        // Route::get("/supplier/import-form", "import");
+        Route::post("/supplier/import" , "import");
+    });
 
     // CRUD IN Markup
     Route::controller(MarkupController::class)->group(function(){
