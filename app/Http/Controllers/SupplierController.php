@@ -57,7 +57,7 @@ class SupplierController extends Controller
         $request->validate([
             'supplier_name' => 'required|string|max:255',
             'contact_number' => [
-                'required',
+                'nullable',
                 'regex:/^[0-9()+\-. ]+$/',
                 'max:12', 
             ],
@@ -201,6 +201,11 @@ class SupplierController extends Controller
     {
         $request->validate([
             'supplier_name' => 'required|string|max:255',
+            'contact_number' => [
+                'nullable',
+                'regex:/^[0-9()+\-. ]+$/',
+                'max:12', 
+            ],
             "supppliers" => [
                 "id" => $supplier->id,
                 "supplier_name" => $supplier->supplier_name,
