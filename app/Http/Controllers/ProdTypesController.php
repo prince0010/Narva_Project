@@ -62,7 +62,7 @@ class ProdTypesController extends Controller
         // $product_type = Prod_Types::create($request->all());
 
         $product_type = Validator::make($request->all(), [
-            'product_type_name' => 'nullable|string|max:255'
+            'product_type_name' => 'required|string|max:255'
         ]);
 
         if ($product_type->fails()) {
@@ -185,7 +185,7 @@ class ProdTypesController extends Controller
     {
 
         $request->validate([
-            'product_type_name' => 'nullable|string|max:255'
+            'product_type_name' => 'required|string|max:255',
         ]);
 
         if ($product_Type->update($request->all())) {
