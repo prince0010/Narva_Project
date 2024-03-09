@@ -34,7 +34,7 @@ class ProdTypesController extends Controller
 
             return response()->json([
                 'status' => '200',
-                'message' => 'successfully added product type',
+                'message' => 'successfully added Product Type',
                 'product_types' => $Product_Types,
                 'pagination' => [
                     'current_page' => $prod_type->currentPage(),
@@ -48,6 +48,7 @@ class ProdTypesController extends Controller
                 'message' => 'product type is empty'
             ]);
         }
+        
     }
 
 
