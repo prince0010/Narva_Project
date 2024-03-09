@@ -15,7 +15,7 @@ return new class extends Migration
         if(!Schema::hasTable('prod_types')){
             Schema::create('prod_types', function (Blueprint $table) {
                 $table->increments('id');
-                $table->string('product_type_name');
+                $table->string('product_type_name')->nullable();
                 $table->timestamps();
                 $table->softDeletes();
                 
