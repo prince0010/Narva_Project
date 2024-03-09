@@ -14,7 +14,7 @@ class SupplierImport implements ToModel, WithHeadingRow
         $supplier_name = isset($row['suppliers_name']) ? $row['suppliers_name'] : null;
         $contact_number = isset($row['contact_number']) ? $row['contact_number'] : null;
        
-        // Define your logic to create a model instance from the imported row
+      
         return new Supplier([
            
             'supplier_id' => $supplier_id,
