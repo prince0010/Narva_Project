@@ -10,7 +10,7 @@ class ProductsImport implements ToModel, WithHeadingRow
 {
     public function model(array $row)
     {
-        $stock = isset($row['stock']) ? $row['stock'] : null;
+        $stock = isset($row['stock']) ? (int)$row['stock'] : null;
         $part_name = isset($row['part_name']) ? $row['part_name'] : null;
         $brand = isset($row['brand']) ? $row['brand'] : null;
         $model = isset($row['model']) ? $row['model'] : null;

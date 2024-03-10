@@ -28,8 +28,6 @@ class SupplierController extends Controller
                     'id' => $supplier->id,
                     'supplier_name' => $supplier->supplier_name ?? null,
                     'contact_number' => $supplier->contact_number ?? null,
-
-                   
                 ];
             });
 

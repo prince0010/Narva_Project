@@ -4,7 +4,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\CreditInfoController;
+use App\Http\Controllers\CreditInformController;
 use App\Http\Controllers\CreditNamesController;
+use App\Http\Controllers\CreditUsersController;
+use App\Http\Controllers\DownpaymentInfoController;
 use App\Http\Controllers\InterestController;
 use App\Http\Controllers\MarkupController;
 use App\Http\Controllers\ProdTypesController ;
@@ -12,7 +15,9 @@ use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SuppliesController;
-
+use App\Http\Controllers\TransactionDetailsController;
+use App\Http\Controllers\TransactionDetailsLogsController;
+use App\Models\TransactionDetailsLog;
 
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
@@ -139,6 +144,62 @@ use App\Http\Controllers\SuppliesController;
         Route::delete("/credit_names/id={credit_name}/delete" ,"destroyCreditName");
         Route::delete("/credit_names/id={credit_name}/softdelete" ,"softdeleterecord");
         Route::post("/credit_names/id={credit_name}/downpayment" ,"addDownpayment");
+    });
+
+    Route::controller(CreditUsersController::class)->group(function (){
+
+        Route::get("/credit_users/index", "index");
+        Route::post("/credit_users", "storeCreditUsers");
+        Route::get("/credit_users/id={id}" ,"showById");
+        Route::get("/credit_users", "showCreditUsers");
+        Route::get("/credit_users/{id}/all_credit_users/", "showSoftDeletedCreditUser"); // Show Soft Deleted and Non Deleted Products Type || 1 = Soft Deleted | 0 = Not Soft Deleted
+        Route::put("/credit_users/id={credit_users}/update", "updateCreditUser");
+        Route::get('/credit_users/search/{credit_user}', 'searchCreditUser');
+        Route::delete("/credit_users/id={credit_user}/delete", "destroyCreditUser"); 
+        Route::delete("/credit_users/id={credit_user}/softdelete", "softdeleterecord");
+        
+    });
+
+    Route::controller(DownpaymentInfoController::class)->group(function (){
+
+        Route::get("/downpayment/index", "index");
+        Route::post("/downpayment", "storeDownpayment");
+        Route::get("/downpayment/id={id}" ,"showById");
+        Route::get("/downpayment", "showDownpayment");
+        Route::get("/downpayment/{id}/all_downpayment/", "showSoftDeletedDownpayment"); // Show Soft Deleted and Non Deleted Products Type || 1 = Soft Deleted | 0 = Not Soft Deleted
+        Route::post("/downpayment/id={downpayment}/add_dp", "addDownpayment");
+        Route::get('/downpayment/search/{downpayment}', 'searchDownpayment');
+        Route::delete("/downpayment/id={downpayment}/delete", "destroyDownpayment"); 
+        Route::delete("/downpayment/id={downpayment}/softdelete", "softdeleterecord");
+    
+    });
+
+    Route::controller(CreditInformController::class)->group(function (){
+
+        Route::get("/credit_information/index", "index");
+        Route::get('/credit_information/search/{credit_inform}', 'searchCreditInform');
+        Route::post("/credit_information", "storeCreditInform");
+        Route::get("/credit_information/id={id}" ,"showById");
+        Route::get("/credit_information", "showCreditInform");
+        Route::get("/credit_information/{id}/all_credit_information/", "showSoftDeletedCredInform");
+        Route::put("/credit_information/id={credit_inform}/update", "updateCreditInform");
+        Route::delete("/credit_information/id={credit_inform}/delete", "destroyCreditInform"); 
+        Route::delete("/credit_information/id={credit_inform}/softdelete", "softdeleterecord");
+        Route::post('/credit-inform/{id}/add-downpayment', "addDownpayment");
+    });
+
+    Route::controller(TransactionDetailsController::class)->group(function (){
+        Route::get("/transaction_details/index", "index");
+        Route::get('/transaction_details/search/{transaction_details}', 'searchTransactionDetails');
+        Route::get("/transaction_details/id={id}" ,"showById");
+        Route::get("/transaction_details", "showTransactionDetails");
+        Route::get("/transaction_details/{id}/all_credit_information/", "showSoftDeletedTransactionDetails");
+        Route::delete("/transaction_details/id={transaction_details}/softdelete", "softdeleterecord");
+        Route::get('/calculate-transaction-details/{creditInformId}', "calculateTransactionDetails");
+    });
+
+    Route::controller(TransactionDetailsLogsController::class)->group(function (){
+        Route::get('/transaction-details-logs/{creditInformId}/credit-users', "getTransactionDetailsLogs");
     });
 
     });

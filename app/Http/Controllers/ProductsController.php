@@ -13,12 +13,6 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ProductsController extends Controller
 {
-    // public function index(Request $request){
-
-    //     $products_query = Products::query();
-
-    //     if($request)
-    // }
 
     public function index(Request $request)
     {
@@ -44,7 +38,7 @@ class ProductsController extends Controller
                     // 'prod_type' => $product->prod_type->product_type_name, //Specifying to show only the Product Type Name
                     // 'supplier' => $product->supplier->supplier_name,
                     'prod_type' => $product->prod_type ? $product->prod_type->product_type_name : null,
-'supplier' => $product->supplier ? $product->supplier->supplier_name : null,
+                    'supplier' => $product->supplier ? $product->supplier->supplier_name : null,
                     'part_num' => $product->part_num,
                     'part_name' => $product->part_name,
                     'brand' => $product->brand,

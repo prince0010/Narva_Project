@@ -23,7 +23,7 @@ return new class extends Migration
                 $table->string('brand')->nullable();
                 $table->string('model')->nullable();
                 $table->string('price_code')->nullable();
-                $table->string('stock')->nullable();
+                $table->integer('stock')->nullable();
                 $table->timestamps();
                 $table->softDeletes();
             });
