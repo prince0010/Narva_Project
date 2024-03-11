@@ -21,6 +21,6 @@ class credit_users extends Model
     protected $guarded = ['credit_limit'];
     
     public function credit_inform(){
-        return $this->hasMany(credit_inform::class);
+        return $this->hasMany(credit_inform::class, 'credit_users_id');
     }
 }

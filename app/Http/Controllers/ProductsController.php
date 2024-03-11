@@ -347,54 +347,54 @@ class ProductsController extends Controller
     // Display the Top 10 Lowest Stock
 
     public function lowestStock()
-    {
+{
+    $lowestStockProducts = Products::select(
+        'products.id',
+        'products.supplier_ID',
+        'suppliers.supplier_name',
+        'products.part_num',
+        'products.part_name',
+        'products.brand',
+        'products.model',
+        'products.price_code',
+        'products.stock',
+    )
 
-        $lowestStockProducts = Products::select(
-            'products.id',
-            'products.supplier_ID',
-            'suppliers.supplier_name',
-            'products.part_num',
-            'products.part_name',
-            'products.brand',
-            'products.model',
-            'products.price_code',
-            'products.stock',
-        )
+        // get the supplier name in the suppliers based on the supplier_ID in the products table
+        ->leftJoin('suppliers', 'products.supplier_ID', '=', 'suppliers.id')
+        ->orderBy('products.stock')
+        ->get();
 
-            // get the supplier name in the suppliers based on the supplier_ID in the products table
-            ->leftJoin('suppliers', 'products.supplier_ID', '=', 'suppliers.id')
-            ->orderBy('products.stock')
-            ->limit(10)
-            ->get();
+    // Filter products with stock less than or equal to 3
+    $lowStockProductsData = $lowestStockProducts->filter(function ($product) {
+        return $product->stock <= 3;
+    })->map(function ($product) {
+        $supplierName = $product->supplier ? $product->supplier->supplier_name : null;
+        return [
+            'products_id' => $product->id,
+            'supplier_name' => $supplierName,
+            'part_num' => $product->part_num,
+            'part_name' => $product->part_name,
+            'brand' => $product->brand,
+            'model' => $product->model,
+            'price_code' => $product->price_code,
+            'stock-left' => $product->stock,
+        ];
+    });
 
-        if ($lowestStockProducts->count() > 0) {
-            $lowStockProductsData = $lowestStockProducts->map(function ($product) {
-                $supplierName = $product->supplier ? $product->supplier->supplier_name : null;
-                return [
-                    'products_id' => $product->id,
-                    'supplier_name' => $supplierName,
-                    'part_num' => $product->part_num,
-                    'part_name' => $product->part_name,
-                    'brand' => $product->brand,
-                    'model' => $product->model,
-                    'price_code' => $product->price_code,
-                    'stock-left' => $product->stock,
-
-                ];
-            });
-
-            return response()->json([
-                'status' => 200,
-                'message' => 'The Top 10 Products with the Lowest Stock',
-                'stocks_data' => $lowStockProductsData
-            ]);
-        } else {
-            return response()->json([
-                'status' => 401,
-                'message' => 'No Products Stock Available'
-            ]);
-        }
+    if ($lowStockProductsData->count() > 0) {
+        return response()->json([
+            'status' => 200,
+            'message' => 'Products with Low Stock',
+            'stocks_data' => $lowStockProductsData
+        ]);
+    } else {
+        return response()->json([
+            'status' => 401,
+            'message' => 'No Products with Low Stock Available'
+        ]);
     }
+}
 
     // Out Of Stock
     public function outofStock()

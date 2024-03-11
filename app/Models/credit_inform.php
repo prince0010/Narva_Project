@@ -30,6 +30,24 @@ class credit_inform extends Model
         return $this->belongsTo(downpayment_info::class, 'downpayment_info_id');
     }
 
+    // Add this method to get the total downpayment for a specific downpayment_info_id
+    public function getTotalDownpaymentAttribute()
+    {
+        if ($this->credit_inform) {
+            return $this->credit_inform->sum('downpayment');
+        } else {
+            return 0; // or any default value you prefer
+        }
+    }
+
+    // Add this method to deduct downpayment from the associated charge
+    public function deductDownpayment()
+    {
+        $remainingCharge = $this->charge - $this->getTotalDownpaymentAttribute();
+
+        return $remainingCharge;
+    }
+
     public function transaction_details(){
         return $this->hasMany(transaction_details::class);
     }
@@ -40,7 +58,7 @@ class credit_inform extends Model
 
     public function addDownpayment($amount)
     {
-        $remainingCharge = $this->charge - $this->downpayment_info->sum('downpayment');
+        $remainingCharge = $this->deductDownpayment();
 
         if ($amount > $remainingCharge) {
             return false; // Downpayment exceeds remaining charge
@@ -54,5 +72,5 @@ class credit_inform extends Model
 
         return true; // Downpayment added successfully
     }
-
 }
+

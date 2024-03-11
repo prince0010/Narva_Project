@@ -24,7 +24,9 @@ class Products extends Model
         'brand',
         'model',
         'price_code',
-        'stock'
+        'stock',
+        'markup',
+        'counter_price'
     ];
 
     public function prod_type()

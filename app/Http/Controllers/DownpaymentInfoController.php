@@ -164,27 +164,78 @@ class DownpaymentInfoController extends Controller
     }
 
 
+    // public function addDownpayment(Request $request, downpayment_info $downpayment)
+    // {
+
+    //     $request->validate([
+    //         'downpayment' => 'required|numeric|between:0,999999.99',
+    //         'dp_date' => 'required|date|date_format:Y-m-d',
+    //     ]);
+
+    //     if ($downpayment->update($request->all())) {
+           
+    //         return response()->json([
+    //             'status' => 200,
+    //             "message" => "You Updated the Downpayment Successfully.",
+    //             "data" => $downpayment,
+    //         ]);
+    //     } else {
+    //         return response()->json([
+    //             "status" => 401,
+    //             "message" => "Failed to Update the Downpayment.",
+    //         ]);
+    //     }
+    // }
     public function addDownpayment(Request $request, downpayment_info $downpayment)
     {
-
         $request->validate([
             'downpayment' => 'required|numeric|between:0,999999.99',
             'dp_date' => 'required|date|date_format:Y-m-d',
         ]);
-
-        if ($downpayment->update($request->all())) {
-           
+    
+        // Get the associated credit_inform
+        $creditInform = $downpayment->credit_informs()->first();
+    
+        // Check if the downpayment has an associated credit_inform
+        if (!$creditInform) {
             return response()->json([
-                'status' => 200,
-                "message" => "You Updated the Downpayment Successfully.",
-                "data" => $downpayment,
-            ]);
-        } else {
-            return response()->json([
-                "status" => 401,
-                "message" => "Failed to Update the Downpayment.",
-            ]);
+                'status' => 400,
+                'message' => 'Downpayment has no associated credit_inform.',
+            ], 400);
         }
+    
+        // Calculate the remaining charge after subtracting the downpayment
+        $remainingCharge = $creditInform->deductDownpayment();
+    
+        // Check if the remaining charge is within the credit limit
+        if ($remainingCharge < 0 || $remainingCharge > $creditInform->credit_users->credit_limit) {
+            return response()->json([
+                'status' => 400,
+                'message' => 'Downpayment exceeds the credit limit or results in a negative balance.',
+                'remaining_charge' => $remainingCharge,
+            ], 400);
+        }
+    
+        // Update the existing downpayment_info record
+        $downpayment->update([
+            'downpayment' => $request->input('downpayment'),
+            'dp_date' => $request->input('dp_date'),
+        ]);
+    
+        // Deduct the downpayment from the charge on the associated credit_inform
+        $creditInform->update([
+            'charge' => $remainingCharge,
+        ]);
+    
+        // Build the response
+        $response = [
+            'status' => 200,
+            "message" => "You Updated the Downpayment Successfully.",
+            "data" => $downpayment,
+            "remaining_charge" => $remainingCharge,
+        ];
+    
+        return response()->json($response);
     }
 
     // Search API

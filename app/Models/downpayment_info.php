@@ -18,8 +18,7 @@ class downpayment_info extends Model
         'dp_date'
     ];
 
-
-    public function credit_inform(){
-        return $this->hasMany(credit_inform::class);
+    public function credit_informs(){
+        return $this->hasMany(credit_inform::class, 'downpayment_info_id');
     }
 }
