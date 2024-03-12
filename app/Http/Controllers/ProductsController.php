@@ -491,11 +491,11 @@ class ProductsController extends Controller
         $formattedProducts = [];
 
         foreach ($outOfStockProducts as $product) {
-            $supplierName = $product->supplier ? $product->supplier->supplier_name : null;
+            $supplierID = $product->supplier ? $product->supplier->id : null;
 
             $formattedProducts[] = [
                 'products_id' => $product->id,
-                'supplier_name' => $supplierName,
+                'supplier_id' => $supplierID,
                 'part_num' => $product->part_num,
                 'part_name' => $product->part_name,
                 'brand' => $product->brand,
