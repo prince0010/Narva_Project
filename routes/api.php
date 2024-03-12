@@ -54,7 +54,7 @@ use App\Models\TransactionDetailsLog;
         Route::post("/products/import" , "import");
         Route::post("/products/add-quantites", "addQuantities");
         Route::post('/products/id={productId}/stock/', 'addStockbyID'); 
-        Route::get('/products/{productTypeId}/filter', 'getProductsByProductType');
+        // Route::get('/products/{productTypeId}/filter', 'getProductsByProductType');
     });
 
     // CRUD IN PRODUCT TYPE

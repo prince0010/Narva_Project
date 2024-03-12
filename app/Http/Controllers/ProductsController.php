@@ -5,11 +5,8 @@ use App\Imports\BaseImport;
 use App\Imports\ProductsImport;
 use App\Models\Prod_Types;
 use App\Models\Products;
-use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ProductsController extends Controller
@@ -17,29 +14,32 @@ class ProductsController extends Controller
 
     public function index(Request $request)
     {
-
-        $products_query = Products::query();
-        $req = $request->keyword;
-        if ($req) {
-            $products_query->where('part_num', 'LIKE', '%' . $req . '%')
-                ->orWhere('part_name', 'LIKE', '%' . $req . '%')
-                ->orWhere('brand', 'LIKE', '%' . $req . '%')
-                ->orWhere('model', 'LIKE', '%' . $req . '%')
-                ->orWhere('price_code', 'LIKE', '%' . $req . '%')
-                ->orWhere('stock', 'LIKE', '%' . $req . '%');
-        }
-
+        $products_query = Products::with(['prod_type', 'supplier'])
+            ->when($request->has('filter'), function ($query) use ($request) {
+                $productTypeIds = explode(',', $request->filter);
+                return $query->whereIn('prod_type_ID', $productTypeIds);
+            })
+            ->when($request->has('keyword'), function ($query) use ($request) {
+                $keyword = '%' . $request->keyword . '%';
+                return $query->where(function ($innerQuery) use ($keyword) {
+                    $innerQuery->where('part_num', 'LIKE', $keyword)
+                        ->orWhere('part_name', 'LIKE', $keyword)
+                        ->orWhere('brand', 'LIKE', $keyword)
+                        ->orWhere('model', 'LIKE', $keyword)
+                        ->orWhere('price_code', 'LIKE', $keyword)
+                        ->orWhere('stock', 'LIKE', $keyword);
+                });
+            })
+            ->orderBy('id', 'asc'); // You can change the default order as per your requirement
+    
         $products = $products_query->paginate(10);
-
+    
         if ($products->count() > 0) {
             $ProductsData = $products->map(function ($product) {
                 return [
                     'id' => $product->id,
-                    // 'prod_type' => $product->prod_type,
-                    // 'prod_type' => $product->prod_type->product_type_name, //Specifying to show only the Product Type Name
-                    // 'supplier' => $product->supplier->supplier_name,
                     'prod_type' => $product->prod_type ? $product->prod_type->product_type_name : null,
-                    'supplier' => $product->supplier ? $product->supplier : null,
+                    'supplier' => $product->supplier ? $product->supplier->supplier_name : null,
                     'part_num' => $product->part_num,
                     'part_name' => $product->part_name,
                     'brand' => $product->brand,
@@ -48,9 +48,9 @@ class ProductsController extends Controller
                     'stock' => $product->stock
                 ];
             });
-
+    
             return response()->json([
-                'status' => '200',
+                'status' => 200,
                 'message' => 'Current Datas',
                 'products' => $ProductsData,
                 'pagination' => [
@@ -61,12 +61,11 @@ class ProductsController extends Controller
             ]);
         } else {
             return response()->json([
-                'status' => '401',
+                'status' => 401,
                 'message' => 'Products is empty'
             ]);
         }
     }
-
     //  Search
     public function searchProducts($products)
     {
@@ -163,36 +162,36 @@ class ProductsController extends Controller
     }
 
     // Filtering
-    public function getProductsByProductType($productTypeId)
-    {
-        // Validate that $productTypeId is a positive integer
-        if (!ctype_digit($productTypeId) || $productTypeId <= 0) {
-            return response()->json([
-                'status' => 400,
-                'message' => 'Invalid product type ID provided.',
-            ]);
-        }
+    // public function getProductsByProductType($productTypeId)
+    // {
+    //     // Validate that $productTypeId is a positive integer
+    //     if (!ctype_digit($productTypeId) || $productTypeId <= 0) {
+    //         return response()->json([
+    //             'status' => 400,
+    //             'message' => 'Invalid product type ID provided.',
+    //         ]);
+    //     }
 
-        // Cast $productTypeId to integer
-        $productTypeId = (int)$productTypeId;
+    //     // Cast $productTypeId to integer
+    //     $productTypeId = (int)$productTypeId;
 
-        // Retrieve the product type along with its associated products using eager loading
-        $productType = Prod_Types::with('product')->find($productTypeId);
+    //     // Retrieve the product type along with its associated products using eager loading
+    //     $productType = Prod_Types::with('product')->find($productTypeId);
 
-        if (!$productType) {
-            return response()->json([
-                'status' => 404,
-                'message' => 'Product type not found.',
-            ]);
-        }
+    //     if (!$productType) {
+    //         return response()->json([
+    //             'status' => 404,
+    //             'message' => 'Product type not found.',
+    //         ]);
+    //     }
 
-        // Return the product type and its associated products
-        return response()->json([
-            'status' => 200,
-            'product_type' => $productType,
-            'message' => 'Products retrieved successfully for the specified product type.',
-        ]);
-    }
+    //     // Return the product type and its associated products
+    //     return response()->json([
+    //         'status' => 200,
+    //         'product_type' => $productType,
+    //         'message' => 'Products retrieved successfully for the specified product type.',
+    //     ]);
+    // }
 
     public function showById($id)
     {
