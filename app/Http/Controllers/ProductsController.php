@@ -156,7 +156,8 @@ class ProductsController extends Controller
             'price_code' => $convertedPriceCode, // Use the converted price code for the response
             'stock' => $product->stock,
             'markup' => $product->markup,
-            'counter_price' => $this->convertToOrganizedB($product->counter_price), // Convert counter_price to letters
+            // 'counter_price' => $this->convertToOrganizedB($product->counter_price), // Convert counter_price to letters sa ORGANIZEDB
+            'counter_price' => $product->counter_price,
         ];
     }
     public function showById($id)
