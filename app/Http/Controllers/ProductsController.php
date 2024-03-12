@@ -30,7 +30,7 @@ class ProductsController extends Controller
                         ->orWhere('stock', 'LIKE', $keyword);
                 });
             })
-            ->orderBy('id', 'asc'); // You can change the default order as per your requirement
+            ->orderBy('id', 'asc'); 
     
         $products = $products_query->paginate(10);
     
