@@ -39,7 +39,7 @@ class ProductsController extends Controller
                 return [
                     'id' => $product->id,
                     'prod_type' => $product->prod_type ? $product->prod_type->product_type_name : null,
-                    'supplier' => $product->supplier ? $product->supplier->supplier_name : null,
+                    'supplier_id' => $product->supplier ? $product->supplier->id : null,
                     'part_num' => $product->part_num,
                     'part_name' => $product->part_name,
                     'brand' => $product->brand,
