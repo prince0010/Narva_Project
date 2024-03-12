@@ -18,7 +18,7 @@ class Prod_Types extends Model
     ];
 
     public function product(){
-        return $this ->hasMany(Products::class);
+        return $this ->hasMany(Products::class, 'prod_type_ID');
     }
 
     public function sales(){

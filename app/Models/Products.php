@@ -29,6 +29,10 @@ class Products extends Model
         'counter_price'
     ];
     
+    // public static function getByProductType($productTypeId)
+    // {
+    //     return self::where('prod_type_ID', $productTypeId)->get();
+    // }
 
     public function prod_type()
     {

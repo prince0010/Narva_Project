@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Imports\BaseImport;
 use App\Imports\ProductsImport;
+use App\Models\Prod_Types;
 use App\Models\Products;
 use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
 use Illuminate\Http\RedirectResponse;
@@ -162,25 +163,34 @@ class ProductsController extends Controller
     }
 
     // Filtering
-    public function getProductsByType($productType)
+    public function getProductsByProductType($productTypeId)
     {
-        $products = Products::where('prod_type_ID', $productType)->get();
-
-        if ($products->isEmpty()) {
+        // Validate that $productTypeId is a positive integer
+        if (!ctype_digit($productTypeId) || $productTypeId <= 0) {
             return response()->json([
-                'status' => 404,
-                'message' => 'No products found for the specified product type.',
+                'status' => 400,
+                'message' => 'Invalid product type ID provided.',
             ]);
         }
 
-        $formattedProducts = $products->map(function ($product) {
-            return $this->getProductResponseData($product, $this->convertToOrganizedB($product->price_code));
-        });
+        // Cast $productTypeId to integer
+        $productTypeId = (int)$productTypeId;
 
+        // Retrieve the product type along with its associated products using eager loading
+        $productType = Prod_Types::with('product')->find($productTypeId);
+
+        if (!$productType) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Product type not found.',
+            ]);
+        }
+
+        // Return the product type and its associated products
         return response()->json([
             'status' => 200,
-            'products' => $formattedProducts,
-            'message' => 'Products retrieved successfully.',
+            'product_type' => $productType,
+            'message' => 'Products retrieved successfully for the specified product type.',
         ]);
     }
 
