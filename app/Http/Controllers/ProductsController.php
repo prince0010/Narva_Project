@@ -38,7 +38,7 @@ class ProductsController extends Controller
                     // 'prod_type' => $product->prod_type->product_type_name, //Specifying to show only the Product Type Name
                     // 'supplier' => $product->supplier->supplier_name,
                     'prod_type' => $product->prod_type ? $product->prod_type->product_type_name : null,
-                    'supplier' => $product->supplier ? $product->supplier->supplier_name : null,
+                    'supplier' => $product->supplier ? $product->supplier : null,
                     'part_num' => $product->part_num,
                     'part_name' => $product->part_name,
                     'brand' => $product->brand,
@@ -85,51 +85,84 @@ class ProductsController extends Controller
 
     public function storeProduct(Request $request, Products $products)
     {
-        //
         $request->validate([
-            'prod_type_ID' => 'required|integer|digits_between:1, 999',
-            'supplier_ID' => 'required|integer|digits_between:1, 999',
+            'prod_type_ID' => 'required|integer|digits_between:1,999',
+            'supplier_ID' => 'required|integer|digits_between:1,999',
             'part_num' => 'required|string|max:255',
             'part_name' => 'required|string|max:255',
             'brand' => 'required|string|max:255',
             'model' => 'required|string|max:255',
-            'price_code' => 'required|string|max:255', // In Specific Code there is a price on it so example in RRNB the price of it is Pesos 3150.00
-            'stock' => 'required|integer|digits_between: 1, 999',
+            'price_code' => 'required|numeric', 
+            'stock' => 'required|integer|digits_between:1,999',
+            'markup' => 'nullable|numeric|min:0|max:100', 
         ]);
-        $products = Products::create($request->all());
-
-        if ($products) {
+    
+        // Convert price_code to characters from ORGANIZEDB
+        $convertedPriceCode = $this->convertToOrganizedB($request->input('price_code'));
+    
+        // Calculate ang counter_price using markup (if provided)
+        $counterPrice = $request->input('markup') ? $this->calculateCounterPrice($request->input('price_code'), $request->input('markup')) : null;
+    
+        $request->merge([
+            'price_code' => $convertedPriceCode,
+            'counter_price' => $counterPrice,
+        ]);
+    
+        $product = Products::create($request->all());
+    
+        if ($product) {
             return response()->json([
-                "status" => 200,
-                "products" => [
-                    "id" => $products->id,
-                    "prod_type" => $products->prod_type,
-                    "supplier" => $products->supplier,
-                    "part_num" => $products->part_num,
-                    "part_name" => $products->part_name,
-                    "brand" => $products->brand,
-                    "model" => $products->model,
-                    "price_code" => $products->price_code,
-                    "stock" => $products->stock
-                ],
-
-                "message" => "Added the Product Successfully",
+                'status' => 200,
+                'products' => $this->getProductResponseData($product, $convertedPriceCode),
+                'message' => 'Added the Product Successfully',
             ]);
         } else {
             return response()->json([
-
-                "status" => 401,
-                "message" => "Failed to Add a Product",
+                'status' => 401,
+                'message' => 'Failed to Add a Product',
             ]);
         }
     }
-
-
+    private function convertToOrganizedB($priceCode)
+    {
+        $organizedB = 'ORGANIZEDB';
+        $convertedPriceCode = '';
+    
+        // Convert each digit in price_code to the corresponding character in ORGANIZEDB
+        foreach (str_split($priceCode) as $digit) {
+            $convertedPriceCode .= $organizedB[$digit - 1]; // Subtract 1 para ma adjust for the array indexing
+        }
+    
+        return $convertedPriceCode;
+    }
+    private function calculateCounterPrice($priceCode, $markup)
+    {
+        $price = floatval($priceCode);
+        $markup = $markup / 100; // Convert percentage to decimal
+        return $price * (1 + $markup);
+    }
+    
+    // Helper function to get the response data for a product
+    private function getProductResponseData($product, $convertedPriceCode)
+    {
+        return [
+            'id' => $product->id,
+            'prod_type' => $product->prod_type,
+            'supplier' => $product->supplier,
+            'part_num' => $product->part_num,
+            'part_name' => $product->part_name,
+            'brand' => $product->brand,
+            'model' => $product->model,
+            'price_code' => $convertedPriceCode, // Use the converted price code for the response
+            'stock' => $product->stock,
+            'markup' => $product->markup,
+            'counter_price' => $this->convertToOrganizedB($product->counter_price), // Convert counter_price to letters
+        ];
+    }
     public function showById($id)
     {
 
         $product = Products::with('prod_type')->find($id);
-
 
         if ($product) {
             $productData = [
@@ -157,6 +190,7 @@ class ProductsController extends Controller
             ]);
         }
     }
+    
 
     public function showProduct(Products $products)
     {
