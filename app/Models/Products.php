@@ -28,6 +28,7 @@ class Products extends Model
         'markup',
         'counter_price'
     ];
+    
 
     public function prod_type()
     {

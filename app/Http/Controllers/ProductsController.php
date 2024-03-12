@@ -155,11 +155,35 @@ class ProductsController extends Controller
             'model' => $product->model,
             'price_code' => $convertedPriceCode, // Use the converted price code for the response
             'stock' => $product->stock,
-            'markup' => $product->markup,
+            // 'markup' => $product->markup,
             // 'counter_price' => $this->convertToOrganizedB($product->counter_price), // Convert counter_price to letters sa ORGANIZEDB
             'counter_price' => $product->counter_price,
         ];
     }
+
+    // Filtering
+    public function getProductsByType($productType)
+    {
+        $products = Products::where('prod_type_ID', $productType)->get();
+
+        if ($products->isEmpty()) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'No products found for the specified product type.',
+            ]);
+        }
+
+        $formattedProducts = $products->map(function ($product) {
+            return $this->getProductResponseData($product, $this->convertToOrganizedB($product->price_code));
+        });
+
+        return response()->json([
+            'status' => 200,
+            'products' => $formattedProducts,
+            'message' => 'Products retrieved successfully.',
+        ]);
+    }
+
     public function showById($id)
     {
 
