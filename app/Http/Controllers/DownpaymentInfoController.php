@@ -204,15 +204,39 @@ class DownpaymentInfoController extends Controller
             ], 400);
         }
     
-        // Calculate the remaining charge after subtracting the downpayment
-        $remainingCharge = $creditInform->deductDownpayment();
+        // Check if the downpayment equals the charge
+        if ($request->input('downpayment') == $creditInform->charge) {
+            // Update the existing downpayment_info record
+            $downpayment->update([
+                'downpayment' => $request->input('downpayment'),
+                'dp_date' => $request->input('dp_date'),
+            ]);
     
-        // Check if the remaining charge is within the credit limit
-        if ($remainingCharge < 0 || $remainingCharge > $creditInform->credit_users->credit_limit) {
+            // Update the charge on the associated credit_inform
+            $creditInform->update([
+                'charge' => 0, // Set remaining charge to zero
+            ]);
+    
+            // Build the response
+            $response = [
+                'status' => 200,
+                'message' => 'Downpayment fully paid.',
+                'downpayment_info' => $downpayment,
+                'remaining_charge' => 0,
+            ];
+    
+            return response()->json($response);
+        }
+    
+        // Calculate the remaining charge after subtracting the downpayment
+        $remainingCharge = $creditInform->charge - $request->input('downpayment');
+    
+        // Check if the downpayment exceeds the charge
+        if ($request->input('downpayment') > $creditInform->charge) {
             return response()->json([
                 'status' => 400,
-                'message' => 'Downpayment exceeds the credit limit or results in a negative balance.',
-                'remaining_charge' => $remainingCharge,
+                'message' => 'Downpayment amount exceeds the charge. Please enter a lower amount.',
+                'remaining_charge' => $creditInform->charge,
             ], 400);
         }
     
@@ -222,22 +246,25 @@ class DownpaymentInfoController extends Controller
             'dp_date' => $request->input('dp_date'),
         ]);
     
-        // Deduct the downpayment from the charge on the associated credit_inform
+        // Update the charge on the associated credit_inform
         $creditInform->update([
             'charge' => $remainingCharge,
         ]);
     
+        // Refresh the credit_inform to ensure the latest data
+        $creditInform->refresh();
+    
         // Build the response
         $response = [
             'status' => 200,
-            "message" => "You Updated the Downpayment Successfully.",
-            "data" => $downpayment,
-            "remaining_charge" => $remainingCharge,
+            'message' => 'Downpayment updated successfully.',
+            'downpayment_info' => $downpayment,
+            'remaining_charge' => $creditInform->charge,
         ];
     
         return response()->json($response);
     }
-
+    
     // Search API
     public function searchDownpayment($downpayment)
     {
