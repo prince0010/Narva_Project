@@ -302,35 +302,54 @@ class ProductsController extends Controller
     public function updateProduct(Request $request, Products $products)
     {
         $request->validate([
-            'prod_type_ID' => 'required|integer|digits_between:1, 999',
-            'supplier_ID' => 'required|integer|digits_between:1, 999',
+            'prod_type_ID' => 'required|integer|digits_between:1,999',
+            'supplier_ID' => 'required|integer|digits_between:1,999',
             'part_num' => 'required|string|max:255',
             'part_name' => 'required|string|max:255',
             'brand' => 'required|string|max:255',
             'model' => 'required|string|max:255',
-            'price_code' => 'required|string|max:255', // In Specific Code there is a price on it so example in RRNB the price of it is Pesos 3150.00
-            'stock' => 'required|integer|digits_between: 1, 999',
+            'price_code' => 'required|string|max:255',
+            'stock' => 'required|integer|digits_between:1,999',
         ]);
-
-        if ($products->update($request->all())) {
-            // return redirect()->route('products.index')
-            // ->with(response()->json([
-            //     'status' => 200,
-            //     "message" => "You Updated the Product Successfully",
-            // ]));
-            return response()->json([
-                'status' => 200,
-                "message" => "You Updated the Product Successfully",
-                "data" => $products,
-            ]);
-        } else {
-            return response()->json([
-                "status" => 401,
-                "message" => "Failed to Update the Product",
-            ]);
+    
+        // Check if price_code or markup has been updated
+        $isPriceCodeUpdated = $products->price_code != $request->price_code;
+        $isMarkupUpdated = $products->markup != $request->markup;
+    
+        $products->fill($request->all());
+    
+        // If either price_code or markup has been updated, recalculate counter_price
+        if ($isPriceCodeUpdated || $isMarkupUpdated) {
+            $convertedPriceCode = $this->convertToOrganizedB($request->price_code);
+            $counterPrice = $this->calculateCounterPrice($request->price_code, $request->markup);
+            $products->price_code = $convertedPriceCode;
+            $products->counter_price = $counterPrice;
         }
+    
+        // Save the updated product
+        $products->save();
+    
+        $responseData = [
+            'id' => $products->id,
+            'prod_type' => $products->prod_type,
+            'supplier' => $products->supplier,
+            'part_num' => $products->part_num,
+            'part_name' => $products->part_name,
+            'brand' => $products->brand,
+            'model' => $products->model,
+            'price_code' => $products->price_code,
+            'stock' => $products->stock,
+            'counter_price' => $products->counter_price,
+        ];
+    
+        // Return the response
+        return response()->json([
+            'status' => 200,
+            'message' => 'Product updated successfully',
+            'data' => $responseData,
+        ]);
     }
-
+    
     /**
      * Remove the specified resource from storage.
      */
