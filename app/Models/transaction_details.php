@@ -13,14 +13,10 @@ class transaction_details extends Model
 
     protected $table = 'transaction_details';
 
-    protected $fillable = [
-        // Define other fillable attributes here
-    ];
-
     public function getTotalChargeAttribute()
     {
         return $this->charge;
-        // You may adjust this depending on how you calculate the total charge
+    
     }
 
     public function getTotalDownpaymentAttribute()

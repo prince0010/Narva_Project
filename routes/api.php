@@ -190,6 +190,7 @@ use App\Models\TransactionDetailsLog;
 
     Route::controller(TransactionDetailsController::class)->group(function (){
         Route::get("/transaction_details/index", "index");
+        Route::get("/transaction_details/id={id}" ,"showById");
         Route::get("/transaction_details/{id}/all_credit_information/", "showSoftDeletedTransactionDetails");
         Route::delete("/transaction_details/id={transaction_details}/softdelete", "softdeleterecord");
     });

@@ -69,6 +69,36 @@ class TransactionDetailsController extends Controller
         }
     }
 
+     public function showById($id)
+    {
+        $transac_details = transaction_details::with('credit_inform')->find($id);
+
+        if ($transac_details) {
+            $transac_data = [
+                "transaction_details" => [
+                    "transaction_details_id" => $transac_details->id,
+                    "cred_inform_id" => $transac_details->credit_inform,
+                    "total_downpayment" => $transac_details->total_downpayment ? $transac_details->total_downpayment : null,
+                    "total_charge" => $transac_details->total_charge ? $transac_details->total_charge : null,
+                    "balance" => $transac_details->balance ? $transac_details->balance : null,
+                    "status" => $transac_details->status ? $transac_details->status : null,
+                ],
+               
+            ];
+
+            return response()->json([
+                'status' => '200',
+                'message' => 'Current Datas',
+                'sales' => $transac_data,
+            ]);
+        } else {
+            return response()->json([
+                'status' => '401',
+                'message' => 'Empty Data'
+            ]);
+        }
+    }
+
     public function showSoftDeletedTransactionDetails($id)
     {
         if ($id == 1) {
