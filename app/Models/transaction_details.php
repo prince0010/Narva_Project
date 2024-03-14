@@ -13,6 +13,11 @@ class transaction_details extends Model
 
     protected $table = 'transaction_details';
 
+    public function credit_inform()
+{
+    return $this->belongsTo(credit_inform::class);
+}
+
     public function getTotalChargeAttribute()
     {
         return $this->charge;

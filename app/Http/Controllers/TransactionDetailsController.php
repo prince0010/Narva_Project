@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\credit_inform;
+use App\Models\credit_users;
 use App\Models\transaction_details;
 use Illuminate\Http\Request;
 
@@ -69,27 +70,91 @@ class TransactionDetailsController extends Controller
         }
     }
 
-     public function showById($id)
-    {
-        $transac_details = transaction_details::with('credit_inform')->find($id);
+    public function getCreditAndDownpaymentInfo($credit_users_id)
+{
+    // Find the credit user by ID
+    $creditUser = credit_users::find($credit_users_id);
+    
+    if (!$creditUser) {
+        return response()->json([
+            'status' => '404',
+            'message' => 'Credit user not found for the given ID.',
+        ]);
+    }
 
+    // Fetch all credit_inform records associated with the credit user
+    $creditInforms = credit_inform::where('credit_users_id', $credit_users_id)->get();
+    
+    // Initialize variables to store calculated values
+    $totalCharge = 0;
+    $totalDownpayment = 0;
+
+    // Calculate total charge and total downpayment
+    foreach ($creditInforms as $creditInform) {
+        $totalCharge += $creditInform->charge;
+        $totalDownpayment += $creditInform->downpayment_info()->sum('downpayment');
+    }
+
+    // Calculate balance and status
+    $balance = $totalCharge - $totalDownpayment;
+    $status = $balance == 0 ? 'Fully Paid' : 'Not Paid';
+
+    return response()->json([
+        'status' => '200',
+        'message' => 'Credit and downpayment information retrieved successfully.',
+        'credit_user' => $creditUser->toArray(),
+        'total_charge' => $totalCharge,
+        'total_downpayment' => $totalDownpayment,
+        'balance' => $balance,
+        'status' => $status,
+    ]);
+}
+
+    public function showByCreditName($credit_name)
+    {
+        // Find the credit user by credit_name
+        $creditUser = credit_users::where('credit_name', $credit_name)->first();
+    
+        if (!$creditUser) {
+            return response()->json([
+                'status' => '404',
+                'message' => 'Credit user not found for the given credit name.',
+            ]);
+        }
+    
+        // Find the transaction details associated with the credit user
+        $transac_details = transaction_details::whereHas('credit_inform', function ($query) use ($creditUser) {
+            $query->where('credit_users_id', $creditUser->id);
+        })->first();
+    
         if ($transac_details) {
+            $cred_inform = $transac_details->credit_inform;
+    
+            // Calculate overall total charge, total downpayment, balance, and status
+            $overallTotalCharge = $cred_inform->charge;
+            $overallTotalDownpayment = $cred_inform->total_downpayment;
+            $overallBalance = $overallTotalCharge - $overallTotalDownpayment;
+            $overallStatus = $overallBalance == 0 ? 'Fully Paid' : 'Not Paid';
+    
             $transac_data = [
                 "transaction_details" => [
                     "transaction_details_id" => $transac_details->id,
-                    "cred_inform_id" => $transac_details->credit_inform,
-                    "total_downpayment" => $transac_details->total_downpayment ? $transac_details->total_downpayment : null,
-                    "total_charge" => $transac_details->total_charge ? $transac_details->total_charge : null,
-                    "balance" => $transac_details->balance ? $transac_details->balance : null,
-                    "status" => $transac_details->status ? $transac_details->status : null,
-                ],
-               
+                    "cred_inform_id" => $cred_inform->id,
+                    "total_downpayment" => $overallTotalDownpayment,
+                    "total_charge" => $overallTotalCharge,
+                    "balance" => $overallBalance,
+                    "status" => $overallStatus,
+                ],   
             ];
-
+    
             return response()->json([
                 'status' => '200',
                 'message' => 'Current Datas',
                 'sales' => $transac_data,
+                'overall_total_charge' => $overallTotalCharge,
+                'overall_total_downpayment' => $overallTotalDownpayment,
+                'overall_balance' => $overallBalance,
+                'overall_status' => $overallStatus,
             ]);
         } else {
             return response()->json([
@@ -98,6 +163,7 @@ class TransactionDetailsController extends Controller
             ]);
         }
     }
+    
 
     public function showSoftDeletedTransactionDetails($id)
     {

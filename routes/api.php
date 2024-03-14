@@ -162,7 +162,10 @@ use App\Models\TransactionDetailsLog;
 
     Route::controller(TransactionDetailsController::class)->group(function (){
         Route::get("/transaction_details/index", "index");
-        Route::get("/transaction_details/id={id}" ,"showById");
+
+        Route::get("/credit-users/{credit_users_id}/credit-and-downpayment-info", "getCreditAndDownpaymentInfo"); //Find the Record of total_charnge, total_downpayment, balance and status by input the credit_user_id
+
+        Route::get("/transaction_details/{credit_name}" ,"showByCreditName");
         Route::get("/transaction_details/{id}/all_credit_information/", "showSoftDeletedTransactionDetails");
         Route::delete("/transaction_details/id={transaction_details}/softdelete", "softdeleterecord");
     });

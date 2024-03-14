@@ -17,6 +17,8 @@ return new class extends Migration
             $table->decimal('total_downpayment', 10, 2)->default(0);
             $table->decimal('balance', 10, 2)->default(0);
             $table->enum('status', ['Fully Paid', 'Not Paid'])->default('Not Paid');
+            $table->integer('credit_inform_id')->unsigned();
+            $table->foreign('credit_inform_id')->references('id')->on('credit_inform')->onDelete('cascade')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });
