@@ -15,10 +15,13 @@ class downpayment_info extends Model
 
     protected $fillable = [
         'downpayment',
-        'dp_date'
+        'dp_date',
+        'credit_inform_id', // Add the credit_inform_id to the fillable array
     ];
 
-    public function credit_informs(){
-        return $this->hasMany(credit_inform::class, 'downpayment_info_id');
+    // Define the relationship with credit_inform
+    public function credit_inform()
+    {
+        return $this->belongsTo(credit_inform::class);
     }
 }

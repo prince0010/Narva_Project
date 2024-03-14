@@ -18,59 +18,37 @@ class credit_inform extends Model
         'credit_date',
         'invoice_number',
         'charge',
-        'downpayment_info_id',
-        'status'
     ];
 
-    public function credit_users(){
+    public function credit_users()
+    {
         return $this->belongsTo(credit_users::class, 'credit_users_id');
     }
 
-    public function downpayment_info(){
-        return $this->belongsTo(downpayment_info::class, 'downpayment_info_id');
+    public function downpayment_info()
+    {
+        return $this->hasMany(downpayment_info::class, 'credit_inform_id');
     }
 
-    // Add this method to get the total downpayment for a specific downpayment_info_id
+    // Add this method to get the total downpayment for a specific credit_inform
     public function getTotalDownpaymentAttribute()
     {
-        if ($this->credit_inform) {
-            return $this->credit_inform->sum('downpayment');
-        } else {
-            return 0; // or any default value you prefer
-        }
+        return $this->downpayment_info()->sum('downpayment');
     }
 
-    // Add this method to deduct downpayment from the associated charge
-    public function deductDownpayment()
+    // Add this method to calculate the remaining charge after deducting downpayment
+    public function getRemainingChargeAttribute()
     {
-        $remainingCharge = $this->charge - $this->getTotalDownpaymentAttribute();
-
-        return $remainingCharge;
+        return $this->charge - $this->getTotalDownpaymentAttribute();
     }
 
-    public function transaction_details(){
+    public function transaction_details()
+    {
         return $this->hasMany(transaction_details::class);
     }
 
-    public function transaction_details_log(){
+    public function transaction_details_log()
+    {
         return $this->hasMany(TransactionDetailsLog::class);
     }
-
-    public function addDownpayment($amount)
-    {
-        $remainingCharge = $this->deductDownpayment();
-
-        if ($amount > $remainingCharge) {
-            return false; // Downpayment exceeds remaining charge
-        }
-
-        // Create a new downpayment
-        $this->downpayment_info()->create([
-            'downpayment' => $amount,
-            'dp_date' => now(), // You may adjust the date as needed
-        ]);
-
-        return true; // Downpayment added successfully
-    }
 }
-

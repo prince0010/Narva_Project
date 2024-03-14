@@ -12,9 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('downpayment_info', function (Blueprint $table) {
-            $table->increments('id');
-            $table->double('downpayment', 10,2)->default(0)->nullable();
-            $table->date('dp_date')->nullable();
+            $table->id();
+            $table->integer('credit_inform_id')->unsigned(); // Add the credit_inform_id column
+            $table->foreign('credit_inform_id')->references('id')->on('credit_inform')->onDelete('cascade')->onUpdate('cascade');
+            $table->decimal('downpayment', 10, 2);
+            $table->date('dp_date');
             $table->timestamps();
             $table->softDeletes();
         });

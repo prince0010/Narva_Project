@@ -118,34 +118,34 @@ use App\Models\TransactionDetailsLog;
         Route::delete('/sales/id={id}/delete-sales', 'deletedSales'); // Delete the Session in Sales
     });
 
-    Route::controller(CreditInfoController::class)->group(function (){
+    // Route::controller(CreditInfoController::class)->group(function (){
 
-        Route::get("/credit_info/index", 'index');
-        Route::post("/credit_info" , 'storeCreditInfo');
-        Route::get("/credit_info", 'showCreditInfo');
-        Route::get("/credit_info/id={id}" ,"showById"); 
-        Route::get('/credit_info/search/{credit_inform}', 'searchCredit_Info');
-        Route::get("/credit_info/{id}/all_credit_info/", "showSoftDeleteCredit");
-        Route::put("/credit_info/id={credit_info}/update" ,"updateCreditInfo");
-        Route::delete("/credit_info/id={credit_info}/delete" ,"destroyCreditInfo");
-        Route::delete("/credit_info/id={credit_info}/softdelete" ,"softdeleterecord");
+    //     Route::get("/credit_info/index", 'index');
+    //     Route::post("/credit_info" , 'storeCreditInfo');
+    //     Route::get("/credit_info", 'showCreditInfo');
+    //     Route::get("/credit_info/id={id}" ,"showById"); 
+    //     Route::get('/credit_info/search/{credit_inform}', 'searchCredit_Info');
+    //     Route::get("/credit_info/{id}/all_credit_info/", "showSoftDeleteCredit");
+    //     Route::put("/credit_info/id={credit_info}/update" ,"updateCreditInfo");
+    //     Route::delete("/credit_info/id={credit_info}/delete" ,"destroyCreditInfo");
+    //     Route::delete("/credit_info/id={credit_info}/softdelete" ,"softdeleterecord");
 
-    });
+    // });
 
 
-    Route::controller(CreditNamesController::class)->group(function (){
+    // Route::controller(CreditNamesController::class)->group(function (){
 
-        Route::get("/credit_names/index", 'index');
-        Route::post("/credit_names" , 'storeCreditNameInfo');
-        Route::get('/credit_names/search/{credit_name}', 'searchCredit_Name');
-        Route::get("/credit_names", 'showCreditName');
-        Route::get("/credit_names/id={id}" ,"showById"); 
-        Route::get("/credit_names/{id}/all_credit_name/", "showSoftDeletedCreditName");
-        Route::put("/credit_names/id={credit_name}/update" ,"updateCreditName");
-        Route::delete("/credit_names/id={credit_name}/delete" ,"destroyCreditName");
-        Route::delete("/credit_names/id={credit_name}/softdelete" ,"softdeleterecord");
-        Route::post("/credit_names/id={credit_name}/downpayment" ,"addDownpayment");
-    });
+    //     Route::get("/credit_names/index", 'index');
+    //     Route::post("/credit_names" , 'storeCreditNameInfo');
+    //     Route::get('/credit_names/search/{credit_name}', 'searchCredit_Name');
+    //     Route::get("/credit_names", 'showCreditName');
+    //     Route::get("/credit_names/id={id}" ,"showById"); 
+    //     Route::get("/credit_names/{id}/all_credit_name/", "showSoftDeletedCreditName");
+    //     Route::put("/credit_names/id={credit_name}/update" ,"updateCreditName");
+    //     Route::delete("/credit_names/id={credit_name}/delete" ,"destroyCreditName");
+    //     Route::delete("/credit_names/id={credit_name}/softdelete" ,"softdeleterecord");
+    //     Route::post("/credit_names/id={credit_name}/downpayment" ,"addDownpayment");
+    // });
 
     Route::controller(CreditUsersController::class)->group(function (){
 
@@ -164,11 +164,11 @@ use App\Models\TransactionDetailsLog;
     Route::controller(DownpaymentInfoController::class)->group(function (){
 
         Route::get("/downpayment/index", "index");
-        Route::post("/downpayment", "storeDownpayment");
+        // Route::post("/downpayment", "storeDownpayment");
         Route::get("/downpayment/id={id}" ,"showById");
         Route::get("/downpayment", "showDownpayment");
         Route::get("/downpayment/{id}/all_downpayment/", "showSoftDeletedDownpayment"); // Show Soft Deleted and Non Deleted Products Type || 1 = Soft Deleted | 0 = Not Soft Deleted
-        Route::post("/downpayment/id={downpayment}/add_dp", "addDownpayment");
+        Route::post("/downpayment/add_downpayment", "addDownpayment");
         Route::get('/downpayment/search/{downpayment}', 'searchDownpayment');
         Route::delete("/downpayment/id={downpayment}/delete", "destroyDownpayment"); 
         Route::delete("/downpayment/id={downpayment}/softdelete", "softdeleterecord");
@@ -178,7 +178,6 @@ use App\Models\TransactionDetailsLog;
     Route::controller(CreditInformController::class)->group(function (){
 
         Route::get("/credit_information/index", "index");
-        Route::get('/credit_information/search/{credit_inform}', 'searchCreditInform');
         Route::post("/credit_information", "storeCreditInform");
         Route::get("/credit_information/id={id}" ,"showById");
         Route::get("/credit_information", "showCreditInform");
@@ -186,21 +185,14 @@ use App\Models\TransactionDetailsLog;
         Route::put("/credit_information/id={credit_inform}/update", "updateCreditInform");
         Route::delete("/credit_information/id={credit_inform}/delete", "destroyCreditInform"); 
         Route::delete("/credit_information/id={credit_inform}/softdelete", "softdeleterecord");
-        Route::post('/credit-inform/{id}/add-downpayment', "addDownpayment");
     });
 
     Route::controller(TransactionDetailsController::class)->group(function (){
         Route::get("/transaction_details/index", "index");
-        Route::get('/transaction_details/search/{transaction_details}', 'searchTransactionDetails');
         Route::get("/transaction_details/id={id}" ,"showById");
-        Route::get("/transaction_details", "showTransactionDetails");
         Route::get("/transaction_details/{id}/all_credit_information/", "showSoftDeletedTransactionDetails");
         Route::delete("/transaction_details/id={transaction_details}/softdelete", "softdeleterecord");
-        Route::get('/calculate-transaction-details/{creditInformId}', "calculateTransactionDetails");
     });
 
-    Route::controller(TransactionDetailsLogsController::class)->group(function (){
-        Route::get('/transaction-details-logs/{creditInformId}/credit-users', "getTransactionDetailsLogs");
-    });
-
+  
     });

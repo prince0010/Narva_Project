@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\credit_inform;
 use App\Models\downpayment_info;
 use Illuminate\Http\Request;
 
@@ -186,85 +187,49 @@ class DownpaymentInfoController extends Controller
     //         ]);
     //     }
     // }
-    public function addDownpayment(Request $request, downpayment_info $downpayment)
-    {
-        $request->validate([
-            'downpayment' => 'required|numeric|between:0,999999.99',
-            'dp_date' => 'required|date|date_format:Y-m-d',
-        ]);
-    
-        // Get the associated credit_inform
-        $creditInform = $downpayment->credit_informs()->first();
-    
-        // Check if the downpayment has an associated credit_inform
-        if (!$creditInform) {
-            return response()->json([
-                'status' => 400,
-                'message' => 'Downpayment has no associated credit_inform.',
-            ], 400);
-        }
-    
-        // Check if the downpayment equals the charge
-        if ($request->input('downpayment') == $creditInform->charge) {
-            // Update the existing downpayment_info record
-            $downpayment->update([
-                'downpayment' => $request->input('downpayment'),
-                'dp_date' => $request->input('dp_date'),
-            ]);
-    
-            // Update the charge on the associated credit_inform
-            $creditInform->update([
-                'charge' => 0, // Set remaining charge to zero
-            ]);
-    
-            // Build the response
-            $response = [
-                'status' => 200,
-                'message' => 'Downpayment fully paid.',
-                'downpayment_info' => $downpayment,
-                'remaining_charge' => 0,
-            ];
-    
-            return response()->json($response);
-        }
-    
-        // Calculate the remaining charge after subtracting the downpayment
-        $remainingCharge = $creditInform->charge - $request->input('downpayment');
-    
-        // Check if the downpayment exceeds the charge
-        if ($request->input('downpayment') > $creditInform->charge) {
-            return response()->json([
-                'status' => 400,
-                'message' => 'Downpayment amount exceeds the charge. Please enter a lower amount.',
-                'remaining_charge' => $creditInform->charge,
-            ], 400);
-        }
-    
-        // Update the existing downpayment_info record
-        $downpayment->update([
-            'downpayment' => $request->input('downpayment'),
-            'dp_date' => $request->input('dp_date'),
-        ]);
-    
-        // Update the charge on the associated credit_inform
-        $creditInform->update([
-            'charge' => $remainingCharge,
-        ]);
-    
-        // Refresh the credit_inform to ensure the latest data
-        $creditInform->refresh();
-    
-        // Build the response
-        $response = [
-            'status' => 200,
-            'message' => 'Downpayment updated successfully.',
-            'downpayment_info' => $downpayment,
-            'remaining_charge' => $creditInform->charge,
-        ];
-    
-        return response()->json($response);
+   // Controller Method for Adding Downpayment
+public function addDownpayment(Request $request)
+{
+    $request->validate([
+        'downpayment' => 'required|numeric|between:0,999999.99',
+        'dp_date' => 'required|date|date_format:Y-m-d',
+        'credit_inform_id' => 'required|exists:credit_inform,id',
+    ]);
+
+    $creditInform = credit_inform::findOrFail($request->credit_inform_id);
+
+    // Calculate the total downpayment including past downpayments
+    $totalDownpayment = $creditInform->downpayment_info()->sum('downpayment');
+
+    // Calculate the new total downpayment
+    $newTotalDownpayment = $totalDownpayment + $request->input('downpayment');
+
+    // Check if the new total downpayment exceeds the charge
+    if ($newTotalDownpayment > $creditInform->charge) {
+        return response()->json([
+            'status' => 400,
+            'message' => 'Total downpayment exceeds the charge. Please enter a lower amount.',
+            'remaining_charge' => $creditInform->charge - $totalDownpayment, // Remaining charge after subtracting existing downpayments
+        ], 400);
     }
-    
+
+    // Create a new downpayment_info record associated with the credit_inform
+    $newDownpayment = downpayment_info::create([
+        'downpayment' => $request->input('downpayment'),
+        'dp_date' => $request->input('dp_date'),
+        'credit_inform_id' => $creditInform->id, // Associate with the correct credit_inform
+    ]);
+
+    // Build the response with calculated remaining charge
+    $response = [
+        'status' => 200,
+        'message' => 'Downpayment added successfully.',
+        'downpayment_info' => $newDownpayment,
+        'remaining_charge' => $creditInform->charge - $newTotalDownpayment, // Remaining charge after adding the new downpayment
+    ];
+
+    return response()->json($response);
+}
     // Search API
     public function searchDownpayment($downpayment)
     {

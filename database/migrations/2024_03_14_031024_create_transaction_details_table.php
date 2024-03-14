@@ -13,12 +13,10 @@ return new class extends Migration
     {
         Schema::create('transaction_details', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('cred_inform_id')->unsigned();
-            $table->foreign('cred_inform_id')->references('id')->on('credit_inform')->onUpdate('cascade')->onDelete('cascade');
-            $table->double('total_charge', 10, 2)->nullable();
-            $table->double('total_downpayment', 10, 2)->nullable();
-            $table->double('balance', 10, 2)->nullable(); 
-            $table->string('status')->nullable();
+            $table->decimal('total_charge', 10, 2)->default(0);
+            $table->decimal('total_downpayment', 10, 2)->default(0);
+            $table->decimal('balance', 10, 2)->default(0);
+            $table->enum('status', ['Fully Paid', 'Not Paid'])->default('Not Paid');
             $table->timestamps();
             $table->softDeletes();
         });

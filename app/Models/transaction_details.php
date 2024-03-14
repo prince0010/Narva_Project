@@ -14,60 +14,33 @@ class transaction_details extends Model
     protected $table = 'transaction_details';
 
     protected $fillable = [
-        'cred_inform_id',
-        'total_downpayment',
-        'total_charge',
-        'balance',
-        'status'
+        // Define other fillable attributes here
     ];
 
-
-    public function credit_inform(){
-        return $this->belongsTo(credit_inform::class, 'cred_inform_id');
-    }
-
-
-    // public static function getTransactionDetailsByCreditInformId($creditInformId)
-    // {
-    //     // Fetch transaction details based on cred_inform_id
-    //     $transactionDetails = self::where('cred_inform_id', $creditInformId)->first();
-
-    //     // If transaction details are found, return the data
-    //     if ($transactionDetails) {
-    //         return [
-    //             'cred_inform_id' => $transactionDetails->cred_inform_id,
-    //             'total_downpayment' => $transactionDetails->total_downpayment,
-    //             'total_cred' => $transactionDetails->total_cred,
-    //             'balance' => $transactionDetails->balance,
-    //             'status' => $transactionDetails->status,
-    //         ];
-    //     } else {
-        
-    //         return [
-    //             'message' => 'No Transaction Details Found. Try Again.'
-    //         ];
-    //     }
-    // }
-
-    public static function calculateTransactionDetails($creditInformId)
+    public function getTotalChargeAttribute()
     {
-        $creditInform = credit_inform::find($creditInformId);
-
-        if (!$creditInform) {
-            return ['message' => 'Credit Inform not found.'];
-        }
-
-        $totalDownpayment = $creditInform->downpayment_info()->sum('downpayment');
-        $totalCred = $creditInform->sum('charge');
-        $balance = $totalCred - $totalDownpayment ;
-        $status = $balance === 0 ? 'Paid' : 'Not Fully Paid';
-
-        return [
-            'cred_inform_id' => $creditInformId,
-            'total_downpayment' => $totalDownpayment,
-            'total_charge' => $totalCred,
-            'balance' => $balance,
-            'status' => $status,
-        ];
+        return $this->charge;
+        // You may adjust this depending on how you calculate the total charge
     }
+
+    public function getTotalDownpaymentAttribute()
+    {
+        return $this->downpayment_info()->sum('downpayment');
+    }
+
+    public function getBalanceAttribute()
+    {
+        return $this->total_charge - $this->total_downpayment;
+    }
+
+    public function getStatusAttribute()
+    {
+        return $this->balance == 0 ? 'Fully Paid' : 'Not Paid';
+    }
+
+    public function downpayment_info()
+    {
+        return $this->hasMany(downpayment_info::class);
+    }
+
 }

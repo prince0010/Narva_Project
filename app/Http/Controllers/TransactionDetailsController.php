@@ -4,71 +4,72 @@ namespace App\Http\Controllers;
 
 use App\Models\credit_inform;
 use App\Models\transaction_details;
-use App\Models\TransactionDetailsLog;
 use Illuminate\Http\Request;
 
 class TransactionDetailsController extends Controller
 {
     public function index(Request $request)
     {
-        $transaction_query = transaction_details::query();
-
+        $credit_informs = credit_inform::query();
         $req = $request->keyword;
         if ($req) {
-            $transaction_query->where('status', 'LIKE', '%' . $req . '%')
-            ->orWhere('total_downpayment', 'LIKE', '%' . $req . '%')
-            ->orWhere('total_charge', 'LIKE', '%' . $req . '%')
-                ->orWhere('balance', 'LIKE', '%' . $req . '%');
+            $credit_informs->where('invoice_number', 'LIKE', '%' . $req . '%')
+                ->orWhere('credit_date', 'LIKE', '%' . $req . '%')
+                ->orWhere('status', 'LIKE', '%' . $req . '%')
+                ->orWhere('charge', 'LIKE', '%' . $req . '%');
         }
-        $transaction_details = $transaction_query->paginate(10);
-
-        if ($transaction_details->count() > 0) {
-            $Transaction_Data = $transaction_details->map(function ($transac_det) {
+    
+        $credit_info = $credit_informs->paginate(10);
+    
+        if ($credit_info->count() > 0) {
+            $creditInformData = $credit_info->map(function ($cred_info) {
                 return [
-                    'transaction_details_id' => $transac_det->id,
-                    'cred_inform_id' => $transac_det->credit_inform ? $transac_det->credit_inform : null,
-                    'total_downpayment' => $transac_det->total_downpayment ? $transac_det->total_downpayment : null,
-                    'total_charge' => $transac_det->total_charge ? $transac_det->total_charge : null,
-                    'balance'=>  $transac_det->balance ? $transac_det->balance : null,
-                    'status'=>  $transac_det->status ? $transac_det->status : null,
+                    'credit_inform_id' => $cred_info->id,
+                    'credit_users_id' => $cred_info->credit_users ? $cred_info->credit_users->credit_name : null ,
+                    'downpayment_info_id' => $cred_info->downpayment_info->isNotEmpty() ? $cred_info->downpayment_info->map(function ($downpayment) {
+                        return [
+                            'id' => $downpayment->id,
+                            'downpayment' => $downpayment->downpayment,
+                            'dp_date' => $downpayment->dp_date,
+                        ];
+                    }) : 'No Downpayment Data',   
+                    'credit_date' => $cred_info->credit_date,
+                    'invoice_number' => $cred_info->invoice_number,
+                    'charge' => $cred_info->charge,
                 ];
             });
+    
+            // Calculate overall total charge, downpayment, and status
+            $overallTotalCharge = $credit_info->sum('charge');
+            $overallTotalDownpayment = $credit_info->sum(function ($cred_info) {
+                return $cred_info->getTotalDownpaymentAttribute();
+            });
+            $overallBalance = $overallTotalCharge - $overallTotalDownpayment;
+            $overallStatus = $overallBalance == 0 ? 'Fully Paid' : 'Not Paid';
+    
             return response()->json([
                 'status' => '200',
                 'message' => 'Current Datas',
-                'credit_names' => $Transaction_Data,
+                'credit_information' => $creditInformData,
+                'overall_total_charge' => $overallTotalCharge,
+                'overall_total_downpayment' => $overallTotalDownpayment,
+                'overall_balance' => $overallBalance,
+                'overall_status' => $overallStatus,
                 'pagination' => [
-                    'current_page' => $transaction_details->currentPage(),
-                    'total' => $transaction_details->total(),
-                    'per_page' => $transaction_details->perPage(),
+                    'current_page' => $credit_info->currentPage(),
+                    'total' => $credit_info->total(),
+                    'per_page' => $credit_info->perPage(),
                 ]
             ]);
         } else {
             return response()->json([
                 'status' => '401',
-                'message' => 'Transaction Details is empty'
+                'message' => 'Credit Information is empty'
             ]);
         }
     }
 
-     //  Search
-     public function searchTransactionDetails($transaction_details)
-     {
-             $transac_deta = transaction_details::select('transaction_details.*')
-            ->join('credit_inform', 'transaction_details.cred_inform_id', '=', 'credit_inform.id')
-            ->where('credit_inform.invoice_number', 'like', '%' . $transaction_details . '%')
-            ->orWhere('status', 'like', '%' . $transaction_details . '%')
-            ->get();
-
-         if (empty(trim($transaction_details))) {
-             return response()->json([
-                 "status" => "204",
-                 "message" => "No Input is Provided for Search",
-             ]);
-         } else {
-             return response()->json($transac_deta);
-         }
-     }
+    // Define other controller methods as needed
 
      public function showById($id)
     {
@@ -92,37 +93,6 @@ class TransactionDetailsController extends Controller
                 'status' => '200',
                 'message' => 'Current Datas',
                 'sales' => $transac_data,
-            ]);
-        } else {
-            return response()->json([
-                'status' => '401',
-                'message' => 'Empty Data'
-            ]);
-        }
-    }
-    public function showTransactionDetails(transaction_details $transaction_details)
-    {
-
-        $transaction_que = $transaction_details->get();
-
-        if ($transaction_que->count() > 0) {
-            $Transaction_Data = $transaction_que->map(function ($transact_details) {
-                return [
-                    "transaction_details" => [
-                        "transaction_details_id" => $transact_details->id,
-                        "cred_inform_id" => $transact_details->credit_inform,
-                        "total_downpayment" => $transact_details->total_downpayment ? $transact_details->total_downpayment : null,
-                        "total_charge" => $transact_details->total_charge ? $transact_details->total_charge : null,
-                        "balance" => $transact_details->balance ? $transact_details->balance : null,
-                        "status" => $transact_details->status ? $transact_details->status : null,
-                    ],
-
-                ];
-            });
-            return response()->json([
-                'status' => '200',
-                'message' => 'Current Datas',
-                'sales' => $Transaction_Data,
             ]);
         } else {
             return response()->json([
@@ -190,79 +160,5 @@ class TransactionDetailsController extends Controller
         );
     }
 
-    public static function calculateTransactionDetails($creditInformId)
-{
-    $creditInform = credit_inform::find($creditInformId);
-
-    if (!$creditInform) {
-        return ['message' => 'Credit Inform not found.'];
-    }
-
-    $totalDownpayment = $creditInform->downpayment_info()->sum('downpayment');
-    $totalCharge = $creditInform->sum('charge');
-    $balance = $totalCharge - $totalDownpayment;
-    $status = $balance === 0 ? 'Paid' : 'Not Fully Paid';
-
-    // Check if the total charge exceeds the credit limit
-    $creditLimit = $creditInform->credit_users->credit_limit;
-
-    if ($totalCharge > $creditLimit) {
-        return ['message' => 'Charge exceeds credit limit.'];
-    }
-
-    return [
-        'cred_inform_id' => $creditInformId,
-        'total_downpayment' => $totalDownpayment,
-        'total_charge' => $totalCharge,
-        'balance' => $balance,
-        'status' => $status,
-    ];
-}
-
-    // public function calculateTransactionDetails($creditInformId)
-    // {
-    //     // Fetch the credit inform details
-    //     $creditInform = credit_inform::find($creditInformId);
-
-    //     if (!$creditInform) {
-    //         return response()->json(['error' => 'Credit Inform not found.'], 404);
-    //     }
-
-    //     // Perform the calculations
-    //     $totalDownpayment = $creditInform->downpayment_info->sum('downpayment');
-    //     $totalCred = $creditInform->sum('charge');
-    //     $balance = $totalCred - $totalDownpayment;
-    //     $status = $balance == 0 ? 'Fully Paid' : 'Not Fully Paid';
-
-    //     // Create or update the transaction details
-    //     $transactionDetails = transaction_details::updateOrCreate(
-    //         ['cred_inform_id' => $creditInformId],
-    //         [
-    //             'total_downpayment' => $totalDownpayment,
-    //             'total_charge' => $totalCred,
-    //             'balance' => $balance,
-    //             'status' => $status,
-    //         ]
-    //     );
-
-    //     // Log the past and new updates
-    //     $this->logTransactionDetailsUpdate($creditInformId, $transactionDetails->getOriginal(), $transactionDetails->getAttributes());
-
-    //     return response()->json($transactionDetails);
-    // }
-
-    // private function logTransactionDetailsUpdate($creditInformId, $oldValues, $newValues)
-    // {
-    //     TransactionDetailsLog::create([
-    //         'cred_inform_id' => $creditInformId,
-    //         'old_total_downpayment' => $oldValues['total_downpayment'],
-    //         'new_total_downpayment' => $newValues['total_downpayment'],
-    //         'old_total_charge' => $oldValues['total_charge'],
-    //         'new_total_charge' => $newValues['total_charge'],
-    //         'old_balance' => $oldValues['balance'],
-    //         'new_balance' => $newValues['balance'],
-    //         'old_status' => $oldValues['status'],
-    //         'new_status' => $newValues['status'],
-    //     ]);
-    // }
+ 
 }
