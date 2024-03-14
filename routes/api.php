@@ -118,35 +118,7 @@ use App\Models\TransactionDetailsLog;
         Route::delete('/sales/id={id}/delete-sales', 'deletedSales'); // Delete the Session in Sales
     });
 
-    // Route::controller(CreditInfoController::class)->group(function (){
-
-    //     Route::get("/credit_info/index", 'index');
-    //     Route::post("/credit_info" , 'storeCreditInfo');
-    //     Route::get("/credit_info", 'showCreditInfo');
-    //     Route::get("/credit_info/id={id}" ,"showById"); 
-    //     Route::get('/credit_info/search/{credit_inform}', 'searchCredit_Info');
-    //     Route::get("/credit_info/{id}/all_credit_info/", "showSoftDeleteCredit");
-    //     Route::put("/credit_info/id={credit_info}/update" ,"updateCreditInfo");
-    //     Route::delete("/credit_info/id={credit_info}/delete" ,"destroyCreditInfo");
-    //     Route::delete("/credit_info/id={credit_info}/softdelete" ,"softdeleterecord");
-
-    // });
-
-
-    // Route::controller(CreditNamesController::class)->group(function (){
-
-    //     Route::get("/credit_names/index", 'index');
-    //     Route::post("/credit_names" , 'storeCreditNameInfo');
-    //     Route::get('/credit_names/search/{credit_name}', 'searchCredit_Name');
-    //     Route::get("/credit_names", 'showCreditName');
-    //     Route::get("/credit_names/id={id}" ,"showById"); 
-    //     Route::get("/credit_names/{id}/all_credit_name/", "showSoftDeletedCreditName");
-    //     Route::put("/credit_names/id={credit_name}/update" ,"updateCreditName");
-    //     Route::delete("/credit_names/id={credit_name}/delete" ,"destroyCreditName");
-    //     Route::delete("/credit_names/id={credit_name}/softdelete" ,"softdeleterecord");
-    //     Route::post("/credit_names/id={credit_name}/downpayment" ,"addDownpayment");
-    // });
-
+   
     Route::controller(CreditUsersController::class)->group(function (){
 
         Route::get("/credit_users/index", "index");
