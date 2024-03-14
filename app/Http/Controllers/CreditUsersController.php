@@ -25,7 +25,7 @@ class CreditUsersController extends Controller
                 return [
                     'credit_user_id' => $cedit_user->id,
                     'credit_name' => $cedit_user->credit_name ?? null,
-                    'credit_limit' => $cred_info->credit_limit,
+                    'credit_limit' => $cedit_user->credit_limit,
                 ];
             });
 

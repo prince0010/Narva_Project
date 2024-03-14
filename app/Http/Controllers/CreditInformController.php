@@ -350,6 +350,30 @@ public function storeCreditInform(Request $request)
             }
         }
     }
+    
+    public function deleteCreditInformByCreditName($credit_name)
+    {
+        // Find the credit user by credit_name
+        $creditUser = credit_users::where('credit_name', $credit_name)->first();
+    
+        if (!$creditUser) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Credit user not found for the given credit name.',
+            ], 404);
+        }
+    
+        // Delete all CreditInform records associated with the found credit user
+        $deletedCount = credit_inform::where('credit_users_id', $creditUser->id)->delete();
+    
+        // Delete the credit user record
+        $creditUser->delete();
+    
+        return response()->json([
+            'status' => 'success',
+            'message' => "Deleted {$deletedCount} credit informs and the credit user with credit name '{$credit_name}'.",
+        ]);
+    }
 
     public function updateCreditInform(Request $request, credit_inform $credit_inform)
     {

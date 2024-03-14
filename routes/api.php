@@ -164,11 +164,10 @@ use App\Models\TransactionDetailsLog;
     Route::controller(DownpaymentInfoController::class)->group(function (){
 
         Route::get("/downpayment/index", "index");
-        // Route::post("/downpayment", "storeDownpayment");
+        Route::post("/downpayment/add_downpayment", "addDownpayment");
         Route::get("/downpayment/id={id}" ,"showById");
         Route::get("/downpayment", "showDownpayment");
         Route::get("/downpayment/{id}/all_downpayment/", "showSoftDeletedDownpayment"); // Show Soft Deleted and Non Deleted Products Type || 1 = Soft Deleted | 0 = Not Soft Deleted
-        Route::post("/downpayment/add_downpayment", "addDownpayment");
         Route::get('/downpayment/search/{downpayment}', 'searchDownpayment');
         Route::delete("/downpayment/id={downpayment}/delete", "destroyDownpayment"); 
         Route::delete("/downpayment/id={downpayment}/softdelete", "softdeleterecord");
@@ -183,13 +182,14 @@ use App\Models\TransactionDetailsLog;
         Route::get("/credit_information", "showCreditInform");
         Route::get("/credit_information/{id}/all_credit_information/", "showSoftDeletedCredInform");
         Route::put("/credit_information/id={credit_inform}/update", "updateCreditInform");
-        Route::delete("/credit_information/id={credit_inform}/delete", "destroyCreditInform"); 
+        Route::delete("/credit_information/{credit_name}/delete_user", "deleteCreditInformByCreditName"); //Delete the Records of the records sa nag credit and its record sa credits_user database as well
         Route::delete("/credit_information/id={credit_inform}/softdelete", "softdeleterecord");
+        
+   
     });
 
     Route::controller(TransactionDetailsController::class)->group(function (){
         Route::get("/transaction_details/index", "index");
-        Route::get("/transaction_details/id={id}" ,"showById");
         Route::get("/transaction_details/{id}/all_credit_information/", "showSoftDeletedTransactionDetails");
         Route::delete("/transaction_details/id={transaction_details}/softdelete", "softdeleterecord");
     });
