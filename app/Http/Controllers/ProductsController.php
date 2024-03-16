@@ -6,6 +6,7 @@ use App\Imports\ProductsImport;
 use App\Models\Prod_Types;
 use App\Models\Products;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -423,59 +424,67 @@ class ProductsController extends Controller
     // Display the Top 10 Lowest Stock
 
     public function lowestStock()
-    {
-        $perPage = 10; // You can adjust this based on your preferences
-    
-        $lowestStockProducts = Products::select(
-            'products.id',
-            'products.supplier_ID',
-            'suppliers.supplier_name',
-            'products.part_num',
-            'products.part_name',
-            'products.brand',
-            'products.model',
-            'products.price_code',
-            'products.stock',
-        )
-            ->leftJoin('suppliers', 'products.supplier_ID', '=', 'suppliers.id')
-            ->orderBy('products.stock')
-            ->paginate($perPage);
-    
-        $lowStockProductsData = $lowestStockProducts->filter(function ($product) {
-            return $product->stock == 0;
-        })->map(function ($product) {
-            $supplierName = $product->supplier ? $product->supplier->id : null;
-            return [
-                'products_id' => $product->id,
-                'supplier_id' => $supplierName,
-                'part_num' => $product->part_num,
-                'part_name' => $product->part_name,
-                'brand' => $product->brand,
-                'model' => $product->model,
-                'price_code' => $product->price_code,
-                'stock-left' => $product->stock,
-            ];
-        });
-    
-        if ($lowStockProductsData->count() > 0) {
-            return response()->json([
-                'status' => 200,
-                'message' => 'Products with Low Stock',
-                'stocks_data' => $lowStockProductsData,
-                'pagination' => [
-                    'total' => $lowestStockProducts->total(),
-                    'per_page' => $lowestStockProducts->perPage(),
-                    'current_page' => $lowestStockProducts->currentPage(),
-                    'last_page' => $lowestStockProducts->lastPage(),
-                ],
-            ]);
-        } else {
-            return response()->json([
-                'status' => 401,
-                'message' => 'No Products with Low Stock Available',
-            ]);
-        }
+{
+    $perPage = 10; // You can adjust this based on your preferences
+
+    // Fetch only products with stock = 0
+    $lowestStockProducts = Products::select(
+        'products.id',
+        'products.supplier_ID',
+        'suppliers.supplier_name',
+        'products.part_num',
+        'products.part_name',
+        'products.brand',
+        'products.model',
+        'products.price_code',
+        'products.stock',
+    )
+        ->leftJoin('suppliers', 'products.supplier_ID', '=', 'suppliers.id')
+        ->where('products.stock', 0) // Filter products with stock = 0
+        ->orderBy('products.stock')
+        ->get(); // Removed paginate() here
+
+    // Manually paginate the filtered results
+    $currentPage = LengthAwarePaginator::resolveCurrentPage();
+    $currentItems = $lowestStockProducts->slice(($currentPage - 1) * $perPage, $perPage)->all();
+    $paginatedData = new LengthAwarePaginator($currentItems, count($lowestStockProducts), $perPage, $currentPage, [
+        'path' => LengthAwarePaginator::resolveCurrentPath(),
+    ]);
+
+    // Map the data for the response
+    $lowStockProductsData = collect($paginatedData->items())->map(function ($product) {
+        $supplierName = $product->supplier ? $product->supplier->id : null;
+        return [
+            'products_id' => $product->id,
+            'supplier_id' => $supplierName,
+            'part_num' => $product->part_num,
+            'part_name' => $product->part_name,
+            'brand' => $product->brand,
+            'model' => $product->model,
+            'price_code' => $product->price_code,
+            'stock-left' => $product->stock,
+        ];
+    });
+
+    if ($lowStockProductsData->count() > 0) {
+        return response()->json([
+            'status' => 200,
+            'message' => 'Products with Low Stock',
+            'stocks_data' => $lowStockProductsData,
+            'pagination' => [
+                'total' => $paginatedData->total(),
+                'per_page' => $paginatedData->perPage(),
+                'current_page' => $paginatedData->currentPage(),
+                'last_page' => $paginatedData->lastPage(),
+            ],
+        ]);
+    } else {
+        return response()->json([
+            'status' => 401,
+            'message' => 'No Products with Low Stock Available',
+        ]);
     }
+}
     // Out Of Stock
     public function outofStock()
     {
