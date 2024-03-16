@@ -444,10 +444,10 @@ class ProductsController extends Controller
         $lowStockProductsData = $lowestStockProducts->filter(function ($product) {
             return $product->stock == 0;
         })->map(function ($product) {
-            $supplierName = $product->supplier ? $product->supplier->supplier_name : null;
+            $supplierName = $product->supplier ? $product->supplier->id : null;
             return [
                 'products_id' => $product->id,
-                'supplier_name' => $supplierName,
+                'supplier_id' => $supplierName,
                 'part_num' => $product->part_num,
                 'part_name' => $product->part_name,
                 'brand' => $product->brand,
