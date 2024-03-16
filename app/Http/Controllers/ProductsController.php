@@ -48,7 +48,9 @@ class ProductsController extends Controller
                     'brand' => $product->brand,
                     'model' => $product->model,
                     'price_code' => $product->price_code,
-                    'stock' => $product->stock
+                    'stock' => $product->stock,
+                    'markup' => $product->markup,
+                    'counter_price' => $product->counter_price
                 ];
             });
     
