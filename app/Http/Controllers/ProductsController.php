@@ -14,6 +14,13 @@ class ProductsController extends Controller
 
     public function index(Request $request)
     {
+        // Check if only filter is applied and no ID is searched
+        if (!$request->has('keyword') && $request->has('filter')) {
+            // Return all data sa pagination
+            return $this->indexWithFilterOnly($request);
+        }
+    
+        // If keyword or both keyword and filter are present, continue with filtering by keyword and/or ID
         $products_query = Products::with(['prod_type', 'supplier'])
             ->when($request->has('filter'), function ($query) use ($request) {
                 $productTypeIds = explode(',', $request->filter);
@@ -30,7 +37,7 @@ class ProductsController extends Controller
                         ->orWhere('stock', 'LIKE', $keyword);
                 });
             })
-            ->orderBy('id', 'asc'); 
+            ->orderBy('id', 'asc');
     
         $products = $products_query->paginate(10);
     
@@ -65,6 +72,15 @@ class ProductsController extends Controller
                 'message' => 'Products is empty'
             ]);
         }
+    }
+    
+    // Method to return all data with pagination if only filtering is applied and no ID is searched
+    private function indexWithFilterOnly(Request $request)
+    {
+        // Return ang tanan data sa pagiantion
+        return Products::with(['prod_type', 'supplier'])
+            ->orderBy('id', 'asc')
+            ->paginate(10);
     }
     //  Search
     public function searchProducts($products)
