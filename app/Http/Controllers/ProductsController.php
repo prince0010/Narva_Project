@@ -14,19 +14,12 @@ class ProductsController extends Controller
 
     public function index(Request $request)
     {
-        // Check if only filter is applied and no ID is searched
-        if (!$request->has('keyword') && $request->has('filter')) {
-            // Return all data sa pagination
-            return $this->indexWithFilterOnly($request);
-        }
-    
-        // If keyword or both keyword and filter are present, continue with filtering by keyword and/or ID
         $products_query = Products::with(['prod_type', 'supplier'])
-            ->when($request->has('filter'), function ($query) use ($request) {
+            ->when($request->filled('filter'), function ($query) use ($request) {
                 $productTypeIds = explode(',', $request->filter);
                 return $query->whereIn('prod_type_ID', $productTypeIds);
             })
-            ->when($request->has('keyword'), function ($query) use ($request) {
+            ->when($request->filled('keyword'), function ($query) use ($request) {
                 $keyword = '%' . $request->keyword . '%';
                 return $query->where(function ($innerQuery) use ($keyword) {
                     $innerQuery->where('part_num', 'LIKE', $keyword)
@@ -37,9 +30,11 @@ class ProductsController extends Controller
                         ->orWhere('stock', 'LIKE', $keyword);
                 });
             })
-            ->orderBy('id', 'asc');
+            ->orderBy('id', 'asc'); 
     
         $products = $products_query->paginate(10);
+    
+        $responseData = [];
     
         if ($products->count() > 0) {
             $ProductsData = $products->map(function ($product) {
@@ -56,7 +51,7 @@ class ProductsController extends Controller
                 ];
             });
     
-            return response()->json([
+            $responseData = [
                 'status' => 200,
                 'message' => 'Current Datas',
                 'products' => $ProductsData,
@@ -65,37 +60,15 @@ class ProductsController extends Controller
                     'total' => $products->total(),
                     'per_page' => $products->perPage(),
                 ]
-            ]);
+            ];
         } else {
-            return response()->json([
+            $responseData = [
                 'status' => 401,
                 'message' => 'Products is empty'
-            ]);
+            ];
         }
-    }
     
-    // Method to return all data with pagination if only filtering is applied and no ID is searched
-    private function indexWithFilterOnly(Request $request)
-    {
-        // Return ang tanan data sa pagiantion
-        return Products::with(['prod_type', 'supplier'])
-            ->orderBy('id', 'asc')
-            ->paginate(10);
-    }
-    //  Search
-    public function searchProducts($products)
-    {
-        $prod = Products::where('part_name', 'like', '%' . $products . '%')
-            ->orWhere('supplier_ID', 'like', '%' . $products . '%')->get();
-
-        if (empty(trim($products))) {
-            return response()->json([
-                "status" => "204",
-                "message" => "No Input is Provided for Search",
-            ]);
-        } else {
-            return response()->json($prod);
-        }
+        return response()->json($responseData);
     }
 
 
