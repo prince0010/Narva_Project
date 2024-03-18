@@ -23,7 +23,7 @@ class CreditUsersController extends Controller
         if ($credit_users->count() > 0) {
             $CreditUsersData = $credit_users->map(function ($cedit_user) {
                 return [
-                    'credit_user_id' => $cedit_user->id,
+                    'id' => $cedit_user->id,
                     'credit_name' => $cedit_user->credit_name ?? null,
                     'credit_limit' => $cedit_user->credit_limit,
                 ];
@@ -82,7 +82,7 @@ class CreditUsersController extends Controller
 
         if($cred_user){
             $CreditUserData = [
-                'credit_users_id' => $cred_user->id,
+                'id' => $cred_user->id,
                 'credit_name' => $cred_user->credit_name, 
                 'credit_limit' => $cred_user->credit_limit,
             ];
@@ -109,7 +109,7 @@ class CreditUsersController extends Controller
         if($credit_user_que -> count() > 0){
             $CreditUserData = $credit_user_que->map(function ($cred_user) {
                 return [
-                    'credit_users_id' => $cred_user->id,
+                    'id' => $cred_user->id,
                     'credit_name' => $cred_user->credit_name, 
                     'credit_limit' => $cred_user->credit_limit,
                 ];

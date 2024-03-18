@@ -144,7 +144,7 @@ class ProdTypesController extends Controller
     public function showSoftDeletedProductType($id)
     {
         if ($id == 1) {
-            // Display only the soft-deleted records
+            // Display only the Soft-Deleted Data 
             $softDeletedProductTypes = Prod_Types::onlyTrashed()->get()->toArray();
             if (!empty($softDeletedProductTypes)) {
                 return response()->json([
@@ -178,7 +178,6 @@ class ProdTypesController extends Controller
         }
     }
 
-
     /**
      * Update the specified resource in storage.
      */
@@ -190,11 +189,6 @@ class ProdTypesController extends Controller
         ]);
 
         if ($product_Type->update($request->all())) {
-            // return redirect()->route('products.index')
-            // ->with(response()->json([
-            //     'status' => 200,
-            //     "message" => "You Updated the Product Successfully",
-            // ]));
             return response()->json([
                 'status' => 200,
                 "message" => "You Updated the Product Data Successfully.",

@@ -50,7 +50,7 @@ class DownpaymentInfoController extends Controller
     {
         $request->validate([
             'downpayment' => 'nullable|numeric|between:0,999999.99',
-        'dp_date' => 'nullable|date|date_format:Y-m-d',
+            'dp_date' => 'nullable|date|date_format:Y-m-d',
           
         ]);
         $downpayment = downpayment_info::create($request->all());
