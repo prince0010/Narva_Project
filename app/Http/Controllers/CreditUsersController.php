@@ -60,7 +60,7 @@ class CreditUsersController extends Controller
             return response()->json([
                 "status" => 200,
                 "credit_names" => [
-                    "credit_name_id" => $credit_names->id,
+                    "id" => $credit_names->id,
                     "credit_name" => $credit_names->credit_name,
                     'credit_limit' => $credit_names->credit_limit ? $credit_names->credit_limit : null,
                 ],
