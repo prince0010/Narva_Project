@@ -81,18 +81,13 @@ class TransactionDetailsController extends Controller
             ]);
         }
     
-        $creditInforms = credit_inform::where('credit_users_id', $credit_users_id)->get();
+        $creditInforms = credit_inform::where('credit_users_id', $credit_users_id)->paginate(10);
         
-        $totalCharge = 0;
-        $totalDownpayment = 0;
-    
         $creditInformsWithDownpayment = [];
     
         foreach ($creditInforms as $creditInform) {
-            $totalCharge += $creditInform->charge;
             $downpaymentInfo = $creditInform->downpayment_info()->get();
             $downpaymentTotal = $downpaymentInfo->sum('downpayment');
-            $totalDownpayment += $downpaymentTotal;
     
             $creditInformsWithDownpayment[] = [
                 'credit_inform' => [
@@ -110,17 +105,17 @@ class TransactionDetailsController extends Controller
             ];
         }
     
-        $balance = $totalCharge - $totalDownpayment;
-        $status = $balance == 0 ? 'Fully Paid' : 'Not Paid';
+        $pagination = [
+            'current_page' => $creditInforms->currentPage(),
+            'total' => $creditInforms->total(),
+            'per_page' => $creditInforms->perPage(),
+        ];
     
         return response()->json([
             'status' => 200,
             'message' => 'Credit and downpayment information retrieved successfully.',
             'credit_informs_with_downpayment' => $creditInformsWithDownpayment,
-            'total_charge' => $totalCharge,
-            'total_downpayment' => $totalDownpayment,
-            'balance' => $balance,
-            'status' => $status,
+            'pagination' => $pagination,
         ]);
     }
     
