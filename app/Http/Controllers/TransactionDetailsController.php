@@ -71,48 +71,62 @@ class TransactionDetailsController extends Controller
     }
 
     public function getCreditAndDownpaymentInfo($credit_users_id)
-{
-    // Find the credit user by ID
-    $creditUser = credit_users::find($credit_users_id);
+    {
+        $creditUser = credit_users::find($credit_users_id);
+        
+        if (!$creditUser) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Credit user not found for the given ID.',
+            ]);
+        }
     
-    if (!$creditUser) {
+        $creditInforms = credit_inform::where('credit_users_id', $credit_users_id)->get();
+        
+        $totalCharge = 0;
+        $totalDownpayment = 0;
+    
+        $creditInformsWithDownpayment = [];
+    
+        foreach ($creditInforms as $creditInform) {
+            $totalCharge += $creditInform->charge;
+            $downpaymentInfo = $creditInform->downpayment_info()->get();
+            $downpaymentTotal = $downpaymentInfo->sum('downpayment');
+            $totalDownpayment += $downpaymentTotal;
+    
+            $creditInformsWithDownpayment[] = [
+                'credit_inform' => [
+                    'id' =>  $creditInform->id,
+                    'credit_users_id' => $creditUser,
+                    'credit_date' => $creditInform->credit_date,
+                    'invoice_number' => $creditInform->invoice_number,
+                    'charge' => $creditInform->charge,
+                    'created_at' => $creditInform->created_at,
+                    'updated_at' => $creditInform->updated_at,
+                    'deleted_at' =>  $creditInform->deleted_at,
+                ],
+                'downpayment_info' => $downpaymentInfo,
+                'downpayment_total' => $downpaymentTotal,
+            ];
+        }
+    
+        $balance = $totalCharge - $totalDownpayment;
+        $status = $balance == 0 ? 'Fully Paid' : 'Not Paid';
+    
         return response()->json([
-            'status' => '404',
-            'message' => 'Credit user not found for the given ID.',
+            'status' => 200,
+            'message' => 'Credit and downpayment information retrieved successfully.',
+            'credit_informs_with_downpayment' => $creditInformsWithDownpayment,
+            'total_charge' => $totalCharge,
+            'total_downpayment' => $totalDownpayment,
+            'balance' => $balance,
+            'status' => $status,
         ]);
     }
-
-    // Fetch all credit_inform records associated with the credit user
-    $creditInforms = credit_inform::where('credit_users_id', $credit_users_id)->get();
     
-    // Initialize variables to store calculated values
-    $totalCharge = 0;
-    $totalDownpayment = 0;
-
-    // Calculate total charge and total downpayment
-    foreach ($creditInforms as $creditInform) {
-        $totalCharge += $creditInform->charge;
-        $totalDownpayment += $creditInform->downpayment_info()->sum('downpayment');
-    }
-
-    // Calculate balance and status
-    $balance = $totalCharge - $totalDownpayment;
-    $status = $balance == 0 ? 'Fully Paid' : 'Not Paid';
-
-    return response()->json([
-        'status' => '200',
-        'message' => 'Credit and downpayment information retrieved successfully.',
-        'credit_user' => $creditUser->toArray(),
-        'total_charge' => $totalCharge,
-        'total_downpayment' => $totalDownpayment,
-        'balance' => $balance,
-        'status' => $status,
-    ]);
-}
 
     public function showByCreditName($credit_name)
     {
-        // Find the credit user by credit_name
         $creditUser = credit_users::where('credit_name', $credit_name)->first();
     
         if (!$creditUser) {
