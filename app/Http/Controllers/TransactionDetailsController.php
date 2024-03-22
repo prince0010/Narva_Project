@@ -70,7 +70,7 @@ class TransactionDetailsController extends Controller
         }
     }
 
-    public function getCreditAndDownpaymentInfo($credit_users_id)
+    public function getCreditAndDownpaymentInfo(Request $request, $credit_users_id)
     {
         $creditUser = credit_users::find($credit_users_id);
         
@@ -81,13 +81,34 @@ class TransactionDetailsController extends Controller
             ]);
         }
     
-        $creditInforms = credit_inform::where('credit_users_id', $credit_users_id)->paginate(10);
+        $creditInformsQuery = credit_inform::where('credit_users_id', $credit_users_id);
+    
+        if ($request->has('keyword')) {
+            $keyword = $request->keyword;
+            $creditInformsQuery->where('invoice_number', 'LIKE', '%' . $keyword . '%');
+        }
+        else{
+            return response()->json([
+                'status' => 400,
+                'message' => 'The request must include a "keyword" parameter for filtering.',
+            ]);
+        }
+    
+        $creditInforms = $creditInformsQuery->paginate(10);
         
         $creditInformsWithDownpayment = [];
+        $overallStatus = 'Paid'; 
+        $totalCharge = 0; 
     
         foreach ($creditInforms as $creditInform) {
             $downpaymentInfo = $creditInform->downpayment_info()->get();
-            $downpaymentTotal = $downpaymentInfo->sum('downpayment');
+            $downpaymentTotal = $downpaymentInfo->sum('downpayment'); 
+    
+            if ($downpaymentTotal < $creditInform->charge) {
+                $overallStatus = 'Not Fully Paid';
+            }
+    
+            $totalCharge += $creditInform->charge; 
     
             $creditInformsWithDownpayment[] = [
                 'credit_inform' => [
@@ -102,6 +123,8 @@ class TransactionDetailsController extends Controller
                 ],
                 'downpayment_info' => $downpaymentInfo,
                 'downpayment_total' => $downpaymentTotal,
+                'total_charge' => $totalCharge,
+                'overall_status' => $overallStatus 
             ];
         }
     
