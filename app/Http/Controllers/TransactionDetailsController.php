@@ -71,76 +71,82 @@ class TransactionDetailsController extends Controller
     }
 
     public function getCreditAndDownpaymentInfo(Request $request, $credit_users_id)
-    {
-        $creditUser = credit_users::find($credit_users_id);
-        
-        if (!$creditUser) {
-            return response()->json([
-                'status' => 404,
-                'message' => 'Credit user not found for the given ID.',
-            ]);
-        }
+{
+    $creditUser = credit_users::find($credit_users_id);
     
-        $creditInformsQuery = credit_inform::where('credit_users_id', $credit_users_id);
-    
-        if ($request->has('keyword')) {
-            $keyword = $request->keyword;
-            $creditInformsQuery->where('invoice_number', 'LIKE', '%' . $keyword . '%');
-        }
-        else{
-            return response()->json([
-                'status' => 400,
-                'message' => 'The request must include a "keyword" parameter for filtering.',
-            ]);
-        }
-    
-        $creditInforms = $creditInformsQuery->paginate(10);
-        
-        $creditInformsWithDownpayment = [];
-        $overallStatus = 'Paid'; 
-        $totalCharge = 0; 
-    
-        foreach ($creditInforms as $creditInform) {
-            $downpaymentInfo = $creditInform->downpayment_info()->get();
-            $downpaymentTotal = $downpaymentInfo->sum('downpayment'); 
-    
-            if ($downpaymentTotal < $creditInform->charge) {
-                $overallStatus = 'Not Fully Paid';
-            }
-    
-            $totalCharge += $creditInform->charge; 
-    
-            $creditInformsWithDownpayment[] = [
-                'credit_inform' => [
-                    'id' =>  $creditInform->id,
-                    'credit_users_id' => $creditUser,
-                    'credit_date' => $creditInform->credit_date,
-                    'invoice_number' => $creditInform->invoice_number,
-                    'charge' => $creditInform->charge,
-                    'created_at' => $creditInform->created_at,
-                    'updated_at' => $creditInform->updated_at,
-                    'deleted_at' =>  $creditInform->deleted_at,
-                ],
-                'downpayment_info' => $downpaymentInfo,
-                'downpayment_total' => $downpaymentTotal,
-                'total_charge' => $totalCharge,
-                'overall_status' => $overallStatus 
-            ];
-        }
-    
-        $pagination = [
-            'current_page' => $creditInforms->currentPage(),
-            'total' => $creditInforms->total(),
-            'per_page' => $creditInforms->perPage(),
-        ];
-    
+    if (!$creditUser) {
         return response()->json([
-            'status' => 200,
-            'message' => 'Credit and downpayment information retrieved successfully.',
-            'credit_informs_with_downpayment' => $creditInformsWithDownpayment,
-            'pagination' => $pagination,
+            'status' => 404,
+            'message' => 'Credit user not found for the given ID.',
         ]);
     }
+
+    $creditInformsQuery = credit_inform::where('credit_users_id', $credit_users_id);
+
+    if ($request->has('keyword')) {
+        $keyword = $request->keyword;
+        $creditInformsQuery->where('invoice_number', 'LIKE', '%' . $keyword . '%');
+    } else {
+        return response()->json([
+            'status' => 400,
+            'message' => 'The request must include a "keyword" parameter for filtering.',
+        ]);
+    }
+
+    $creditInforms = $creditInformsQuery->paginate(10);
+    
+    $creditInformsWithDownpayment = [];
+    $overallStatus = 'Paid'; 
+    $totalCharge = 0; 
+    $totalDownpayment = 0; // Initialize total downpayment to 0
+
+    foreach ($creditInforms as $creditInform) {
+        $downpaymentInfo = $creditInform->downpayment_info()->get();
+        $downpaymentTotal = $downpaymentInfo->sum('downpayment'); 
+
+        if ($downpaymentTotal < $creditInform->charge) {
+            $overallStatus = 'Not Fully Paid';
+        }
+
+        $totalCharge += $creditInform->charge; 
+        $totalDownpayment += $downpaymentTotal; // Accumulate total downpayment
+
+        $creditInformsWithDownpayment[] = [
+            'credit_inform' => [
+                'id' =>  $creditInform->id,
+                'credit_users_id' => $creditUser,
+                'credit_date' => $creditInform->credit_date,
+                'invoice_number' => $creditInform->invoice_number,
+                'charge' => $creditInform->charge,
+                'created_at' => $creditInform->created_at,
+                'updated_at' => $creditInform->updated_at,
+                'deleted_at' =>  $creditInform->deleted_at,
+            ],
+            'downpayment_info' => $downpaymentInfo,
+         
+        ];
+    }
+
+    // Calculate balance
+    $balance = $totalCharge - $totalDownpayment;
+
+    $pagination = [
+        'current_page' => $creditInforms->currentPage(),
+        'total' => $creditInforms->total(),
+        'per_page' => $creditInforms->perPage(),
+    ];
+
+    return response()->json([
+        'status' => 200,
+        'message' => 'Credit and downpayment information retrieved successfully.',
+        'credit_informs_with_downpayment' => $creditInformsWithDownpayment,
+        'downpayment_total' => $downpaymentTotal,
+        'total_charge' => $totalCharge, 
+        'balance' => $balance,
+        'overall_status' => $overallStatus,
+        'pagination' => $pagination,
+    ]);
+}
     
 
     public function showByCreditName($credit_name)
