@@ -98,7 +98,7 @@ class TransactionDetailsController extends Controller
         $creditInformsWithDownpayment = [];
         $overallStatus = 'Paid'; 
         $totalCharge = 0; 
-        $totalDownpayment = 0; // Initialize total downpayment to 0
+        $overallDownpayment = 0; // Initialize overall downpayment to 0
     
         foreach ($creditInforms as $creditInform) {
             $downpaymentInfo = $creditInform->downpayment_info()->get();
@@ -109,7 +109,7 @@ class TransactionDetailsController extends Controller
             }
     
             $totalCharge += $creditInform->charge; 
-            $totalDownpayment += $downpaymentTotal; // Accumulate total downpayment
+            $overallDownpayment += $downpaymentTotal; // Accumulate overall downpayment
     
             $creditInformsWithDownpayment[] = [
                 'credit_inform' => [
@@ -123,12 +123,13 @@ class TransactionDetailsController extends Controller
                     'deleted_at' =>  $creditInform->deleted_at,
                 ],
                 'downpayment_info' => $downpaymentInfo,
-             
+                'downpayment_total' => $downpaymentTotal,
+                'total_charge' => $totalCharge,
             ];
         }
     
         // Calculate balance
-        $balance = $totalCharge - $totalDownpayment;
+        $balance = $totalCharge - $overallDownpayment;
     
         $pagination = [
             'current_page' => $creditInforms->currentPage(),
@@ -140,7 +141,7 @@ class TransactionDetailsController extends Controller
             'status' => 200,
             'message' => 'Credit and downpayment information retrieved successfully.',
             'credit_informs_with_downpayment' => $creditInformsWithDownpayment,
-            'downpayment_total' => $totalDownpayment, // Fix here to use totalDownpayment
+            'overall_downpayment' => $overallDownpayment,
             'total_charge' => $totalCharge, 
             'balance' => $balance,
             'overall_status' => $overallStatus,
