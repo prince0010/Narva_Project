@@ -7,31 +7,31 @@ use Illuminate\Http\Request;
 
 class CreditUsersController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         $credit_user_query = credit_users::query();
-
+    
         if ($request->keyword) {
             $credit_user_query->where('credit_name', 'LIKE', '%' . $request->keyword . '%');
         }
-
+    
         $credit_users = $credit_user_query->paginate(10);
-
+    
         if ($credit_users->count() > 0) {
-            $CreditUsersData = $credit_users->map(function ($cedit_user) {
+            $CreditUsersData = $credit_users->map(function ($credit_user) {
+                $status = $credit_user->fully_paid ? 'Fully Paid' : 'Not Fully Paid';
+    
                 return [
-                    'id' => $cedit_user->id,
-                    'credit_name' => $cedit_user->credit_name ?? null,
-                    'credit_limit' => $cedit_user->credit_limit,
+                    'id' => $credit_user->id,
+                    'credit_name' => $credit_user->credit_name ?? null,
+                    'credit_limit' => $credit_user->credit_limit,
+                    'status' => $status,
                 ];
             });
-
+    
             return response()->json([
                 'status' => '200',
-                'message' => 'successfully added Credit User',
+                'message' => 'Successfully retrieved Credit Users',
                 'credit_users' => $CreditUsersData,
                 'pagination' => [
                     'current_page' => $credit_users->currentPage(),
