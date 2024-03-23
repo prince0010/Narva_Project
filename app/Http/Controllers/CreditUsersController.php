@@ -8,44 +8,46 @@ use Illuminate\Http\Request;
 class CreditUsersController extends Controller
 {
     public function index(Request $request)
-    {
-        $credit_user_query = credit_users::query();
+{
+    $credit_users = credit_users::query();
     
-        if ($request->keyword) {
-            $credit_user_query->where('credit_name', 'LIKE', '%' . $request->keyword . '%');
-        }
-    
-        $credit_users = $credit_user_query->paginate(10);
-    
-        if ($credit_users->count() > 0) {
-            $CreditUsersData = $credit_users->map(function ($credit_user) {
-                $status = $credit_user->fully_paid ? 'Fully Paid' : 'Not Fully Paid';
-    
-                return [
-                    'id' => $credit_user->id,
-                    'credit_name' => $credit_user->credit_name ?? null,
-                    'credit_limit' => $credit_user->credit_limit,
-                    'status' => $status,
-                ];
-            });
-    
-            return response()->json([
-                'status' => '200',
-                'message' => 'Successfully retrieved Credit Users',
-                'credit_users' => $CreditUsersData,
-                'pagination' => [
-                    'current_page' => $credit_users->currentPage(),
-                    'total' => $credit_users->total(),
-                    'per_page' => $credit_users->perPage(),
-                ]
-            ]);
-        } else {
-            return response()->json([
-                'status' => '401',
-                'message' => 'Credit User is empty'
-            ]);
-        }
+    if ($request->has('keyword')) {
+        $keyword = $request->keyword;
+        $credit_users->where('credit_name', 'LIKE', '%' . $keyword . '%');
     }
+    
+    $credit_users = $credit_users->paginate(10);
+    
+    if ($credit_users->count() > 0) {
+        $CreditUsersData = $credit_users->map(function ($credit_user) {
+            // Determine the status for this credit user
+            $status = $credit_user->fully_paid ? 'Fully Paid' : 'Not Fully Paid';
+
+            return [
+                'id' => $credit_user->id,
+                'credit_name' => $credit_user->credit_name ?? null,
+                'credit_limit' => $credit_user->credit_limit,
+                'status' => $status,
+            ];
+        });
+
+        return response()->json([
+            'status' => '200',
+            'message' => 'Successfully retrieved Credit Users',
+            'credit_users' => $CreditUsersData,
+            'pagination' => [
+                'current_page' => $credit_users->currentPage(),
+                'total' => $credit_users->total(),
+                'per_page' => $credit_users->perPage(),
+            ]
+        ]);
+    } else {
+        return response()->json([
+            'status' => '401',
+            'message' => 'Credit User is empty'
+        ]);
+    }
+}
 
     public function storeCreditUsers(Request $request)
     {
