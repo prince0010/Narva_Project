@@ -93,24 +93,18 @@ class TransactionDetailsController extends Controller
             ]);
         }
     
-        // Paginate the query
-        $creditInforms = $creditInformsQuery->paginate(10);
+        $creditInforms = $creditInformsQuery->get();
     
         $creditInformsWithDownpayment = [];
-        $overallStatus = 'Paid'; 
         $totalCharge = 0; 
-        $overallDownpayment = 0; // Initialize overall downpayment to 0
+        $overallDownpayment = 0; 
     
         foreach ($creditInforms as $creditInform) {
             $downpaymentInfo = $creditInform->downpayment_info()->get();
             $downpaymentTotal = $downpaymentInfo->sum('downpayment'); 
     
-            if ($downpaymentTotal < $creditInform->charge) {
-                $overallStatus = 'Not Fully Paid';
-            }
-    
             $totalCharge += $creditInform->charge; 
-            $overallDownpayment += $downpaymentTotal; // Accumulate overall downpayment
+            $overallDownpayment += $downpaymentTotal; 
     
             $creditInformsWithDownpayment[] = [
                 'credit_inform' => [
@@ -128,24 +122,30 @@ class TransactionDetailsController extends Controller
             ];
         }
     
-        // Calculate balance
-        $balance = $totalCharge - $overallDownpayment;
+        $overallBalance = $totalCharge - $overallDownpayment;
+        $overallStatus = $overallBalance >= 0 ? 'Paid' : 'Not Fully Paid';
     
-        // Remove pagination from the response
-        $pagination = null;
+        $perPage = 10;
+        $currentPage = $request->has('page') ? $request->page : 1;
+        $pagedData = array_slice($creditInformsWithDownpayment, ($currentPage - 1) * $perPage, $perPage);
+    
+        $pagination = [
+            'current_page' => $currentPage,
+            'total' => count($creditInformsWithDownpayment),
+            'per_page' => $perPage,
+        ];
     
         return response()->json([
             'status' => 200,
             'message' => 'Credit and downpayment information retrieved successfully.',
-            'credit_informs_with_downpayment' => $creditInformsWithDownpayment,
+            'credit_informs_with_downpayment' => $pagedData,
             'overall_downpayment' => $overallDownpayment,
             'total_charge' => $totalCharge, 
-            'balance' => $balance,
+            'balance' => $overallBalance,
             'overall_status' => $overallStatus,
             'pagination' => $pagination,
         ]);
     }
-    
 
     public function showByCreditName($credit_name)
     {
