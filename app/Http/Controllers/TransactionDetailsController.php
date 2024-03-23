@@ -93,7 +93,8 @@ class TransactionDetailsController extends Controller
             ]);
         }
     
-        $creditInforms = $creditInformsQuery->paginate(10);
+        // Retrieve all credit informs without pagination
+        $creditInforms = $creditInformsQuery->get();
         
         $creditInformsWithDownpayment = [];
         $overallStatus = 'Paid'; 
@@ -131,11 +132,7 @@ class TransactionDetailsController extends Controller
         // Calculate balance
         $balance = $totalCharge - $overallDownpayment;
     
-        $pagination = [
-            'current_page' => $creditInforms->currentPage(),
-            'total' => $creditInforms->total(),
-            'per_page' => $creditInforms->perPage(),
-        ];
+        $pagination = null; // Remove pagination from the response
     
         return response()->json([
             'status' => 200,
