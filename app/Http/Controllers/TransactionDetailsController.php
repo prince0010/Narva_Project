@@ -125,7 +125,6 @@ class TransactionDetailsController extends Controller
                 ],
                 'downpayment_info' => $downpaymentInfo,
                 'downpayment_total' => $downpaymentTotal,
-                'total_charge' => $totalCharge,
             ];
         }
     
