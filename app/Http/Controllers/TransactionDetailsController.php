@@ -106,6 +106,9 @@ class TransactionDetailsController extends Controller
             $totalCharge += $creditInform->charge; 
             $overallDownpayment += $downpaymentTotal; 
     
+            // Determine if the credit inform is fully paid or not
+            $overallstatus = $creditInform->charge == $totalCharge ? 'Fully Paid' : 'Not Fully Paid';
+    
             $creditInformsWithDownpayment[] = [
                 'credit_inform' => [
                     'id' =>  $creditInform->id,
@@ -119,12 +122,13 @@ class TransactionDetailsController extends Controller
                 ],
                 'downpayment_info' => $downpaymentInfo,
                 'downpayment_total' => $downpaymentTotal,
-                'overall_status' => $overallStatus
+                'overall_status' => $overallstatus,
             ];
         }
     
+        // Calculate overall balance and overall status after processing all credit informs
         $overallBalance = $totalCharge - $overallDownpayment;
-        $overallStatus = $overallBalance >= 0 ? 'Paid' : 'Not Fully Paid';
+        $overallStatus = $overallBalance != 0 ? 'Not Fully Paid' : 'Paid';
     
         $perPage = 10;
         $currentPage = $request->has('page') ? $request->page : 1;
@@ -143,11 +147,11 @@ class TransactionDetailsController extends Controller
             'overall_downpayment' => $overallDownpayment,
             'total_charge' => $totalCharge, 
             'balance' => $overallBalance,
-            // 'overall_status' => $overallStatus,
+            'overall_status' => $overallStatus,
             'pagination' => $pagination,
         ]);
     }
-
+    
     public function showByCreditName($credit_name)
     {
         $creditUser = credit_users::where('credit_name', $credit_name)->first();
