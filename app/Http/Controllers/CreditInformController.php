@@ -316,6 +316,25 @@ public function storeCreditInform(Request $request)
         }
     }
 
+    public function deleteCredInform($id)
+    {
+        $creditInform = credit_inform::find($id);
+    
+        if ($creditInform) {
+            $creditInform->delete();
+            
+            return response()->json([
+                'status' => 200,
+                'message' => 'Credit inform deleted successfully.',
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => '404',
+                'message' => 'Credit inform not found for the given ID.',
+            ], 404);
+        }
+    }
+
     public function showSoftDeletedCredInform($id)
     {
         if ($id == 1) {

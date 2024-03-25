@@ -30,10 +30,10 @@ class credit_users extends Model
         return $this->hasManyThrough(
             transaction_details::class,
             credit_inform::class,
-            'credit_users_id', // Foreign key on credit_inform table
-            'credit_inform_id', // Foreign key on transaction_details table
-            'id', // Local key on credit_users table
-            'id' // Local key on credit_inform table
+            'credit_users_id', 
+            'credit_inform_id', 
+            'id', 
+            'id'
         );
     }
 

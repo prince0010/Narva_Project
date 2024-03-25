@@ -290,4 +290,32 @@ public function addDownpayment(Request $request)
             ]
         );
     }
+    
+public function updateDownpayment(Request $request, $id)
+{
+    $downpaymentInfo = downpayment_info::find($id);
+
+    if ($downpaymentInfo) {
+        $request->validate([
+            'downpayment' => 'nullable|numeric|between:0,999999.99',
+            'dp_date' => 'nullable|date|date_format:Y-m-d',
+        ]);
+
+        $downpaymentInfo->update([
+            'downpayment' => $request->downpayment,
+            'dp_date' => $request->dp_date,
+        ]);
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Downpayment info updated successfully.',
+            'downpayment_info' => $downpaymentInfo,
+        ], 200);
+    } else {
+        return response()->json([
+            'status' => '404',
+            'message' => 'Downpayment info not found for the given ID.',
+        ], 404);
+    }
+}
 }

@@ -143,6 +143,7 @@ use App\Models\TransactionDetailsLog;
         Route::get('/downpayment/search/{downpayment}', 'searchDownpayment');
         Route::delete("/downpayment/id={downpayment}/delete", "destroyDownpayment"); 
         Route::delete("/downpayment/id={downpayment}/softdelete", "softdeleterecord");
+        Route::put("/downpayment/{id}/update_downpayment", "updateDownpayment");
     
     });
 
@@ -156,6 +157,7 @@ use App\Models\TransactionDetailsLog;
         Route::put("/credit_information/id={credit_inform}/update", "updateCreditInform");
         Route::delete("/credit_information/{credit_name}/delete_user", "deleteCreditInformByCreditName"); //Delete the Records of the records sa nag credit and its record sa credits_user database as well
         Route::delete("/credit_information/id={credit_inform}/softdelete", "softdeleterecord");
+        Route::delete("/credit_information/{id}/delete", "deleteCredInform");
         
    
     });
