@@ -27,7 +27,7 @@ class CreditUsersController extends Controller
                 'id' => $credit_user->id,
                 'credit_name' => $credit_user->credit_name ?? null,
                 'credit_limit' => $credit_user->credit_limit,
-                'status' => $status,
+                // 'status' => $status,
             ];
         });
 
