@@ -33,7 +33,7 @@ class SupplierController extends Controller
 
             return response()->json([
                 'status' => '200',
-                'message' => 'successfully added supplier',
+                'message' => 'Successfully Added A Supplier',
                 'suppliers' => $SuppliersData,
                 'pagination' => [
                     'current_page' => $suppliers->currentPage(),

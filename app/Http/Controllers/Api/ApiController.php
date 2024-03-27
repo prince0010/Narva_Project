@@ -57,35 +57,14 @@ class ApiController extends Controller
                 "email" => "required|email",
                 "password" => "required"
             ]);
-
-            // After passed an email value and password we will use the concept of Auth Facade -> Auth\Facade
-
-            // Attempt Method || pass email address and password
-            
-            // Checking User Login
-            // Once user access with these details it is going to return a true response | else False will return
+         
             if(Auth::attempt([
                 "email" => $request->email,
                 "password"=> $request->password
              
             ]))
-            // Or you can replace this function or the Auth Facade
-            //auth()->attempt()
-
             {
-                // User Data Exist
-                // Auth Facade is scope Resolution Operator and the Method is User() and it will return a User() offset and inside of the User() offset it have all the user values
-              
                 $user = Auth::user();  
-                 // Or you can replace this function or the Auth Facade
-                //auth()->user()
-
-                // Authentication function alternative for Auth::user() -> auth()->user(); 
-
-                // Authorized Token Value || That can use inside for the next apis like profile and logout
-                // Inside of the method will have to pass the token name
-
-                // $token = $user->createToken('myToken')->accessToken;
                 $token = $request->user()->createToken('myToken')->accessToken; 
 
                 return response()->json([
@@ -94,7 +73,6 @@ class ApiController extends Controller
                             'id' => $user->id,
                             'name' => $user->name,
                             'email' => $user->email,
-                            // 'updated_at' => $user->updated_at,
                             'created_at' => $user->created_at,
                     ],
                     // "name" => $request->name ,
