@@ -74,7 +74,6 @@ class ProductsController extends Controller
         return response()->json($responseData);
     }
 
-
     public function storeProduct(Request $request, Products $products)
     {
         $request->validate([
@@ -148,42 +147,9 @@ class ProductsController extends Controller
             'price_code' => $convertedPriceCode, // Use the converted price code for the response
             'stock' => $product->stock,
             'markup' => $product->markup,
-            // 'counter_price' => $this->convertToOrganizedB($product->counter_price), // Convert counter_price to letters sa ORGANIZEDB
             'counter_price' => $product->counter_price,
         ];
     }
-
-    // Filtering
-    // public function getProductsByProductType($productTypeId)
-    // {
-    //     // Validate that $productTypeId is a positive integer
-    //     if (!ctype_digit($productTypeId) || $productTypeId <= 0) {
-    //         return response()->json([
-    //             'status' => 400,
-    //             'message' => 'Invalid product type ID provided.',
-    //         ]);
-    //     }
-
-    //     // Cast $productTypeId to integer
-    //     $productTypeId = (int)$productTypeId;
-
-    //     // Retrieve the product type along with its associated products using eager loading
-    //     $productType = Prod_Types::with('product')->find($productTypeId);
-
-    //     if (!$productType) {
-    //         return response()->json([
-    //             'status' => 404,
-    //             'message' => 'Product type not found.',
-    //         ]);
-    //     }
-
-    //     // Return the product type and its associated products
-    //     return response()->json([
-    //         'status' => 200,
-    //         'product_type' => $productType,
-    //         'message' => 'Products retrieved successfully for the specified product type.',
-    //     ]);
-    // }
 
     public function showById($id)
     {
@@ -217,7 +183,6 @@ class ProductsController extends Controller
             ]);
         }
     }
-    
 
     public function showProduct(Products $products)
     {
