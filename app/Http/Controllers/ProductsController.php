@@ -147,7 +147,7 @@ class ProductsController extends Controller
             'model' => $product->model,
             'price_code' => $convertedPriceCode, // Use the converted price code for the response
             'stock' => $product->stock,
-            // 'markup' => $product->markup,
+            'markup' => $product->markup,
             // 'counter_price' => $this->convertToOrganizedB($product->counter_price), // Convert counter_price to letters sa ORGANIZEDB
             'counter_price' => $product->counter_price,
         ];
@@ -200,6 +200,7 @@ class ProductsController extends Controller
                 'part_name' => $product->part_name,
                 'brand' => $product->brand,
                 'model' => $product->model,
+                'markup' => $product->markup, //This is where the Products and the Update Product Fetch the data's from the database since it was showbyID for respective ID
                 'price_code' => $product->price_code,
                 'stock' => $product->stock
             ];
@@ -233,6 +234,7 @@ class ProductsController extends Controller
                     'part_name' => $product->part_name,
                     'brand' => $product->brand,
                     'model' => $product->model,
+                    'markup' => $product->markup,
                     'price_code' => $product->price_code,
                     'stock' => $product->stock
                 ];
@@ -300,8 +302,9 @@ class ProductsController extends Controller
             'part_name' => 'required|string|max:255',
             'brand' => 'required|string|max:255',
             'model' => 'required|string|max:255',
+            'markup' => 'nullable|numeric|min:0|max:100', 
             'price_code' => 'required|string|max:255',
-            'stock' => 'required|integer|digits_between:1,999',
+            'stock' => 'required|integer|digits_between:1,999'
         ]);
     
         // Check if price_code or markup has been updated
@@ -329,9 +332,11 @@ class ProductsController extends Controller
             'part_name' => $products->part_name,
             'brand' => $products->brand,
             'model' => $products->model,
+            'markup' => $products->markup,
             'price_code' => $products->price_code,
             'stock' => $products->stock,
-            'counter_price' => $products->counter_price,
+            'counter_price' => $products->counter_price
+         
         ];
     
         // Return the response

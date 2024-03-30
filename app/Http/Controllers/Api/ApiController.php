@@ -64,7 +64,7 @@ class ApiController extends Controller
              
             ]))
             {
-                $user = Auth::user();  
+                $user = Auth::user(); 
                 $token = $request->user()->createToken('myToken')->accessToken; 
 
                 return response()->json([
