@@ -122,7 +122,7 @@ class TransactionDetailsController extends Controller
                 ],
                 'downpayment_info' => $downpaymentInfo,
                 'downpayment_total' => $downpaymentTotal,
-                'overall_status' => $overallStatus,
+               
             ];
         }
     
@@ -145,7 +145,7 @@ class TransactionDetailsController extends Controller
             'overall_downpayment' => $overallDownpayment,
             'total_charge' => $totalCharge, 
             'balance' => $overallBalance,
-            // 'overall_status' => $overallStatus, 
+            'overall_status' => $overallStatus, 
             'pagination' => $pagination,
         ]);
     }
