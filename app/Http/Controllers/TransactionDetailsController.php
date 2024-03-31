@@ -95,7 +95,6 @@ class TransactionDetailsController extends Controller
     
         $creditInforms = $creditInformsQuery->get();
     
-        $creditInformsWithDownpayment = [];
         $totalCharge = 0; 
         $overallDownpayment = 0; 
     
@@ -105,9 +104,19 @@ class TransactionDetailsController extends Controller
     
             $totalCharge += $creditInform->charge; 
             $overallDownpayment += $downpaymentTotal; 
+        }
     
-            // Determine if the credit inform is fully paid or not
-            $overallStatus = $totalCharge == $overallDownpayment ? 'Fully Paid' : 'Not Fully Paid';
+        // Determine overall status based on aggregated values of all credit informs
+        $overallStatus = $totalCharge == $overallDownpayment ? 'Fully Paid' : 'Not Fully Paid';
+    
+        $creditInformsWithDownpayment = [];
+    
+        foreach ($creditInforms as $creditInform) {
+            $downpaymentInfo = $creditInform->downpayment_info()->get();
+            $downpaymentTotal = $downpaymentInfo->sum('downpayment'); 
+    
+            // Set the overall status for each credit inform entry
+            $currentOverallStatus = $totalCharge == $overallDownpayment ? 'Fully Paid' : 'Not Fully Paid';
     
             $creditInformsWithDownpayment[] = [
                 'credit_inform' => [
@@ -122,7 +131,7 @@ class TransactionDetailsController extends Controller
                 ],
                 'downpayment_info' => $downpaymentInfo,
                 'downpayment_total' => $downpaymentTotal,
-               
+                'overall_status' => $currentOverallStatus, // Set the current overall status here
             ];
         }
     
@@ -145,7 +154,7 @@ class TransactionDetailsController extends Controller
             'overall_downpayment' => $overallDownpayment,
             'total_charge' => $totalCharge, 
             'balance' => $overallBalance,
-            'overall_status' => $overallStatus, 
+            'current_overall_status' => $overallStatus, // Include overall status in the response
             'pagination' => $pagination,
         ]);
     }
