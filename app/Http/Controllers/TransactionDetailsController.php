@@ -97,17 +97,7 @@ class TransactionDetailsController extends Controller
     
         $totalCharge = 0; 
         $overallDownpayment = 0; 
-    
-        foreach ($creditInforms as $creditInform) {
-            $downpaymentInfo = $creditInform->downpayment_info()->get();
-            $downpaymentTotal = $downpaymentInfo->sum('downpayment'); 
-    
-            $totalCharge += $creditInform->charge; 
-            $overallDownpayment += $downpaymentTotal; 
-        }
-    
-        // Determine overall status based on aggregated values of all credit informs
-        $overallStatus = $totalCharge == $overallDownpayment ? 'Fully Paid' : 'Not Fully Paid';
+        $overallStatus = 'Fully Paid'; // Initialize overall status to fully paid
     
         $creditInformsWithDownpayment = [];
     
@@ -115,8 +105,19 @@ class TransactionDetailsController extends Controller
             $downpaymentInfo = $creditInform->downpayment_info()->get();
             $downpaymentTotal = $downpaymentInfo->sum('downpayment'); 
     
-            // Set the overall status for each credit inform entry
-            $currentOverallStatus = $totalCharge == $overallDownpayment ? 'Fully Paid' : 'Not Fully Paid';
+            $totalCharge += $creditInform->charge; 
+            $overallDownpayment += $downpaymentTotal; 
+    
+            // Calculate the balance for the current credit inform
+            $balance = $creditInform->charge - $downpaymentTotal;
+    
+            // Determine the current overall status for the credit inform
+            $currentOverallStatus = $balance == 0 ? 'Fully Paid' : 'Not Fully Paid';
+    
+            // If any credit inform is not fully paid, set the overall status to 'Not Fully Paid'
+            if ($currentOverallStatus === 'Not Fully Paid') {
+                $overallStatus = 'Not Fully Paid';
+            }
     
             $creditInformsWithDownpayment[] = [
                 'credit_inform' => [
@@ -131,7 +132,7 @@ class TransactionDetailsController extends Controller
                 ],
                 'downpayment_info' => $downpaymentInfo,
                 'downpayment_total' => $downpaymentTotal,
-                'overall_status' => $currentOverallStatus, // Set the current overall status here
+                'current_overall_status' => $currentOverallStatus, // Set the current overall status here
             ];
         }
     
@@ -154,11 +155,10 @@ class TransactionDetailsController extends Controller
             'overall_downpayment' => $overallDownpayment,
             'total_charge' => $totalCharge, 
             'balance' => $overallBalance,
-            'current_overall_status' => $overallStatus, // Include overall status in the response
+            'overall_status' => $overallStatus, // Include overall status in the response
             'pagination' => $pagination,
         ]);
     }
-    
     public function showByCreditName($credit_name)
     {
         $creditUser = credit_users::where('credit_name', $credit_name)->first();
