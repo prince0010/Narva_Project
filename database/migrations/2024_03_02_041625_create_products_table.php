@@ -25,7 +25,7 @@ return new class extends Migration
                 $table->string('price_code')->nullable();
                 $table->decimal('markup', 8, 2)->nullable(); //Percentage
                 $table->decimal('counter_price', 8, 2)->nullable(); //The Output for the Price_Code * (percentage + 1)
-                $table->integer('stock')->nullable();
+                $table->integer('stock');
                 $table->timestamps();
                 $table->softDeletes();
             });
