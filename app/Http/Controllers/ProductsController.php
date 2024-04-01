@@ -77,14 +77,14 @@ class ProductsController extends Controller
     public function storeProduct(Request $request, Products $products)
     {
         $request->validate([
-            'prod_type_ID' => 'required|integer|digits_between:1,999',
-            'supplier_ID' => 'required|integer|digits_between:1,999',
-            'part_num' => 'required|string|max:255',
-            'part_name' => 'required|string|max:255',
-            'brand' => 'required|string|max:255',
-            'model' => 'required|string|max:255',
-            'price_code' => 'required|numeric', 
-            'stock' => 'required|integer|digits_between:1,999',
+            'prod_type_ID' => 'nullable|integer|digits_between:1,999',
+            'supplier_ID' => 'nullable|integer|digits_between:1,999',
+            'part_num' => 'nullable|string|max:255',
+            'part_name' => 'nullable|string|max:255',
+            'brand' => 'nullable|string|max:255',
+            'model' => 'nullable|string|max:255',
+            'price_code' => 'nullable|numeric', 
+            'stock' => 'nullable|integer|digits_between:1,999',
             'markup' => 'nullable|numeric|min:0|max:100', 
         ]);
     
@@ -261,15 +261,15 @@ class ProductsController extends Controller
     public function updateProduct(Request $request, Products $products)
     {
         $request->validate([
-            'prod_type_ID' => 'required|integer|digits_between:1,999',
-            'supplier_ID' => 'required|integer|digits_between:1,999',
-            'part_num' => 'required|string|max:255',
-            'part_name' => 'required|string|max:255',
-            'brand' => 'required|string|max:255',
-            'model' => 'required|string|max:255',
+            'prod_type_ID' => 'nullable|integer|digits_between:1,999',
+            'supplier_ID' => 'nullable|integer|digits_between:1,999',
+            'part_num' => 'nullable|string|max:255',
+            'part_name' => 'nullable|string|max:255',
+            'brand' => 'nullable|string|max:255',
+            'model' => 'nullable|string|max:255',
             'markup' => 'nullable|numeric|min:0|max:100', 
-            'price_code' => 'required|string|max:255',
-            'stock' => 'required|integer|digits_between:1,999'
+            'price_code' => 'nullable|string|max:255',
+            'stock' => 'nullable|integer|digits_between:1,999'
         ]);
     
         // Check if price_code or markup has been updated
