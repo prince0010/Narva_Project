@@ -84,7 +84,7 @@ class ProductsController extends Controller
             'brand' => 'nullable|string|max:255',
             'model' => 'nullable|string|max:255',
             'price_code' => 'nullable|numeric', 
-            'stock' => 'nullable|integer|digits_between:1,999',
+            'stock' => 'required|integer|digits_between:1,999',
             'markup' => 'nullable|numeric|min:0|max:100', 
         ]);
     
@@ -269,7 +269,7 @@ class ProductsController extends Controller
             'model' => 'nullable|string|max:255',
             'markup' => 'nullable|numeric|min:0|max:100', 
             'price_code' => 'nullable|string|max:255',
-            'stock' => 'nullable|integer|digits_between:1,999'
+            'stock' => 'required|integer|digits_between:1,999'
         ]);
     
         // Check if price_code or markup has been updated
