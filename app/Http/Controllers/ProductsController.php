@@ -77,7 +77,7 @@ class ProductsController extends Controller
     public function storeProduct(Request $request, Products $products)
     {
         $request->validate([
-            'prod_type_ID' => 'nullable|integer|digits_between:1,999',
+            'prod_type_ID' => 'required|integer|digits_between:1,999',
             'supplier_ID' => 'nullable|integer|digits_between:1,999',
             'part_num' => 'nullable|string|max:255',
             'part_name' => 'nullable|string|max:255',
@@ -261,7 +261,7 @@ class ProductsController extends Controller
     public function updateProduct(Request $request, Products $products)
     {
         $request->validate([
-            'prod_type_ID' => 'nullable|integer|digits_between:1,999',
+            'prod_type_ID' => 'required|integer|digits_between:1,999',
             'supplier_ID' => 'nullable|integer|digits_between:1,999',
             'part_num' => 'nullable|string|max:255',
             'part_name' => 'nullable|string|max:255',
