@@ -317,7 +317,7 @@ class ProductsController extends Controller
      */
     // Variable Name sa Products kay $products
     // Delete
-    // public function destroy(Products $products) : RedirectResponse
+    // public function destroy(Product/s $products) : RedirectResponse
     public function destroyProduct(Products $products)
     {
         //
@@ -362,7 +362,7 @@ class ProductsController extends Controller
     // Adding the Quantity of Stock
     public function addStock(Request $request, $products)
     {
-
+        
         $request->validate([
             'quantity' => 'required|integer|min:1',
         ]);
